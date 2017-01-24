@@ -5,7 +5,7 @@ public class SwitchAttributes : MonoBehaviour {
 
 	bool redBlocksActive = true;
 	bool redActiveSavedState = true;
-	float unactiveSize = 0.5f;
+	float unactiveSize = 0.25f;
 
 	void Start () {
 		buttonPress ();
@@ -47,9 +47,9 @@ public class SwitchAttributes : MonoBehaviour {
 				blueBlocks [i].GetComponent<BoxCollider> ().size = Vector3.zero;
 			}
 		}
-		for (int i = 0; i < GetComponent<CharacterMovement>().returnPoints().Count; i++) {
-			if (GetComponent<CharacterMovement>().returnPoints() [i].transform.localScale.x < 1) {
-				GetComponent<CharacterMovement>().returnPoints() [i].GetComponent<BoxCollider> ().size = Vector3.one * 2;
+		for (int i = 0; i < GetComponent<CharacterMovement>().getPath().Count; i++) {
+			if (GetComponent<CharacterMovement>().getPath() [i].transform.localScale.x < 1) {
+				GetComponent<CharacterMovement>().getPath() [i].GetComponent<BoxCollider> ().size = Vector3.one * 4;
 			}
 		}
 	}

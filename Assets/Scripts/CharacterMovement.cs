@@ -8,7 +8,7 @@ public class CharacterMovement : MonoBehaviour {
 	GameObject player;
 	bool isMouseDrag;
 	int numberOfBlocks;
-	List<GameObject> points;
+	List<GameObject> path;
 	bool moveCharacter = false;
 	int playerPosIndex = 0;
 	bool playerFirstMoved = false;
@@ -16,11 +16,10 @@ public class CharacterMovement : MonoBehaviour {
 	float initialSpinnerTouch;
 	float currentSpinnerTouch;
 	Transform initialCameraPos;
-	float timer = 0.05f;
-	float timerLimit = 0.05f;
+	float timer = 0.01f;
+	private float timerLimit = 0.01f;
 	private float pathThickness = 0.03f;
 	public Material mat;
-	GameObject cancel;
 	Vector3 center;
 	private int playerSpeed = 10;
 	bool pointOnSwitch = false;
@@ -28,25 +27,23 @@ public class CharacterMovement : MonoBehaviour {
 	Vector3 mousePosPrev;
 	Vector3 mousePosCurrent;
 	float dpi;
+	Quaternion camRotateTarget;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
 		numberOfBlocks = GameObject.FindGameObjectsWithTag ("Block").Length + 
 			GameObject.FindGameObjectsWithTag ("BlueBlock").Length + 
-			GameObject.FindGameObjectsWithTag ("RedBlock").Length ;
+			GameObject.FindGameObjectsWithTag ("RedBlock").Length;
 		center = GameObject.Find ("Center").transform.position;
-		points = new List<GameObject>();
 		initialCameraPos = GameObject.Find ("Initial Camera Spot").transform;
 		initialCameraPos.position = transform.position;
-		cancel = GameObject.Find ("Cancel");
-		cancel.GetComponent<Button> ().image.color = new Color (0, 0, 0, 0);
-		cancel.GetComponentInChildren<Text>().color = new Color (0, 0, 0, 0);
+		path = new List<GameObject>();
 		dpi = Screen.dpi;
+		camRotateTarget = Quaternion.Euler(90, 0, 0);
 		if (PlayerPrefs.GetInt ("Shift Camera", 0) == 1) {
 			Camera.main.orthographicSize = center.y;
 			transform.position = center;
-			Quaternion target = Quaternion.Euler(90, 0, 0);
-			transform.rotation = target;
+			transform.rotation = camRotateTarget;
 			cameraFixed = true;
 		}
 	}
@@ -60,10 +57,6 @@ public class CharacterMovement : MonoBehaviour {
 		}
 		if (Input.GetMouseButtonUp (0)) {
 			mouseUp ();
-			if (pointOnSwitch) {
-				GetComponent<SwitchAttributes> ().loadSaveState ();
-				pointOnSwitch = false;
-			}
 		}
 		if (isMouseDrag && cameraFixed) {
 			if (timer == 0) {
@@ -72,7 +65,7 @@ public class CharacterMovement : MonoBehaviour {
 			timer += Time.deltaTime;
 			if (timer >= timerLimit) {
 				mousePosCurrent = Input.mousePosition;
-				if (Vector3.Distance (mousePosPrev, mousePosCurrent) >= dpi / 25) {
+				if (Vector3.Distance (mousePosPrev, mousePosCurrent) >= dpi / 50) {
 					timer = 0;
 					mouseDrag ();
 				}
@@ -84,12 +77,11 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void moveCamera () {
-		if (playerFirstMoved && !cameraFixed) {
+		if (playerFirstMoved) {
 			Camera.main.orthographicSize -= Time.deltaTime * (Camera.main.orthographicSize - center.y + 0.5f);
 			Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, center.y, 20);
 			transform.position = Vector3.Slerp(transform.position, center, Time.deltaTime * 5f);
-			Quaternion target = Quaternion.Euler(90, 0, 0);
-			transform.rotation = Quaternion.Lerp (transform.rotation, target, Time.deltaTime * 5f);
+			transform.rotation = Quaternion.Lerp (transform.rotation, camRotateTarget, Time.deltaTime * 5f);
 		}
 		if (transform.rotation.eulerAngles.x >= 90 && Camera.main.orthographicSize <= center.y) {
 			cameraFixed = true;
@@ -105,16 +97,18 @@ public class CharacterMovement : MonoBehaviour {
 		timer = timerLimit;
 		isMouseDrag = false;
 		touchingSpinner = false;
-		if (points.Count > 0) {
+		if (path.Count > 0) {
 			moveCharacter = true;
 			if (!playerFirstMoved) {
 				player.transform.localScale = Vector3.one;
-				player.transform.position = new Vector3 (points [0].transform.position.x, 0, points [0].transform.position.z);
+				player.transform.position = new Vector3 (path[0].transform.position.x, 0, path[0].transform.position.z);
 				playerFirstMoved = true;
 			}
 		}
-		cancel.GetComponent<Button> ().image.color = new Color (0, 0, 0, 0);
-		cancel.GetComponentInChildren<Text> ().color = new Color (0, 0, 0, 0);
+		if (pointOnSwitch) {
+			GetComponent<SwitchAttributes> ().loadSaveState ();
+			pointOnSwitch = false;
+		}
 	}
 
 	void mouseDrag () {
@@ -122,14 +116,10 @@ public class CharacterMovement : MonoBehaviour {
 		if (target != null) {
 			if (target.layer == 8 && !touchingSpinner && !moveCharacter) {
 				dragBlocks (target);
-			} else if (target.tag == "Spinner" && !touchingSpinner && points.Count == 0) {
+			} else if (target.tag == "Spinner" && !touchingSpinner && path.Count == 0) {
 				touchingSpinner = true;
 				initialSpinnerTouch = Input.mousePosition.x;
 			}
-			//if (!touchingSpinner && !moveCharacter && points.Count > 1){
-			//	cancel.GetComponent<Button> ().image.color = new Color (1, 1, 1, 1);
-			//	cancel.GetComponentInChildren<Text>().color = new Color (1, 1, 1, 1);
-			//}
 		}
 		if (touchingSpinner) {
 			currentSpinnerTouch = Input.mousePosition.x;
@@ -138,13 +128,13 @@ public class CharacterMovement : MonoBehaviour {
 			initialCameraPos.RotateAround (Vector3.zero, Vector3.up, -angle);
 		} 
 	}
-
+		
 	GameObject returnClickedObject () {
 		GameObject target = null;
 		RaycastHit hit;
 		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 		if (Physics.Raycast (ray.origin, ray.direction * center.y, out hit)) {
-			if (points.Count == 0) {
+			if (path.Count == 0) {
 				target = hit.collider.gameObject;
 				return target;
 			} else {
@@ -156,8 +146,8 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	GameObject findNearestBlock (Vector3 point) {
-		if (Vector3.Distance (point, points [points.Count - 1].transform.position) > 0.75f) {
-			GameObject lastBlock = points [points.Count - 1];
+		if (Vector3.Distance (point, path [path.Count - 1].transform.position) > 0.75f) {
+			GameObject lastBlock = path [path.Count - 1];
 			List <GameObject> nearbyBlocks = new List<GameObject> ();
 			List <GameObject> allBlocks = GetComponent<BlockManagement> ().getBlocks ();
 			GameObject returnedBlock = null;
@@ -167,8 +157,8 @@ public class CharacterMovement : MonoBehaviour {
 				if (checkAdjacent (blockTransform.position, lastBlock.transform.position) && blockTransform.localScale.y > 0.5f) {
 					nearbyBlocks.Add (allBlocks [i]);
 				}
-				if (points.Count > 2) {
-					if (points[points.Count - 2] == allBlocks[i] && points[points.Count - 1].tag == "Switch" && points[points.Count - 2].transform.localScale.x < 1) {
+				if (path.Count > 1) {
+					if (path[path.Count - 2] == allBlocks[i] && path[path.Count - 1].tag == "Switch" && path[path.Count - 2].transform.localScale.x < 1) {
 						nearbyBlocks.Add (allBlocks [i]);
 					}
 				}
@@ -183,8 +173,8 @@ public class CharacterMovement : MonoBehaviour {
 					shortestDist = dist;
 				}
 			}
-			if (points.Count > 2) {
-				if (lastBlock.tag == "Switch" && points [points.Count - 2] == returnedBlock) {
+			if (path.Count > 1) {
+				if (lastBlock.tag == "Switch" && path[path.Count - 2] == returnedBlock) {
 					GetComponent<SwitchAttributes> ().buttonPress ();
 				}
 			}
@@ -195,19 +185,19 @@ public class CharacterMovement : MonoBehaviour {
 		
 	void dragBlocks (GameObject target) {
 		Vector3 nextPoint = new Vector3 (target.transform.position.x, 1, target.transform.position.z);
-		if (points.Count == 0) {
+		if (path.Count == 0) {
 			Vector3 roundedPlayerPos = new Vector3 (
 				Mathf.Round (player.transform.position.x), 
 				Mathf.Round (player.transform.position.y), 
 				Mathf.Round (player.transform.position.z)
 			);
 			if (playerFirstMoved) {
-				addToPointsList (player.GetComponent<DeleteCubes>().playerCurrentlyOn());
+				addToPath (player.GetComponent<DeleteCubes>().playerCurrentlyOn());
 				if (checkAdjacent (nextPoint, roundedPlayerPos)) {
-					addToPointsList (target);
+					addToPath (target);
 				}
 			} else {
-				addToPointsList(target);
+				addToPath (target);
 			}
 		} else {
 			checkNextPosition (target);
@@ -217,22 +207,22 @@ public class CharacterMovement : MonoBehaviour {
 	void checkNextPosition (GameObject nextPoint) {
 		bool checkOthers = true;
 		bool valid = true;
-		if (points.Count > 1) {
-			if (nextPoint == points [points.Count - 2]) {
-				removeFromPointList (points.Count - 1);
+		if (path.Count > 1) {
+			if (nextPoint == path [path.Count - 2]) {
+				removeFromPath (path.Count - 1);
 				checkOthers = false;
 			}
 		}
 		if (checkOthers) {
-			for (int i = 0; i < points.Count - 2; i++) {
-				if (nextPoint == points [i]) {
+			for (int i = 0; i < path.Count - 2; i++) {
+				if (nextPoint == path [i]) {
 					valid = false;
 				} 
 			}
 		}
 		if (valid) {
-			if (checkAdjacent (nextPoint.transform.position, points [points.Count - 1].transform.position)) {
-				addToPointsList (nextPoint);
+			if (checkAdjacent (nextPoint.transform.position, path [path.Count - 1].transform.position)) {
+				addToPath (nextPoint);
 			}
 		}
 	}
@@ -249,39 +239,54 @@ public class CharacterMovement : MonoBehaviour {
 		}
 		return false;
 	}
-		
-	void cancelPoints () {
-		cancel.GetComponent<Button> ().image.color = new Color (0, 0, 0, 0);
-		cancel.GetComponentInChildren<Text>().color = new Color (0, 0, 0, 0);
-		points.Clear ();
+
+	void addToPath (GameObject block) {
+		path.Add (block);
+		if (block.tag == "Switch" && player.GetComponent<DeleteCubes>().playerCurrentlyOn() != block) {
+			GetComponent<SwitchAttributes> ().buttonPress ();
+			pointOnSwitch = true;
+		}
+	}
+
+	void removeFromPath (int pos) {
+		path.RemoveAt (pos);
+	}
+
+	public List <GameObject> getPath () {
+		if (path != null) {
+			return path;
+		} else {
+			path = new List <GameObject>();
+			return path;
+		}
 	}
 
 	void movePlayer () {
 		player.transform.position = Vector3.MoveTowards (
 			player.transform.position,
-			points[playerPosIndex].transform.position, 
+			path[playerPosIndex].transform.position, 
 			Time.deltaTime * playerSpeed
 		);
-		if (Vector3.Distance (player.transform.position, points [playerPosIndex].transform.position) < 0.1f) { 
-			if (playerPosIndex < points.Count - 1) {
-				removeFromPointList (0);
-			} else if (playerPosIndex == points.Count - 1) {
+		if (Vector3.Distance (player.transform.position, path[playerPosIndex].transform.position) < 0.1f) { 
+			if (playerPosIndex < path.Count - 1) {
+				removeFromPath (0);
+			} else if (playerPosIndex == path.Count - 1) {
 				moveCharacter = false;
 				playerPosIndex = 0;
-				points.Clear ();
+				path.Clear ();
 			}
 		}
 	}
 
 	void OnPostRender() {
-		if (points.Count > 0) {
+		if (path.Count > 0) {
 			GL.PushMatrix ();
 			mat.SetPass (0);
 			GL.Begin (GL.QUADS);
 			GL.Color (Color.white);
-			for (int i = 1; i < points.Count; i++) {
-				Vector3 point1 = points [i].transform.position;
-				Vector3 point2 = points [i - 1].transform.position;
+			for (int i = 1; i < path.Count; i++) {
+				Vector3 point1 = path [i].transform.position;
+				Vector3 point2 = path [i - 1].transform.position;
 				if (point2.x == point1.x) {
 					GL.Vertex3 (point2.x + pathThickness, point2.y + 0.5f, point2.z);
 					GL.Vertex3 (point2.x - pathThickness, point2.y + 0.5f, point2.z);
@@ -299,31 +304,10 @@ public class CharacterMovement : MonoBehaviour {
 		}
 	}
 		
-	void addToPointsList (GameObject block) {
-		points.Add (block);
-		if (block.tag == "Switch" && player.GetComponent<DeleteCubes>().playerCurrentlyOn() != block) {
-			GetComponent<SwitchAttributes> ().buttonPress ();
-			pointOnSwitch = true;
-		}
-	}
-
-	void removeFromPointList (int pos) {
-		points.RemoveAt (pos);
-	}
-		
 	public void deductNumberOfBlocks () {
 		numberOfBlocks--;
 		if ((numberOfBlocks == 1 && player.GetComponent<DeleteCubes>().playerCurrentlyOn().tag != "Switch") || numberOfBlocks < 1) {
 			GetComponent<GameplayInterface> ().winText ();
-		}
-	}
-
-	public List <GameObject> returnPoints () {
-		if (points != null) {
-			return points;
-		} else {
-			points = new List <GameObject>();
-			return points;
 		}
 	}
 }

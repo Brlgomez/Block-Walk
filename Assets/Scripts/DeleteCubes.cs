@@ -6,7 +6,7 @@ public class DeleteCubes : MonoBehaviour {
 	GameObject currentlyOn;
 
 	void OnTriggerExit(Collider other) {
-		// regular block and multi step block
+		// regular, multi step, redAndBlue block
 		if (other.transform.tag == "Block" || other.transform.tag == "RedBlock" || other.transform.tag == "BlueBlock") {
 			if (other.GetComponent<CrumbledBlock> () != null) {
 				other.GetComponent<CrumbledBlock> ().decreaseSteps ();

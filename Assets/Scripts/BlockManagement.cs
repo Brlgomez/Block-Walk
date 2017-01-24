@@ -50,7 +50,11 @@ public class BlockManagement : MonoBehaviour {
 	}
 
 	void randomColors () {
-		Camera.main.backgroundColor = new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
+		Camera.main.backgroundColor = new Color (
+			Random.Range (0.0f, 1.0f), 
+			Random.Range (0.0f, 1.0f), 
+			Random.Range (0.0f, 1.0f)
+		);
 		if (Random.Range (0.0f, 1.0f) > 0.5) {
 			rXorZ = true;
 		} else {
