@@ -28,6 +28,7 @@ public class CharacterMovement : MonoBehaviour {
 	Vector3 mousePosCurrent;
 	float dpi;
 	Quaternion camRotateTarget;
+	float shiftTimer;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
@@ -78,12 +79,15 @@ public class CharacterMovement : MonoBehaviour {
 
 	void moveCamera () {
 		if (playerFirstMoved) {
-			Camera.main.orthographicSize -= Time.deltaTime * (Camera.main.orthographicSize - center.y + 0.5f);
+			shiftTimer += Time.deltaTime / 2;
+			Camera.main.orthographicSize -= shiftTimer;
 			Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, center.y, 20);
-			transform.position = Vector3.Slerp(transform.position, center, Time.deltaTime * 5f);
-			transform.rotation = Quaternion.Lerp (transform.rotation, camRotateTarget, Time.deltaTime * 5f);
+			transform.position = Vector3.Slerp(transform.position, center, shiftTimer);
+			transform.rotation = Quaternion.Lerp (transform.rotation, camRotateTarget, shiftTimer);
 		}
 		if (transform.rotation.eulerAngles.x >= 90 && Camera.main.orthographicSize <= center.y) {
+			transform.position = center;
+			transform.rotation = camRotateTarget;
 			cameraFixed = true;
 		}
 	}

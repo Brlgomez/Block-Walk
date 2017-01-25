@@ -31,29 +31,27 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void restartButtonClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 1);
-		if (loading == false) {
-			StartCoroutine (loadNewScene (levelNum));
-		}
-		loading = true;
+		GetComponent<BackgroundColorTransition> ().transition (levelNum, "Restart");
 	}
 
 	public void nextLevelClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
-		if (loading == false) {
-			SceneManager.LoadScene(levelNum + 1);
-		}
-		loading = true;
+		GetComponent<BackgroundColorTransition> ().transition (levelNum + 1, "Next Level From Game");
 	}
 
 	public void mainMenuClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
+		GetComponent<BackgroundColorTransition> ().transition (0, "Main Menu");
+	}
+
+	public void nextScene (int n) {
 		if (loading == false) {
-			SceneManager.LoadScene("Main Menu");
+			SceneManager.LoadScene(n);
 		}
 		loading = true;
 	}
 
-	IEnumerator loadNewScene(int level) {
+	IEnumerator loadNewScene (int level) {
 		yield return null;
 		SceneManager.LoadScene(level);
 	}

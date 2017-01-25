@@ -12,6 +12,7 @@ public class MainMenuInterface : MonoBehaviour {
 	GameObject scrollBar;
 	GameObject worldOne;
 	int levelMultiplier = 1;
+	int loadedLevel;
 
 	void Start () {
 		worldSelectButton = GameObject.Find ("World Select");
@@ -21,9 +22,14 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void LoadLevel (int level) {
+		loadedLevel = level + levelMultiplier;
+		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Next Level From Main Menu");
+	}
+
+	public void nextScene (int n) {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		if (loading == false) {
-			SceneManager.LoadScene(level + levelMultiplier);
+			SceneManager.LoadScene(loadedLevel);
 		}
 		loading = true;
 	}
