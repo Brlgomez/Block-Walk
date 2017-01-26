@@ -66,7 +66,7 @@ public class CharacterMovement : MonoBehaviour {
 			timer += Time.deltaTime;
 			if (timer >= timerLimit) {
 				mousePosCurrent = Input.mousePosition;
-				if (Vector3.Distance (mousePosPrev, mousePosCurrent) >= dpi / 50) {
+				if (Vector3.Distance (mousePosPrev, mousePosCurrent) >= dpi / 100) {
 					timer = 0;
 					mouseDrag ();
 				}
@@ -176,6 +176,9 @@ public class CharacterMovement : MonoBehaviour {
 					returnedBlock = nearbyBlocks [i];
 					shortestDist = dist;
 				}
+			}
+			if (Vector3.Distance (lastBlock.transform.position, point) < Vector3.Distance (returnedBlock.transform.position, point)) {
+				returnedBlock = null;
 			}
 			if (path.Count > 1) {
 				if (lastBlock.tag == "Switch" && path[path.Count - 2] == returnedBlock) {
@@ -291,16 +294,20 @@ public class CharacterMovement : MonoBehaviour {
 			for (int i = 1; i < path.Count; i++) {
 				Vector3 point1 = path [i].transform.position;
 				Vector3 point2 = path [i - 1].transform.position;
+				GL.Vertex3 (point1.x - pathThickness, point1.y + 0.5f, point1.z + pathThickness);
+				GL.Vertex3 (point1.x + pathThickness, point1.y + 0.5f, point1.z + pathThickness);
+				GL.Vertex3 (point1.x + pathThickness, point1.y + 0.5f, point1.z - pathThickness);
+				GL.Vertex3 (point1.x - pathThickness, point1.y + 0.5f, point1.z - pathThickness);
 				if (point2.x == point1.x) {
-					GL.Vertex3 (point2.x + pathThickness, point2.y + 0.5f, point2.z);
-					GL.Vertex3 (point2.x - pathThickness, point2.y + 0.5f, point2.z);
 					GL.Vertex3 (point1.x - pathThickness, point1.y + 0.5f, point1.z);
 					GL.Vertex3 (point1.x + pathThickness, point1.y + 0.5f, point1.z);
+					GL.Vertex3 (point2.x + pathThickness, point2.y + 0.5f, point2.z);
+					GL.Vertex3 (point2.x - pathThickness, point2.y + 0.5f, point2.z);
 				} else {
-					GL.Vertex3 (point2.x, point2.y + 0.5f, point2.z + pathThickness);
-					GL.Vertex3 (point2.x, point2.y + 0.5f, point2.z - pathThickness);
 					GL.Vertex3 (point1.x, point1.y + 0.5f, point1.z - pathThickness);
 					GL.Vertex3 (point1.x, point1.y + 0.5f, point1.z + pathThickness);
+					GL.Vertex3 (point2.x, point2.y + 0.5f, point2.z + pathThickness);
+					GL.Vertex3 (point2.x, point2.y + 0.5f, point2.z - pathThickness);
 				}
 			}
 			GL.End ();

@@ -52,8 +52,8 @@ public class BackgroundColorTransition : MonoBehaviour {
 
 		colorOfLevels [21] = new Color32 (56, 76, 87, 255);
 		colorOfLevels [22] = new Color32 (60, 0, 52, 255);
-		colorOfLevels [23] = new Color32 (172, 220, 201, 255);
-		colorOfLevels [24] = new Color32 (255, 160, 160, 255);
+		colorOfLevels [23] = new Color32 (41, 49, 53, 255);
+		colorOfLevels [24] = new Color32 (77, 82, 120, 255);
 
 		colorOfLevels [25] = new Color32 (165, 250, 228, 255);
 		colorOfLevels [26] = new Color32 (255, 228, 193, 255);
@@ -78,9 +78,9 @@ public class BackgroundColorTransition : MonoBehaviour {
 		colorOfLevels [41] = new Color32 (241, 166, 165, 255);
 		colorOfLevels [42] = new Color32 (118, 121, 179, 255);
 		colorOfLevels [43] = new Color32 (63, 234, 183, 255);
-		colorOfLevels [44] = new Color32 (0, 0, 0, 255);
+		colorOfLevels [44] = new Color32 (176, 225, 180, 255);
 
-		colorOfLevels [45] = new Color32 (0, 0, 0, 255);
+		colorOfLevels [45] = new Color32 (166, 231, 205, 255);
 		colorOfLevels [46] = new Color32 (0, 0, 0, 255);
 		colorOfLevels [47] = new Color32 (0, 0, 0, 255);
 		colorOfLevels [48] = new Color32 (0, 0, 0, 255);
