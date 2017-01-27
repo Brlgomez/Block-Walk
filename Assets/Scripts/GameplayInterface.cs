@@ -11,41 +11,66 @@ public class GameplayInterface : MonoBehaviour {
 	GameObject gameStatus;
 	GameObject nextLevel;
 	GameObject mainMenu;
-	GameObject slider;
-	GameObject sliderBackground;
+	GameObject handle;
 	bool loading = false;
 	int levelNum;
 	float timer;
 	bool sliderMoving = false;
 	int sliderDirection = 1;
+	bool holdingOnToSlider = false;
+	float middleWidth;
+	float height;
+	Vector3 bottomOfScreen, topOfScreen;
 
 	void Start () {
 		restartButton = GameObject.Find ("Restart Button");
 		gameStatus = GameObject.Find ("Game Status");
 		nextLevel = GameObject.Find ("Next Level");
 		mainMenu = GameObject.Find ("Main Menu");
-		slider = GameObject.Find ("Slider");
-		sliderBackground = GameObject.Find ("Slider Background");
+		handle = GameObject.Find ("Handle");
 		nextLevel.GetComponent<Button> ().enabled = false;
 		nextLevel.GetComponent<Button> ().image.color = new Color (1, 1, 1, 0);
 		nextLevel.GetComponentInChildren<Text>().color = new Color (0, 0, 0, 0);
 		restartButton.GetComponent<Button>().onClick.AddListener(delegate { restartButtonClick(); });
 		nextLevel.GetComponent<Button>().onClick.AddListener(delegate { nextLevelClick(); });
 		mainMenu.GetComponent<Button>().onClick.AddListener(delegate { mainMenuClick(); });
-		slider.GetComponent<Slider> ().onValueChanged.AddListener (delegate { movingSlider();});
 		levelNum = SceneManager.GetActiveScene ().buildIndex;
 		gameStatus.GetComponent<Text>().text = (((levelNum - 1)/ 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
+		middleWidth = Screen.width / 2;
+		height = Screen.height;
+		bottomOfScreen = new Vector3 (middleWidth, 20, 0);
+		topOfScreen = new Vector3 (middleWidth, height - 20, 0);
 	}
 
 	void Update () {
+		if (Input.GetMouseButtonDown (0)) {
+			if (handle.GetComponent<BoxCollider2D> ().OverlapPoint (new Vector2 (Input.mousePosition.x, Input.mousePosition.y))) {
+				holdingOnToSlider = true;
+				turnOnButtons ();
+			}
+		}
+		if (holdingOnToSlider) {
+			handle.transform.position = new Vector3 (middleWidth, Mathf.Clamp(Input.mousePosition.y, 20, height - 20), handle.transform.position.z);
+		}
+		if (Input.GetMouseButtonUp (0) && holdingOnToSlider) {
+			holdingOnToSlider = false;
+			sliderMoving = true;
+			timer = 0;
+			if (handle.transform.position.y > Screen.height / 2) {
+				sliderDirection = 1;
+			} else {
+				sliderDirection = -1;
+			}
+		}
 		if (sliderMoving) {
-			sliderBackground.GetComponent<Image> ().color = new Color (0.75f, 0.75f, 0.75f, (slider.GetComponent<Slider> ().value * 0.5f)/1);
-			if (!Input.GetMouseButton (0)) {
-				timer += Time.deltaTime / 2;
-				slider.GetComponent<Slider> ().value += timer * sliderDirection;
-				if (slider.GetComponent<Slider> ().value == 0 || slider.GetComponent<Slider> ().value == 1) {
-					sliderMoving = false;
-				}
+			timer += Time.deltaTime;
+			if (sliderDirection == 1) {
+				handle.transform.position = Vector3.Lerp (handle.transform.position, topOfScreen, timer);
+			} else {
+				handle.transform.position = Vector3.Lerp (handle.transform.position, bottomOfScreen, timer);
+			}
+			if (timer > 1) {
+				sliderMoving = false;
 			}
 		}
 	}
@@ -90,19 +115,6 @@ public class GameplayInterface : MonoBehaviour {
 		turnOnButtons ();
 	}
 
-	public void movingSlider () {
-		if (Input.GetMouseButton (0)) {
-			timer = 0;
-			sliderMoving = true;
-			if (slider.GetComponent<Slider> ().value < 0.5f) {
-				sliderDirection = -1;
-			} else if (slider.GetComponent<Slider> ().value > 0.5f) {
-				sliderDirection = 1;
-			}
-			turnOnButtons ();
-		}
-	}
-
 	void turnOnButtons () {
 		if (mainMenu.GetComponent<Button> ().image.color.a == 0) {
 			mainMenu.GetComponent<Button> ().image.color = new Color (1, 1, 1, 1);
@@ -113,7 +125,7 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public bool isMenuOn () {
-		if (slider.GetComponent<Slider> ().value > 0) {
+		if (handle.transform.position.y > 50) {
 			return true;
 		} else {
 			return false;

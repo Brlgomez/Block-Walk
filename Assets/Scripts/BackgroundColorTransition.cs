@@ -18,7 +18,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 	void Start () {
 		ui = GameObject.Find ("UI Holder");
 		cubes = GameObject.Find ("Cubes");
-		menuBackground = GameObject.Find ("Slider Background");
+		//menuBackground = GameObject.Find ("Slider Background");
 		positionOfCubes = cubes.transform.position;
 		levelStarting ();
 		//Debug.Log (Mathf.Round(Camera.main.backgroundColor.r * 255) + ", " + 
@@ -105,7 +105,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, colorOfLevels [colorIndex], timer / 2);
 				ui.transform.localScale = Vector3.Lerp (ui.transform.localScale, Vector3.zero, timer / 2);
 				cubes.transform.position = Vector3.Lerp (cubes.transform.position, Vector3.right * 25, timer / 4);
-				menuBackground.GetComponent<Image>().color = Color.Lerp (menuBackground.GetComponent<Image>().color, Color.clear, timer * 5);
+				//menuBackground.GetComponent<Image>().color = Color.Lerp (menuBackground.GetComponent<Image>().color, Color.clear, timer * 5);
 			}
 			else if (timer > 0.9f && timer < 1) {
 				Camera.main.backgroundColor = colorOfLevels [colorIndex];
