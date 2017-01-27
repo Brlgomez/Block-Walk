@@ -116,21 +116,23 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void mouseDrag () {
-		GameObject target = returnClickedObject ();
-		if (target != null) {
-			if (target.layer == 8 && !touchingSpinner && !moveCharacter) {
-				dragBlocks (target);
-			} else if (target.tag == "Spinner" && !touchingSpinner && path.Count == 0) {
-				touchingSpinner = true;
-				initialSpinnerTouch = Input.mousePosition.x;
+		if (!GetComponent<GameplayInterface> ().isMenuOn ()) {
+			GameObject target = returnClickedObject ();
+			if (target != null) {
+				if (target.layer == 8 && !touchingSpinner && !moveCharacter) {
+					dragBlocks (target);
+				} else if (target.tag == "Spinner" && !touchingSpinner && path.Count == 0) {
+					touchingSpinner = true;
+					initialSpinnerTouch = Input.mousePosition.x;
+				}
 			}
+			if (touchingSpinner) {
+				currentSpinnerTouch = Input.mousePosition.x;
+				float angle = (initialSpinnerTouch - currentSpinnerTouch) / 250;
+				transform.RotateAround (Vector3.zero, Vector3.up, -angle);
+				initialCameraPos.RotateAround (Vector3.zero, Vector3.up, -angle);
+			} 
 		}
-		if (touchingSpinner) {
-			currentSpinnerTouch = Input.mousePosition.x;
-			float angle = (initialSpinnerTouch - currentSpinnerTouch) / 250;
-			transform.RotateAround (Vector3.zero, Vector3.up, -angle);
-			initialCameraPos.RotateAround (Vector3.zero, Vector3.up, -angle);
-		} 
 	}
 		
 	GameObject returnClickedObject () {
