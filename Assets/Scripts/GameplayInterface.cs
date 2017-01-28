@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityStandardAssets.ImageEffects;
 
 public class GameplayInterface : MonoBehaviour {
 
@@ -49,11 +50,13 @@ public class GameplayInterface : MonoBehaviour {
 				sliderMoving = false;
 				timer = 0;
 				turnOnButtons ();
+				GetComponent<BlurOptimized> ().enabled = true;
 			}
 		}
 		if (holdingOnToSlider) {
 			timer += Time.deltaTime;
 			handle.transform.position = new Vector3 (middleWidth, Mathf.Clamp(Input.mousePosition.y, 20, height - 20), handle.transform.position.z);
+			GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - 20) * 3.5f) / height);
 		}
 		if (Input.GetMouseButtonUp (0) && holdingOnToSlider) {
 			holdingOnToSlider = false;
@@ -74,8 +77,12 @@ public class GameplayInterface : MonoBehaviour {
 				handle.transform.position = Vector3.Lerp (handle.transform.position, topOfScreen, timer);
 			} else {
 				handle.transform.position = Vector3.Lerp (handle.transform.position, bottomOfScreen, timer);
+				if (GetComponent<BlurOptimized> ().blurSize <= 0) {
+					GetComponent<BlurOptimized> ().enabled = false;
+				}
 			}
-			if (timer > 1) {
+			GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - 20) * 3.5f) / height);
+			if (timer > 1f) {
 				sliderMoving = false;
 			}
 		}
@@ -109,6 +116,7 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public void winText () {
+		GetComponent<BlurOptimized> ().enabled = true;
 		if (SceneManager.sceneCountInBuildSettings > levelNum + 1) {
 			nextLevel.GetComponent<Button> ().enabled = true;
 			nextLevel.GetComponent<Button> ().image.color = new Color (1, 1, 1, 1);
