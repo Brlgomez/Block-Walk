@@ -46,21 +46,27 @@ public class GameplayInterface : MonoBehaviour {
 		if (Input.GetMouseButtonDown (0)) {
 			if (handle.GetComponent<BoxCollider2D> ().OverlapPoint (new Vector2 (Input.mousePosition.x, Input.mousePosition.y))) {
 				holdingOnToSlider = true;
+				sliderMoving = false;
+				timer = 0;
 				turnOnButtons ();
 			}
 		}
 		if (holdingOnToSlider) {
+			timer += Time.deltaTime;
 			handle.transform.position = new Vector3 (middleWidth, Mathf.Clamp(Input.mousePosition.y, 20, height - 20), handle.transform.position.z);
 		}
 		if (Input.GetMouseButtonUp (0) && holdingOnToSlider) {
 			holdingOnToSlider = false;
 			sliderMoving = true;
-			timer = 0;
 			if (handle.transform.position.y > Screen.height / 2) {
 				sliderDirection = 1;
 			} else {
 				sliderDirection = -1;
 			}
+			if (timer < 0.2f) {
+				sliderDirection *= -1;
+			}
+			timer = 0;
 		}
 		if (sliderMoving) {
 			timer += Time.deltaTime;
@@ -125,7 +131,7 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public bool isMenuOn () {
-		if (handle.transform.position.y > 50) {
+		if (holdingOnToSlider || handle.transform.position.y > 21) {
 			return true;
 		} else {
 			return false;

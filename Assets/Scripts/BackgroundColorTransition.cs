@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class BackgroundColorTransition : MonoBehaviour {
 
-	Color32[] colorOfLevels = new Color32[96];
+	Color32[] colorOfLevels = new Color32[49];
 	bool transitionColor = false;
 	bool levelStart = true;
 	int colorIndex = 0;
@@ -18,7 +18,6 @@ public class BackgroundColorTransition : MonoBehaviour {
 	void Start () {
 		ui = GameObject.Find ("UI Holder");
 		cubes = GameObject.Find ("Cubes");
-		//menuBackground = GameObject.Find ("Slider Background");
 		positionOfCubes = cubes.transform.position;
 		levelStarting ();
 		//Debug.Log (Mathf.Round(Camera.main.backgroundColor.r * 255) + ", " + 
@@ -83,8 +82,8 @@ public class BackgroundColorTransition : MonoBehaviour {
 		colorOfLevels [44] = new Color32 (176, 225, 180, 255);
 
 		colorOfLevels [45] = new Color32 (166, 231, 205, 255);
-		colorOfLevels [46] = new Color32 (0, 0, 0, 255);
-		colorOfLevels [47] = new Color32 (0, 0, 0, 255);
+		colorOfLevels [46] = new Color32 (12, 10, 48, 255);
+		colorOfLevels [47] = new Color32 (138, 80, 80, 255);
 		colorOfLevels [48] = new Color32 (0, 0, 0, 255);
 	}
 
@@ -93,7 +92,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 			timer += Time.deltaTime;
 			ui.transform.localScale = Vector3.Lerp (ui.transform.localScale, Vector3.one, timer / 2);
 			cubes.transform.position = Vector3.Lerp (cubes.transform.position, positionOfCubes, timer / 4);
-			if (timer > 1) {
+			if (timer > 1.1f) {
 				cubes.transform.position = positionOfCubes;
 				levelStart = false;
 				timer = 0;
@@ -101,13 +100,12 @@ public class BackgroundColorTransition : MonoBehaviour {
 		}
 		if (transitionColor) {
 			timer += Time.deltaTime;
-			if (colorOfLevels.Length > colorIndex + 1 && timer < 0.9f) {
+			if (colorOfLevels.Length > colorIndex + 1 && timer < 0.95f) {
 				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, colorOfLevels [colorIndex], timer / 2);
 				ui.transform.localScale = Vector3.Lerp (ui.transform.localScale, Vector3.zero, timer / 2);
 				cubes.transform.position = Vector3.Lerp (cubes.transform.position, Vector3.right * 25, timer / 4);
-				//menuBackground.GetComponent<Image>().color = Color.Lerp (menuBackground.GetComponent<Image>().color, Color.clear, timer * 5);
 			}
-			else if (timer > 0.9f && timer < 1) {
+			else if (timer > 0.95f && timer < 1) {
 				Camera.main.backgroundColor = colorOfLevels [colorIndex];
 			}
 			else if (timer > 1) {
