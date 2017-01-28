@@ -41,7 +41,6 @@ public class GameplayInterface : MonoBehaviour {
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
 		handleHeight = Screen.dpi / 6;
-		Debug.Log (handleHeight);
 		bottomOfScreen = new Vector3 (middleWidth, handleHeight, 0);
 		topOfScreen = new Vector3 (middleWidth, height - handleHeight, 0);
 		GetComponent<BlurOptimized> ().downsample = 2;
@@ -82,7 +81,7 @@ public class GameplayInterface : MonoBehaviour {
 				handle.transform.position = Vector3.Lerp (handle.transform.position, topOfScreen, timer);
 			} else {
 				handle.transform.position = Vector3.Lerp (handle.transform.position, bottomOfScreen, timer);
-				if (GetComponent<BlurOptimized> ().blurSize <= 0) {
+				if (handle.transform.position.y < bottomOfScreen.y + 1) {
 					GetComponent<BlurOptimized> ().enabled = false;
 				}
 			}
@@ -94,7 +93,6 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public void restartButtonClick () {
-		PlayerPrefs.SetInt ("Shift Camera", 1);
 		GetComponent<BackgroundColorTransition> ().transition (levelNum, "Restart");
 	}
 
@@ -127,7 +125,16 @@ public class GameplayInterface : MonoBehaviour {
 			nextLevel.GetComponent<Button> ().image.color = new Color (1, 1, 1, 1);
 			nextLevel.GetComponentInChildren<Text> ().color = new Color (1, 1, 1, 1);
 		}
-		gameStatus.GetComponent<Text>().text = "You Win";
+		gameStatus.GetComponent<Text>().text = "Finish";
+		timer = 0;
+		sliderMoving = true;
+		sliderDirection = 1;
+		turnOnButtons ();
+	}
+
+	public void loseText () {
+		GetComponent<BlurOptimized> ().enabled = true;
+		gameStatus.GetComponent<Text>().text = "Stuck!";
 		timer = 0;
 		sliderMoving = true;
 		sliderDirection = 1;
@@ -144,7 +151,7 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public bool isMenuOn () {
-		if (holdingOnToSlider || handle.transform.position.y > handleHeight + 1) {
+		if (holdingOnToSlider || handle.transform.position.y > handleHeight * 2) {
 			return true;
 		} else {
 			return false;

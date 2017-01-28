@@ -7,7 +7,6 @@ public class CharacterMovement : MonoBehaviour {
 
 	GameObject player;
 	bool isMouseDrag;
-	int numberOfBlocks;
 	List<GameObject> path;
 	bool moveCharacter = false;
 	int playerPosIndex = 0;
@@ -32,9 +31,6 @@ public class CharacterMovement : MonoBehaviour {
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
-		numberOfBlocks = GameObject.FindGameObjectsWithTag ("Block").Length + 
-			GameObject.FindGameObjectsWithTag ("BlueBlock").Length + 
-			GameObject.FindGameObjectsWithTag ("RedBlock").Length;
 		center = GameObject.Find ("Center").transform.position;
 		initialCameraPos = GameObject.Find ("Initial Camera Spot").transform;
 		initialCameraPos.position = transform.position;
@@ -46,6 +42,7 @@ public class CharacterMovement : MonoBehaviour {
 			transform.position = center;
 			transform.rotation = camRotateTarget;
 			cameraFixed = true;
+			PlayerPrefs.SetInt ("Shift Camera", 1);
 		}
 	}
 	
@@ -89,6 +86,7 @@ public class CharacterMovement : MonoBehaviour {
 			transform.position = center;
 			transform.rotation = camRotateTarget;
 			cameraFixed = true;
+			PlayerPrefs.SetInt ("Shift Camera", 1);
 		}
 	}
 
@@ -276,13 +274,16 @@ public class CharacterMovement : MonoBehaviour {
 			path[playerPosIndex].transform.position, 
 			Time.deltaTime * playerSpeed
 		);
-		if (Vector3.Distance (player.transform.position, path[playerPosIndex].transform.position) < 0.1f) { 
+		if (Vector3.Distance (player.transform.position, path[playerPosIndex].transform.position) < 0.2f) {
+			Camera.main.GetComponent<BlockManagement> ().removeBlock (path[playerPosIndex]);
+			player.transform.position = path [playerPosIndex].transform.position;
 			if (playerPosIndex < path.Count - 1) {
 				removeFromPath (0);
 			} else if (playerPosIndex == path.Count - 1) {
 				moveCharacter = false;
 				playerPosIndex = 0;
 				path.Clear ();
+				checkSolution ();;
 			}
 		}
 	}
@@ -317,10 +318,22 @@ public class CharacterMovement : MonoBehaviour {
 		}
 	}
 		
-	public void deductNumberOfBlocks () {
-		numberOfBlocks--;
-		if ((numberOfBlocks == 1 && player.GetComponent<DeleteCubes>().playerCurrentlyOn().tag != "Switch") || numberOfBlocks < 1) {
+	public void checkSolution () {
+		if ((GetComponent<BlockManagement> ().getBlocks ().Count == 0 &&
+		    player.GetComponent<DeleteCubes> ().playerCurrentlyOn ().tag != "Switch") ||
+		    GetComponent<BlockManagement> ().getBlocks ().Count < 0) {
 			GetComponent<GameplayInterface> ().winText ();
+		} else {
+			bool lose = true;
+			for (int i = 0; i < GetComponent<BlockManagement> ().getBlocks ().Count; i++) {
+				if (checkAdjacent (GetComponent<BlockManagement> ().getBlocks () [i].transform.position, player.transform.position)) {
+					lose = false;
+					break;
+				}
+			}
+			if (lose) {
+				GetComponent<GameplayInterface> ().loseText ();
+			}
 		}
 	}
 }
