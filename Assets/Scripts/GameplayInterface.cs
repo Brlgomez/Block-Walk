@@ -22,6 +22,7 @@ public class GameplayInterface : MonoBehaviour {
 	float middleWidth;
 	float height;
 	Vector3 bottomOfScreen, topOfScreen;
+	float handleHeight;
 
 	void Start () {
 		restartButton = GameObject.Find ("Restart Button");
@@ -39,8 +40,12 @@ public class GameplayInterface : MonoBehaviour {
 		gameStatus.GetComponent<Text>().text = (((levelNum - 1)/ 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
-		bottomOfScreen = new Vector3 (middleWidth, 20, 0);
-		topOfScreen = new Vector3 (middleWidth, height - 20, 0);
+		handleHeight = Screen.dpi / 6;
+		Debug.Log (handleHeight);
+		bottomOfScreen = new Vector3 (middleWidth, handleHeight, 0);
+		topOfScreen = new Vector3 (middleWidth, height - handleHeight, 0);
+		GetComponent<BlurOptimized> ().downsample = 2;
+		handle.transform.position = new Vector3 (middleWidth, handleHeight, 0);
 	}
 
 	void Update () {
@@ -55,8 +60,8 @@ public class GameplayInterface : MonoBehaviour {
 		}
 		if (holdingOnToSlider) {
 			timer += Time.deltaTime;
-			handle.transform.position = new Vector3 (middleWidth, Mathf.Clamp(Input.mousePosition.y, 20, height - 20), handle.transform.position.z);
-			GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - 20) * 3.5f) / height);
+			handle.transform.position = new Vector3 (middleWidth, Mathf.Clamp(Input.mousePosition.y, handleHeight, height - handleHeight), handle.transform.position.z);
+			GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * 10) / (height - handleHeight));
 		}
 		if (Input.GetMouseButtonUp (0) && holdingOnToSlider) {
 			holdingOnToSlider = false;
@@ -81,7 +86,7 @@ public class GameplayInterface : MonoBehaviour {
 					GetComponent<BlurOptimized> ().enabled = false;
 				}
 			}
-			GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - 20) * 3.5f) / height);
+			GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * 10) / (height - handleHeight));
 			if (timer > 1f) {
 				sliderMoving = false;
 			}
@@ -139,7 +144,7 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public bool isMenuOn () {
-		if (holdingOnToSlider || handle.transform.position.y > 21) {
+		if (holdingOnToSlider || handle.transform.position.y > handleHeight + 1) {
 			return true;
 		} else {
 			return false;
