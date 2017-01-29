@@ -283,7 +283,7 @@ public class CharacterMovement : MonoBehaviour {
 				moveCharacter = false;
 				playerPosIndex = 0;
 				path.Clear ();
-				checkSolution ();;
+				checkSolution ();
 			}
 		}
 	}
@@ -322,7 +322,7 @@ public class CharacterMovement : MonoBehaviour {
 		if ((GetComponent<BlockManagement> ().getBlocks ().Count == 0 &&
 		    player.GetComponent<DeleteCubes> ().playerCurrentlyOn ().tag != "Switch") ||
 		    GetComponent<BlockManagement> ().getBlocks ().Count < 0) {
-			GetComponent<GameplayInterface> ().winText ();
+			GetComponent<GameplayInterface> ().wonInterface ();
 		} else {
 			bool lose = true;
 			for (int i = 0; i < GetComponent<BlockManagement> ().getBlocks ().Count; i++) {
@@ -332,7 +332,7 @@ public class CharacterMovement : MonoBehaviour {
 				}
 			}
 			if (lose) {
-				GetComponent<GameplayInterface> ().loseText ();
+				GetComponent<GameplayInterface> ().loseInterface ();
 			}
 		}
 	}

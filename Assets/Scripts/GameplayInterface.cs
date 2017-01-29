@@ -17,12 +17,14 @@ public class GameplayInterface : MonoBehaviour {
 	int levelNum;
 	float timer;
 	bool sliderMoving = false;
-	int sliderDirection = 1;
 	bool holdingOnToSlider = false;
 	float middleWidth;
 	float height;
 	Vector3 bottomOfScreen, topOfScreen;
 	float handleHeight;
+	bool win, lose = false;
+	Vector3 towards;
+	private int speedOfSlider = 2;
 
 	void Start () {
 		restartButton = GameObject.Find ("Restart Button");
@@ -49,46 +51,73 @@ public class GameplayInterface : MonoBehaviour {
 
 	void Update () {
 		if (Input.GetMouseButtonDown (0)) {
-			if (handle.GetComponent<BoxCollider2D> ().OverlapPoint (new Vector2 (Input.mousePosition.x, Input.mousePosition.y))) {
-				holdingOnToSlider = true;
-				sliderMoving = false;
-				timer = 0;
-				turnOnButtons ();
-				GetComponent<BlurOptimized> ().enabled = true;
-			}
+			checkOnSlider ();
 		}
 		if (holdingOnToSlider) {
-			timer += Time.deltaTime;
-			handle.transform.position = new Vector3 (middleWidth, Mathf.Clamp(Input.mousePosition.y, handleHeight, height - handleHeight), handle.transform.position.z);
-			GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * 10) / (height - handleHeight));
+			sliderMovingWithMouse ();
 		}
 		if (Input.GetMouseButtonUp (0) && holdingOnToSlider) {
-			holdingOnToSlider = false;
-			sliderMoving = true;
-			if (handle.transform.position.y > Screen.height / 2) {
-				sliderDirection = 1;
-			} else {
-				sliderDirection = -1;
-			}
-			if (timer < 0.2f) {
-				sliderDirection *= -1;
-			}
-			timer = 0;
+			letGoOfSlider ();
 		}
 		if (sliderMoving) {
+			sliderAutomaticallyMoving ();
+		}
+		if (win || lose) {
 			timer += Time.deltaTime;
-			if (sliderDirection == 1) {
-				handle.transform.position = Vector3.Lerp (handle.transform.position, topOfScreen, timer);
-			} else {
-				handle.transform.position = Vector3.Lerp (handle.transform.position, bottomOfScreen, timer);
-				if (handle.transform.position.y < bottomOfScreen.y + 1) {
-					GetComponent<BlurOptimized> ().enabled = false;
+			if (timer > 0.5f) {
+				if (win) {
+					winText ();
+				} else {
+					loseText ();
 				}
 			}
-			GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * 10) / (height - handleHeight));
-			if (timer > 1f) {
-				sliderMoving = false;
+		}
+	}
+
+	void checkOnSlider () {
+		if (handle.GetComponent<BoxCollider2D> ().OverlapPoint (new Vector2 (Input.mousePosition.x, Input.mousePosition.y))) {
+			holdingOnToSlider = true;
+			sliderMoving = false;
+			timer = 0;
+			turnOnButtons ();
+			GetComponent<BlurOptimized> ().enabled = true;
+		}
+	}
+
+	void sliderMovingWithMouse () {
+		timer += Time.deltaTime;
+		handle.transform.position = new Vector3 (middleWidth, Mathf.Clamp(Input.mousePosition.y, handleHeight, height - handleHeight), handle.transform.position.z);
+		GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * 10) / (height - handleHeight));
+	}
+
+	void letGoOfSlider () {
+		holdingOnToSlider = false;
+		sliderMoving = true;
+		if (handle.transform.position.y > Screen.height / 2) {
+			towards = topOfScreen;
+		} else {
+			towards = bottomOfScreen;
+		}
+		if (timer < 0.2f) {
+			if (towards == bottomOfScreen) {
+				towards = topOfScreen;
+			} else {
+				towards = bottomOfScreen;
 			}
+		}
+		timer = 0;
+	}
+
+	void sliderAutomaticallyMoving () {
+		timer += Time.deltaTime * speedOfSlider;
+		handle.transform.position = Vector3.Lerp (handle.transform.position, towards, timer);
+		GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * 10) / (height - handleHeight));
+		if (Mathf.Abs(handle.transform.position.y - towards.y) < handleHeight && towards == bottomOfScreen) {
+			GetComponent<BlurOptimized> ().enabled = false;
+		}
+		if (handle.transform.position == towards) {
+			sliderMoving = false;
+			timer = 0;
 		}
 	}
 
@@ -118,27 +147,29 @@ public class GameplayInterface : MonoBehaviour {
 		SceneManager.LoadScene(level);
 	}
 
-	public void winText () {
+	void winText () {
 		GetComponent<BlurOptimized> ().enabled = true;
 		if (SceneManager.sceneCountInBuildSettings > levelNum + 1) {
 			nextLevel.GetComponent<Button> ().enabled = true;
 			nextLevel.GetComponent<Button> ().image.color = new Color (1, 1, 1, 1);
 			nextLevel.GetComponentInChildren<Text> ().color = new Color (1, 1, 1, 1);
 		}
-		gameStatus.GetComponent<Text>().text = "Finish";
+		gameStatus.GetComponent<Text>().text = "Success";
 		timer = 0;
 		sliderMoving = true;
-		sliderDirection = 1;
+		towards = topOfScreen;
 		turnOnButtons ();
+		win = false;
 	}
 
-	public void loseText () {
+	void loseText () {
 		GetComponent<BlurOptimized> ().enabled = true;
-		gameStatus.GetComponent<Text>().text = "Stuck!";
+		gameStatus.GetComponent<Text>().text = "Game Over";
 		timer = 0;
 		sliderMoving = true;
-		sliderDirection = 1;
+		towards = topOfScreen;
 		turnOnButtons ();
+		lose = false;
 	}
 
 	void turnOnButtons () {
@@ -150,8 +181,16 @@ public class GameplayInterface : MonoBehaviour {
 		}
 	}
 
+	public void wonInterface () {
+		win = true;
+	}
+
+	public void loseInterface () {
+		lose = true;
+	}
+
 	public bool isMenuOn () {
-		if (holdingOnToSlider || handle.transform.position.y > handleHeight * 2) {
+		if (holdingOnToSlider || towards == topOfScreen || sliderMoving) {
 			return true;
 		} else {
 			return false;
