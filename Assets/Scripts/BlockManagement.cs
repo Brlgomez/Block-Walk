@@ -10,6 +10,7 @@ public class BlockManagement : MonoBehaviour {
 	[Range(-1.0f, 1.0f)]
 	public float rInc, gInc, bInc;
 	public bool rXorZ, gXorZ, bXorZ;
+	int numberOfBlocks;
 
 	void Awake () {
 		//randomColors ();
@@ -35,6 +36,9 @@ public class BlockManagement : MonoBehaviour {
 					tempB = b + (bInc * block.transform.position.z);
 				}
 				block.GetComponent<Renderer> ().material.color = new Color (tempR, tempG, tempB);
+				if (block.tag == "Block" || block.tag == "RedBlock" || block.tag == "BlueBlock") {
+					numberOfBlocks++;
+				}
 			}
 		}  
 	}
@@ -43,12 +47,17 @@ public class BlockManagement : MonoBehaviour {
 		return blocks;
 	}
 
-	public void addBlock (GameObject b) {
+	void addBlock (GameObject b) {
 		blocks.Add (b);
 	}
 
 	public void removeBlock (GameObject b) {
 		blocks.Remove (b);
+		numberOfBlocks--;
+	}
+
+	public int getNumberOfBlocks () {
+		return numberOfBlocks;
 	}
 
 	void randomColors () {

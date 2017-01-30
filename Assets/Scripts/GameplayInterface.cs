@@ -41,11 +41,12 @@ public class GameplayInterface : MonoBehaviour {
 		gameStatus.GetComponent<Text>().text = (((levelNum - 1)/ 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
-		handleHeight = Screen.dpi / 6;
+		handleHeight = Screen.dpi / 8;
 		bottomOfScreen = new Vector3 (middleWidth, handleHeight, 0);
 		topOfScreen = new Vector3 (middleWidth, height - handleHeight, 0);
 		GetComponent<BlurOptimized> ().downsample = 2;
 		handle.transform.position = new Vector3 (middleWidth, handleHeight, 0);
+		GetComponent<BackgroundColorTransition> ().levelStarting ();
 	}
 
 	void Update () {
@@ -111,16 +112,19 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public void restartButtonClick () {
+		gameObject.AddComponent<BackgroundColorTransition> ();
 		GetComponent<BackgroundColorTransition> ().transition (levelNum, "Restart");
 	}
 
 	public void nextLevelClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
+		gameObject.AddComponent<BackgroundColorTransition> ();
 		GetComponent<BackgroundColorTransition> ().transition (levelNum + 1, "Next Level From Game");
 	}
 
 	public void mainMenuClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
+		gameObject.AddComponent<BackgroundColorTransition> ();
 		GetComponent<BackgroundColorTransition> ().transition (0, "Main Menu");
 	}
 
@@ -152,7 +156,7 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void loseText () {
 		GetComponent<BlurOptimized> ().enabled = true;
-		gameStatus.GetComponent<Text>().text = "Game Over";
+		gameStatus.GetComponent<Text>().text = "Stuck!";
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;

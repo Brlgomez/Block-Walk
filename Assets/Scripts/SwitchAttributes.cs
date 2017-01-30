@@ -5,7 +5,7 @@ public class SwitchAttributes : MonoBehaviour {
 
 	bool redBlocksActive = true;
 	bool redActiveSavedState = true;
-	float unactiveSize = 0.25f;
+	private float unactiveSize = 0.25f;
 
 	void Start () {
 		buttonPress ();
@@ -30,21 +30,25 @@ public class SwitchAttributes : MonoBehaviour {
 		GameObject[] redBlocks = GameObject.FindGameObjectsWithTag ("RedBlock");
 		GameObject[] blueBlocks = GameObject.FindGameObjectsWithTag ("BlueBlock");
 		for (int i = 0; i < redBlocks.Length; i++) {
-			if (redBlocksActive) {
-				redBlocks [i].transform.localScale = Vector3.one * unactiveSize;
-				redBlocks [i].GetComponent<BoxCollider> ().size = Vector3.zero;
-			} else {
-				redBlocks [i].transform.localScale = Vector3.one;
-				redBlocks [i].GetComponent<BoxCollider> ().size = Vector3.one;
+			if (redBlocks [i].GetComponent<FallingBlock> () == null) {
+				if (redBlocksActive) {
+					redBlocks [i].transform.localScale = Vector3.one * unactiveSize;
+					redBlocks [i].GetComponent<BoxCollider> ().size = Vector3.zero;
+				} else {
+					redBlocks [i].transform.localScale = Vector3.one;
+					redBlocks [i].GetComponent<BoxCollider> ().size = Vector3.one;
+				}
 			}
 		}
 		for (int i = 0; i < blueBlocks.Length; i++) {
-			if (redBlocksActive) {
-				blueBlocks [i].transform.localScale = Vector3.one;
-				blueBlocks [i].GetComponent<BoxCollider> ().size = Vector3.one;
-			} else {
-				blueBlocks [i].transform.localScale = Vector3.one * unactiveSize;
-				blueBlocks [i].GetComponent<BoxCollider> ().size = Vector3.zero;
+			if (blueBlocks [i].GetComponent<FallingBlock> () == null) {
+				if (redBlocksActive) {
+					blueBlocks [i].transform.localScale = Vector3.one;
+					blueBlocks [i].GetComponent<BoxCollider> ().size = Vector3.one;
+				} else {
+					blueBlocks [i].transform.localScale = Vector3.one * unactiveSize;
+					blueBlocks [i].GetComponent<BoxCollider> ().size = Vector3.zero;
+				}
 			}
 		}
 		for (int i = 0; i < GetComponent<CharacterMovement>().getPath().Count; i++) {

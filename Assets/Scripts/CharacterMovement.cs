@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class CharacterMovement : MonoBehaviour {
 
+	private float timerLimit = 0.25f;
+	private float pathThickness = 0.03f;
+	private int playerSpeed = 10;
+
 	GameObject player;
 	bool isMouseDrag;
 	List<GameObject> path;
@@ -16,20 +20,17 @@ public class CharacterMovement : MonoBehaviour {
 	float currentSpinnerTouch;
 	Transform initialCameraPos;
 	float timer = 0.01f;
-	private float timerLimit = 0.01f;
-	private float pathThickness = 0.03f;
 	public Material mat;
 	Vector3 center;
-	private int playerSpeed = 10;
 	bool pointOnSwitch = false;
 	bool cameraFixed = false;
 	Vector3 mousePosPrev;
 	Vector3 mousePosCurrent;
-	float dpi;
 	Quaternion camRotateTarget;
 	float shiftTimer;
 	bool checkForSolution = false;
 	float timer2 = 0;
+	int numberOfBlocks;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
@@ -37,7 +38,6 @@ public class CharacterMovement : MonoBehaviour {
 		initialCameraPos = GameObject.Find ("Initial Camera Spot").transform;
 		initialCameraPos.position = transform.position;
 		path = new List<GameObject>();
-		dpi = Screen.dpi;
 		camRotateTarget = Quaternion.Euler(90, 0, 0);
 		if (PlayerPrefs.GetInt ("Shift Camera", 0) == 1) {
 			Camera.main.orthographicSize = center.y;
@@ -59,16 +59,9 @@ public class CharacterMovement : MonoBehaviour {
 			mouseUp ();
 		}
 		if (isMouseDrag && cameraFixed) {
-			if (timer == 0) {
-				mousePosPrev = Input.mousePosition;
-			}
 			timer += Time.deltaTime;
 			if (timer >= timerLimit) {
-				mousePosCurrent = Input.mousePosition;
-				if (Vector3.Distance (mousePosPrev, mousePosCurrent) >= dpi / 100) {
-					timer = 0;
-					mouseDrag ();
-				}
+				mouseDrag ();
 			}
 		}
 		if (moveCharacter) {
@@ -329,9 +322,9 @@ public class CharacterMovement : MonoBehaviour {
 	}
 		
 	public void checkSolution () {
-		if ((GetComponent<BlockManagement> ().getBlocks ().Count == 1 &&
+		if ((GetComponent<BlockManagement> ().getNumberOfBlocks() == 1 &&
 		    player.GetComponent<DeleteCubes> ().playerCurrentlyOn ().tag != "Switch") ||
-		    GetComponent<BlockManagement> ().getBlocks ().Count < 1) {
+			GetComponent<BlockManagement> ().getNumberOfBlocks() < 1) {
 			GetComponent<GameplayInterface> ().winText ();
 		} else {
 			bool lose = true;
