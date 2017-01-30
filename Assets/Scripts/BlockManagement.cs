@@ -5,7 +5,9 @@ using System.Collections.Generic;
 public class BlockManagement : MonoBehaviour {
 
 	List<GameObject> blocks = new List<GameObject>();
+	[Range(0.0f, 2.0f)]
 	public float r, g, b;
+	[Range(-1.0f, 1.0f)]
 	public float rInc, gInc, bInc;
 	public bool rXorZ, gXorZ, bXorZ;
 
@@ -78,7 +80,7 @@ public class BlockManagement : MonoBehaviour {
 		bInc = Random.Range (-0.25f, 0.25f);
 	}
 
-	/*
+
 	void Update () {
 		foreach (GameObject block in blocks) {
 			float tempR, tempG, tempB;
@@ -100,5 +102,5 @@ public class BlockManagement : MonoBehaviour {
 			block.GetComponent<Renderer> ().material.color = new Color (tempR, tempG, tempB);
 		}
 	}
-	*/
+
 }

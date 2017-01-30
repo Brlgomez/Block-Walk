@@ -5,7 +5,6 @@ using System.IO;
 
 public class BackgroundColorTransition : MonoBehaviour {
 
-	string fileName = "Assets/Colors.txt";
 	bool transitionColor = false;
 	bool levelStart = true;
 	int colorIndex = 0;
@@ -17,7 +16,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 	GameObject menuBackground;
 	Vector3 positionOfCubes;
 
-	void Start () { 
+	void Start () {
 		ui = GameObject.Find ("UI Holder");
 		cubes = GameObject.Find ("Cubes");
 		positionOfCubes = cubes.transform.position;
@@ -76,12 +75,10 @@ public class BackgroundColorTransition : MonoBehaviour {
 	}
 
 	Color32 getColorFromFile (int line) {
-		StreamReader sr = new StreamReader (fileName);
-		string fileContents = sr.ReadToEnd();
-		string[] lines = fileContents.Split("\n"[0]);
+		TextAsset colors = Resources.Load("Colors") as TextAsset;
+		string[] lines = colors.text.Split("\n"[0]);
 		string[] nums = lines [line].Split (","[0]);
 		Color32 c = new Color32 (byte.Parse(nums[0]), byte.Parse(nums[1]), byte.Parse(nums[2]), byte.Parse(nums[3]));
-		sr.Close();
 		return c;
 	}
 }

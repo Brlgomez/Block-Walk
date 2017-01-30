@@ -173,7 +173,7 @@ public class ScreenDrag : MonoBehaviour {
 					}
 					if (numberOfBlocks == 1 || (numberOfBlocks == 2 && playerClone != null)) {
 						if (target.tag != "Switch") {
-							Camera.main.GetComponent<GameplayInterface> ().wonInterface () ;
+							Camera.main.GetComponent<GameplayInterface> ().winText ();
 						}
 					}
 				}

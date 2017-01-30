@@ -22,7 +22,6 @@ public class GameplayInterface : MonoBehaviour {
 	float height;
 	Vector3 bottomOfScreen, topOfScreen;
 	float handleHeight;
-	bool win, lose = false;
 	Vector3 towards;
 	private int speedOfSlider = 2;
 
@@ -61,16 +60,6 @@ public class GameplayInterface : MonoBehaviour {
 		}
 		if (sliderMoving) {
 			sliderAutomaticallyMoving ();
-		}
-		if (win || lose) {
-			timer += Time.deltaTime;
-			if (timer > 0.5f) {
-				if (win) {
-					winText ();
-				} else {
-					loseText ();
-				}
-			}
 		}
 	}
 
@@ -147,7 +136,7 @@ public class GameplayInterface : MonoBehaviour {
 		SceneManager.LoadScene(level);
 	}
 
-	void winText () {
+	public void winText () {
 		GetComponent<BlurOptimized> ().enabled = true;
 		if (SceneManager.sceneCountInBuildSettings > levelNum + 1) {
 			nextLevel.GetComponent<Button> ().enabled = true;
@@ -159,17 +148,15 @@ public class GameplayInterface : MonoBehaviour {
 		sliderMoving = true;
 		towards = topOfScreen;
 		turnOnButtons ();
-		win = false;
 	}
 
-	void loseText () {
+	public void loseText () {
 		GetComponent<BlurOptimized> ().enabled = true;
 		gameStatus.GetComponent<Text>().text = "Game Over";
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;
 		turnOnButtons ();
-		lose = false;
 	}
 
 	void turnOnButtons () {
@@ -180,15 +167,7 @@ public class GameplayInterface : MonoBehaviour {
 			restartButton.GetComponentInChildren<Text> ().color = new Color (1, 1, 1, 1);
 		}
 	}
-
-	public void wonInterface () {
-		win = true;
-	}
-
-	public void loseInterface () {
-		lose = true;
-	}
-
+		
 	public bool isMenuOn () {
 		if (holdingOnToSlider || towards == topOfScreen || sliderMoving) {
 			return true;

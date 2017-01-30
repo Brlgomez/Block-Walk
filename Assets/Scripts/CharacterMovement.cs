@@ -28,6 +28,8 @@ public class CharacterMovement : MonoBehaviour {
 	float dpi;
 	Quaternion camRotateTarget;
 	float shiftTimer;
+	bool checkForSolution = false;
+	float timer2 = 0;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
@@ -71,6 +73,15 @@ public class CharacterMovement : MonoBehaviour {
 		}
 		if (moveCharacter) {
 			movePlayer ();
+		} else {
+			if (checkForSolution) {
+				timer2 += Time.deltaTime;
+				if (timer2 > 0.5f) {
+					checkSolution ();
+					checkForSolution = false;
+					timer2 = 0;
+				}
+			}
 		}
 	}
 
@@ -275,7 +286,6 @@ public class CharacterMovement : MonoBehaviour {
 			Time.deltaTime * playerSpeed
 		);
 		if (Vector3.Distance (player.transform.position, path[playerPosIndex].transform.position) < 0.2f) {
-			Camera.main.GetComponent<BlockManagement> ().removeBlock (path[playerPosIndex]);
 			player.transform.position = path [playerPosIndex].transform.position;
 			if (playerPosIndex < path.Count - 1) {
 				removeFromPath (0);
@@ -283,7 +293,7 @@ public class CharacterMovement : MonoBehaviour {
 				moveCharacter = false;
 				playerPosIndex = 0;
 				path.Clear ();
-				checkSolution ();
+				checkForSolution = true;
 			}
 		}
 	}
@@ -319,10 +329,10 @@ public class CharacterMovement : MonoBehaviour {
 	}
 		
 	public void checkSolution () {
-		if ((GetComponent<BlockManagement> ().getBlocks ().Count == 0 &&
+		if ((GetComponent<BlockManagement> ().getBlocks ().Count == 1 &&
 		    player.GetComponent<DeleteCubes> ().playerCurrentlyOn ().tag != "Switch") ||
-		    GetComponent<BlockManagement> ().getBlocks ().Count < 0) {
-			GetComponent<GameplayInterface> ().wonInterface ();
+		    GetComponent<BlockManagement> ().getBlocks ().Count < 1) {
+			GetComponent<GameplayInterface> ().winText ();
 		} else {
 			bool lose = true;
 			for (int i = 0; i < GetComponent<BlockManagement> ().getBlocks ().Count; i++) {
@@ -332,7 +342,7 @@ public class CharacterMovement : MonoBehaviour {
 				}
 			}
 			if (lose) {
-				GetComponent<GameplayInterface> ().loseInterface ();
+				GetComponent<GameplayInterface> ().loseText ();
 			}
 		}
 	}
