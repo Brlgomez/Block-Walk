@@ -72,15 +72,15 @@ public class BlockManagement : MonoBehaviour {
 		} else {
 			bXorZ = false;
 		}
-		r = Random.Range (0.0f, 1.0f);
-		g = Random.Range (0.0f, 1.0f);
-		b = Random.Range (0.0f, 1.0f);
-		rInc = Random.Range (-0.25f, 0.25f);
-		gInc = Random.Range (-0.25f, 0.25f);
-		bInc = Random.Range (-0.25f, 0.25f);
+		r = Random.Range (0.0f, 0.5f);
+		g = Random.Range (0.0f, 0.5f);
+		b = Random.Range (0.0f, 0.5f);
+		rInc = Random.Range (-0.15f, 0.15f);
+		gInc = Random.Range (-0.15f, 0.15f);
+		bInc = Random.Range (-0.15f, 0.15f);
 	}
 
-
+	/*
 	void Update () {
 		foreach (GameObject block in blocks) {
 			float tempR, tempG, tempB;
@@ -102,5 +102,5 @@ public class BlockManagement : MonoBehaviour {
 			block.GetComponent<Renderer> ().material.color = new Color (tempR, tempG, tempB);
 		}
 	}
-
+	*/
 }

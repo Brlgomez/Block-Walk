@@ -307,20 +307,20 @@ public class CharacterMovement : MonoBehaviour {
 			for (int i = 1; i < path.Count; i++) {
 				Vector3 point1 = path [i].transform.position;
 				Vector3 point2 = path [i - 1].transform.position;
-				GL.Vertex3 (point1.x - pathThickness, point1.y + 0.5f, point1.z + pathThickness);
-				GL.Vertex3 (point1.x + pathThickness, point1.y + 0.5f, point1.z + pathThickness);
-				GL.Vertex3 (point1.x + pathThickness, point1.y + 0.5f, point1.z - pathThickness);
-				GL.Vertex3 (point1.x - pathThickness, point1.y + 0.5f, point1.z - pathThickness);
+				GL.Vertex3 (point1.x - pathThickness, point1.y + 1, point1.z + pathThickness);
+				GL.Vertex3 (point1.x + pathThickness, point1.y + 1, point1.z + pathThickness);
+				GL.Vertex3 (point1.x + pathThickness, point1.y + 1, point1.z - pathThickness);
+				GL.Vertex3 (point1.x - pathThickness, point1.y + 1, point1.z - pathThickness);
 				if (point2.x == point1.x) {
-					GL.Vertex3 (point1.x - pathThickness, point1.y + 0.5f, point1.z);
-					GL.Vertex3 (point1.x + pathThickness, point1.y + 0.5f, point1.z);
-					GL.Vertex3 (point2.x + pathThickness, point2.y + 0.5f, point2.z);
-					GL.Vertex3 (point2.x - pathThickness, point2.y + 0.5f, point2.z);
+					GL.Vertex3 (point1.x - pathThickness, point1.y + 1, point1.z);
+					GL.Vertex3 (point1.x + pathThickness, point1.y + 1, point1.z);
+					GL.Vertex3 (point2.x + pathThickness, point2.y + 1, point2.z);
+					GL.Vertex3 (point2.x - pathThickness, point2.y + 1, point2.z);
 				} else {
-					GL.Vertex3 (point1.x, point1.y + 0.5f, point1.z - pathThickness);
-					GL.Vertex3 (point1.x, point1.y + 0.5f, point1.z + pathThickness);
-					GL.Vertex3 (point2.x, point2.y + 0.5f, point2.z + pathThickness);
-					GL.Vertex3 (point2.x, point2.y + 0.5f, point2.z - pathThickness);
+					GL.Vertex3 (point1.x, point1.y + 1, point1.z - pathThickness);
+					GL.Vertex3 (point1.x, point1.y + 1, point1.z + pathThickness);
+					GL.Vertex3 (point2.x, point2.y + 1, point2.z + pathThickness);
+					GL.Vertex3 (point2.x, point2.y + 1, point2.z - pathThickness);
 				}
 			}
 			GL.End ();
