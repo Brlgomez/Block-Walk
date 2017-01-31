@@ -8,9 +8,9 @@ using UnityEngine.EventSystems;
 public class MainMenuInterface : MonoBehaviour {
 
 	bool loading = false;
-	GameObject worldSelectButton;
-	GameObject scrollBar;
-	GameObject worldLevels;
+	Transform mainMenuButtons;
+	Transform worlds;
+	Transform levels;
 	GameObject worldText;
 	int levelMultiplier = 1;
 	int loadedLevel;
@@ -19,9 +19,9 @@ public class MainMenuInterface : MonoBehaviour {
 	bool transition = false;
 
 	void Start () {
-		worldSelectButton = GameObject.Find ("World Select");
-		scrollBar = GameObject.Find ("Content");
-		worldLevels = GameObject.Find ("World Levels");
+		mainMenuButtons = GameObject.Find ("World Select").transform;
+		worlds = GameObject.Find ("Worlds").transform;
+		levels = GameObject.Find ("Levels").transform;
 		worldText = GameObject.Find ("World Text");
 		worldSelect ();
 	}
@@ -29,21 +29,21 @@ public class MainMenuInterface : MonoBehaviour {
 	void Update () {
 		if (transition) { 
 			deltaTime += Time.deltaTime;
-			if (deltaTime > 2f) {
+			if (deltaTime > 1) {
 				transition = false;
 			}
 			if (interfaceMenu == 0) {
-				scrollBar.transform.localScale = Vector3.Lerp (scrollBar.transform.localScale, Vector3.zero, deltaTime);
-				worldLevels.transform.localScale = Vector3.Lerp (worldLevels.transform.localScale, Vector3.zero, deltaTime);
-				worldSelectButton.transform.localScale = Vector3.Lerp (worldSelectButton.transform.localScale, Vector3.one, deltaTime);
+				worlds.localScale = Vector3.Lerp (worlds.localScale, Vector3.zero, deltaTime);
+				levels.localScale = Vector3.Lerp (levels.localScale, Vector3.zero, deltaTime);
+				mainMenuButtons.localScale = Vector3.Lerp (mainMenuButtons.localScale, Vector3.one, deltaTime);
 			} else if (interfaceMenu == 1) {
-				scrollBar.transform.localScale = Vector3.Lerp (scrollBar.transform.localScale, Vector3.one, deltaTime);
-				worldLevels.transform.localScale = Vector3.Lerp (worldLevels.transform.localScale, Vector3.zero, deltaTime);
-				worldSelectButton.transform.localScale = Vector3.Lerp (worldSelectButton.transform.localScale, Vector3.zero, deltaTime);
+				worlds.localScale = Vector3.Lerp (worlds.localScale, Vector3.one, deltaTime);
+				levels.localScale = Vector3.Lerp (levels.localScale, Vector3.zero, deltaTime);
+				mainMenuButtons.localScale = Vector3.Lerp (mainMenuButtons.localScale, Vector3.zero, deltaTime);
 			} else if (interfaceMenu == 2) {
-				scrollBar.transform.localScale = Vector3.Lerp (scrollBar.transform.localScale, Vector3.zero, deltaTime);
-				worldLevels.transform.localScale = Vector3.Lerp (worldLevels.transform.localScale, Vector3.one, deltaTime);
-				worldSelectButton.transform.localScale = Vector3.Lerp (worldSelectButton.transform.localScale, Vector3.zero, deltaTime);
+				worlds.transform.localScale = Vector3.Lerp (worlds.localScale, Vector3.zero, deltaTime);
+				levels.localScale = Vector3.Lerp (levels.localScale, Vector3.one, deltaTime);
+				mainMenuButtons.localScale = Vector3.Lerp (mainMenuButtons.localScale, Vector3.zero, deltaTime);
 			}
 		}
 	}

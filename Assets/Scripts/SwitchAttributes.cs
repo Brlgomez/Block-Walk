@@ -3,9 +3,10 @@ using System.Collections;
 
 public class SwitchAttributes : MonoBehaviour {
 
+	private float unactiveSize = 0.25f;
+
 	bool redBlocksActive = true;
 	bool redActiveSavedState = true;
-	private float unactiveSize = 0.25f;
 
 	void Start () {
 		buttonPress ();

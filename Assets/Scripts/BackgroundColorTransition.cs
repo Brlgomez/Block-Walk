@@ -10,6 +10,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 	private float uiSpeed = 0.5f;
 	private float cubesSpeed = 0.2f;
 	private float colorSpeed = 0.5f;
+
 	bool transitionColor = false;
 	bool levelStart = false;
 	int colorIndex = 0;
@@ -22,7 +23,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 	Vector3 positionOfCubes;
 
 	void Awake () {
-		ui = GameObject.Find ("UI Holder");
+		ui = GameObject.Find ("Handle");
 		cubes = GameObject.Find ("Cubes");
 		positionOfCubes = cubes.transform.position;
 		/* Debug.Log (Mathf.Round(Camera.main.backgroundColor.r * 255) + ", " + 

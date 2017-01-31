@@ -8,6 +8,11 @@ using UnityStandardAssets.ImageEffects;
 
 public class GameplayInterface : MonoBehaviour {
 
+	private int speedOfSlider = 2;
+	private float lengthOfTap = 0.2f;
+	private int maxBlur = 10;
+	private int blurDownsample = 2;
+
 	GameObject restartButton;
 	GameObject gameStatus;
 	GameObject nextLevel;
@@ -23,7 +28,6 @@ public class GameplayInterface : MonoBehaviour {
 	Vector3 bottomOfScreen, topOfScreen;
 	float handleHeight;
 	Vector3 towards;
-	private int speedOfSlider = 2;
 
 	void Start () {
 		restartButton = GameObject.Find ("Restart Button");
@@ -31,9 +35,7 @@ public class GameplayInterface : MonoBehaviour {
 		nextLevel = GameObject.Find ("Next Level");
 		mainMenu = GameObject.Find ("Main Menu");
 		handle = GameObject.Find ("Handle");
-		nextLevel.GetComponent<Button> ().enabled = false;
-		nextLevel.GetComponent<Button> ().image.color = new Color (1, 1, 1, 0);
-		nextLevel.GetComponentInChildren<Text>().color = new Color (0, 0, 0, 0);
+		turnOffButtons ();
 		restartButton.GetComponent<Button>().onClick.AddListener(delegate { restartButtonClick(); });
 		nextLevel.GetComponent<Button>().onClick.AddListener(delegate { nextLevelClick(); });
 		mainMenu.GetComponent<Button>().onClick.AddListener(delegate { mainMenuClick(); });
@@ -41,10 +43,10 @@ public class GameplayInterface : MonoBehaviour {
 		gameStatus.GetComponent<Text>().text = (((levelNum - 1)/ 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
-		handleHeight = Screen.dpi / 8;
+		handleHeight = handle.transform.position.y;
 		bottomOfScreen = new Vector3 (middleWidth, handleHeight, 0);
 		topOfScreen = new Vector3 (middleWidth, height - handleHeight, 0);
-		GetComponent<BlurOptimized> ().downsample = 2;
+		GetComponent<BlurOptimized> ().downsample = blurDownsample;
 		handle.transform.position = new Vector3 (middleWidth, handleHeight, 0);
 		GetComponent<BackgroundColorTransition> ().levelStarting ();
 	}
@@ -76,8 +78,12 @@ public class GameplayInterface : MonoBehaviour {
 
 	void sliderMovingWithMouse () {
 		timer += Time.deltaTime;
-		handle.transform.position = new Vector3 (middleWidth, Mathf.Clamp(Input.mousePosition.y, handleHeight, height - handleHeight), handle.transform.position.z);
-		GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * 10) / (height - handleHeight));
+		handle.transform.position = new Vector3 (
+			middleWidth,
+			Mathf.Clamp(Input.mousePosition.y, handleHeight, height - handleHeight), 
+			handle.transform.position.z
+		);
+		GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * maxBlur) / (height - handleHeight));
 	}
 
 	void letGoOfSlider () {
@@ -88,7 +94,7 @@ public class GameplayInterface : MonoBehaviour {
 		} else {
 			towards = bottomOfScreen;
 		}
-		if (timer < 0.2f) {
+		if (timer < lengthOfTap) {
 			if (towards == bottomOfScreen) {
 				towards = topOfScreen;
 			} else {
@@ -101,7 +107,7 @@ public class GameplayInterface : MonoBehaviour {
 	void sliderAutomaticallyMoving () {
 		timer += Time.deltaTime * speedOfSlider;
 		handle.transform.position = Vector3.Lerp (handle.transform.position, towards, timer);
-		GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * 10) / (height - handleHeight));
+		GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * maxBlur) / (height - handleHeight));
 		if (Mathf.Abs(handle.transform.position.y - towards.y) < handleHeight && towards == bottomOfScreen) {
 			GetComponent<BlurOptimized> ().enabled = false;
 		}
@@ -144,8 +150,8 @@ public class GameplayInterface : MonoBehaviour {
 		GetComponent<BlurOptimized> ().enabled = true;
 		if (SceneManager.sceneCountInBuildSettings > levelNum + 1) {
 			nextLevel.GetComponent<Button> ().enabled = true;
-			nextLevel.GetComponent<Button> ().image.color = new Color (1, 1, 1, 1);
-			nextLevel.GetComponentInChildren<Text> ().color = new Color (1, 1, 1, 1);
+			nextLevel.GetComponent<Button> ().image.color = Color.white;
+			nextLevel.GetComponentInChildren<Text> ().color = Color.white;
 		}
 		gameStatus.GetComponent<Text>().text = "Success";
 		timer = 0;
@@ -164,11 +170,27 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	void turnOnButtons () {
-		if (mainMenu.GetComponent<Button> ().image.color.a == 0) {
-			mainMenu.GetComponent<Button> ().image.color = new Color (1, 1, 1, 1);
-			mainMenu.GetComponentInChildren<Text> ().color = new Color (1, 1, 1, 1);
-			restartButton.GetComponent<Button> ().image.color = new Color (1, 1, 1, 1);
-			restartButton.GetComponentInChildren<Text> ().color = new Color (1, 1, 1, 1);
+		if (!mainMenu.GetComponent<Button> ().enabled) {
+			mainMenu.GetComponent<Button> ().enabled = true;
+			mainMenu.GetComponent<Button> ().image.color = Color.white;
+			mainMenu.GetComponentInChildren<Text> ().color = Color.white;
+			restartButton.GetComponent<Button> ().enabled = true;
+			restartButton.GetComponent<Button> ().image.color = Color.white;
+			restartButton.GetComponentInChildren<Text> ().color = Color.white;
+		}
+	}
+
+	void turnOffButtons () {
+		if (mainMenu.GetComponent<Button> ().enabled) {
+			mainMenu.GetComponent<Button> ().enabled = false;
+			mainMenu.GetComponent<Button> ().image.color = Color.clear;
+			mainMenu.GetComponentInChildren<Text> ().color = Color.clear;
+			restartButton.GetComponent<Button> ().enabled = false;
+			restartButton.GetComponent<Button> ().image.color = Color.clear;
+			restartButton.GetComponentInChildren<Text> ().color = Color.clear;
+			nextLevel.GetComponent<Button> ().enabled = false;
+			nextLevel.GetComponent<Button> ().image.color = Color.clear;
+			nextLevel.GetComponentInChildren<Text> ().color = Color.clear;
 		}
 	}
 		
