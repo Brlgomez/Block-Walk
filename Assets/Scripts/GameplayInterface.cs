@@ -108,12 +108,13 @@ public class GameplayInterface : MonoBehaviour {
 		timer += Time.deltaTime * speedOfSlider;
 		handle.transform.position = Vector3.Lerp (handle.transform.position, towards, timer);
 		GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * maxBlur) / (height - handleHeight));
-		if (Mathf.Abs(handle.transform.position.y - towards.y) < handleHeight && towards == bottomOfScreen) {
-			GetComponent<BlurOptimized> ().enabled = false;
-		}
-		if (handle.transform.position == towards) {
+		if (handle.transform.position.y < towards.y + handleHeight/2 && handle.transform.position.y > towards.y - handleHeight/2) {
+			handle.transform.position = towards;
 			sliderMoving = false;
 			timer = 0;
+			if (towards == bottomOfScreen) {
+				GetComponent<BlurOptimized> ().enabled = false;
+			}
 		}
 	}
 

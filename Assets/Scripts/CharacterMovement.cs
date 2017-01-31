@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class CharacterMovement : MonoBehaviour {
 
-	private float timerLimit = 0.25f;
+	private float maxTimeForDrag = 0.25f;
+	private float maxTimeForSolution = 0.5f;
 	private float pathThickness = 0.03f;
 	private int playerSpeed = 10;
 
@@ -12,13 +13,12 @@ public class CharacterMovement : MonoBehaviour {
 	bool isMouseDrag;
 	List<GameObject> path;
 	bool moveCharacter = false;
-	int playerPosIndex = 0;
 	bool playerFirstMoved = false;
 	bool touchingSpinner = false;
 	float initialSpinnerTouch;
 	float currentSpinnerTouch;
 	Transform initialCameraPos;
-	float timer = 0.01f;
+	float timerForDrag = 0.01f;
 	public Material mat;
 	Vector3 center;
 	bool pointOnSwitch = false;
@@ -26,18 +26,21 @@ public class CharacterMovement : MonoBehaviour {
 	Vector3 mousePosPrev;
 	Vector3 mousePosCurrent;
 	Quaternion camRotateTarget;
-	float shiftTimer;
 	bool checkForSolution = false;
-	float timer2 = 0;
+	float shiftTimer;
+	float timerForSolution = 0;
 	int numberOfBlocks;
+	float initialOrthoSize;
+	GameObject playerOn;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
-		center = GameObject.Find ("Center").transform.position;
+		center = GetComponent<BlockManagement>().getCenter();
 		initialCameraPos = GameObject.Find ("Initial Camera Spot").transform;
 		initialCameraPos.position = transform.position;
 		path = new List<GameObject>();
 		camRotateTarget = Quaternion.Euler(90, 0, 0);
+		initialOrthoSize = Camera.main.orthographicSize;
 		if (PlayerPrefs.GetInt ("Shift Camera", 0) == 1) {
 			Camera.main.orthographicSize = center.y;
 			transform.position = center;
@@ -58,21 +61,18 @@ public class CharacterMovement : MonoBehaviour {
 			mouseUp ();
 		}
 		if (isMouseDrag && cameraFixed) {
-			timer += Time.deltaTime;
-			if (timer >= timerLimit) {
+			timerForDrag += Time.deltaTime;
+			if (timerForDrag >= maxTimeForDrag) {
 				mouseDrag ();
 			}
 		}
 		if (moveCharacter) {
 			movePlayer ();
-		} else {
-			if (checkForSolution) {
-				timer2 += Time.deltaTime;
-				if (timer2 > 0.5f) {
-					checkSolution ();
-					checkForSolution = false;
-					timer2 = 0;
-				}
+		}
+		if (checkForSolution) {
+			timerForSolution += Time.deltaTime;
+			if (timerForSolution > maxTimeForSolution) {
+				checkSolution ();
 			}
 		}
 	}
@@ -80,14 +80,20 @@ public class CharacterMovement : MonoBehaviour {
 	void moveCamera () {
 		if (playerFirstMoved) {
 			shiftTimer += Time.deltaTime / 2;
-			Camera.main.orthographicSize -= shiftTimer;
-			Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, center.y, 20);
+			if (center.y > initialOrthoSize) {
+				Camera.main.orthographicSize += shiftTimer;
+				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, initialOrthoSize, center.y);
+			} else {
+				Camera.main.orthographicSize -= shiftTimer;
+				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, center.y, initialOrthoSize);
+			}
 			transform.position = Vector3.Slerp(transform.position, center, shiftTimer);
 			transform.rotation = Quaternion.Lerp (transform.rotation, camRotateTarget, shiftTimer);
 		}
-		if (transform.rotation.eulerAngles.x >= 90 && Camera.main.orthographicSize <= center.y) {
+		if (transform.rotation.eulerAngles.x >= 90) {
 			transform.position = center;
 			transform.rotation = camRotateTarget;
+			Camera.main.orthographicSize = center.y;
 			cameraFixed = true;
 			PlayerPrefs.SetInt ("Shift Camera", 1);
 		}
@@ -99,10 +105,11 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void mouseUp () {
-		timer = timerLimit;
+		timerForDrag = maxTimeForDrag;
 		isMouseDrag = false;
 		touchingSpinner = false;
 		if (path.Count > 0) {
+			playerOn = path [path.Count - 1];
 			moveCharacter = true;
 			if (!playerFirstMoved) {
 				player.transform.localScale = Vector3.one;
@@ -155,24 +162,29 @@ public class CharacterMovement : MonoBehaviour {
 	GameObject findNearestBlock (Vector3 point) {
 		if (Vector3.Distance (point, path [path.Count - 1].transform.position) > 0.75f) {
 			GameObject lastBlock = path [path.Count - 1];
+			GameObject secondToLast = null;
+			if (path.Count > 1) {
+				secondToLast = path [path.Count - 2];
+			}
 			List <GameObject> nearbyBlocks = new List<GameObject> ();
 			List <GameObject> allBlocks = GetComponent<BlockManagement> ().getBlocks ();
 			GameObject returnedBlock = null;
 			float shortestDist = 10000;
+			// add blocks to list
 			for (int i = 0; i < allBlocks.Count; i++) {
 				Transform blockTransform = allBlocks [i].transform;
-				if (checkAdjacent (blockTransform.position, lastBlock.transform.position) && blockTransform.localScale.y > 0.5f) {
+				bool nextToBlock = checkAdjacent (blockTransform.position, lastBlock.transform.position);
+				if (nextToBlock && blockTransform.localScale.y > 0.5f) {
 					nearbyBlocks.Add (allBlocks [i]);
 				}
-				if (path.Count > 1) {
-					if (path[path.Count - 2] == allBlocks[i] && path[path.Count - 1].tag == "Switch" && path[path.Count - 2].transform.localScale.x < 1) {
+				if (secondToLast != null) {
+					bool smallBlockOnPath = (secondToLast == allBlocks [i] && secondToLast.transform.localScale.x < 1);
+					if (lastBlock.tag == "Switch" && smallBlockOnPath) {
 						nearbyBlocks.Add (allBlocks [i]);
 					}
 				}
-				if (nearbyBlocks.Count >= 4) {
-					break;
-				}
 			}
+			// pick best block
 			for (int i = 0; i < nearbyBlocks.Count; i++) {
 				float dist = Vector3.Distance (nearbyBlocks [i].transform.position, point);
 				if (dist < shortestDist) {
@@ -180,11 +192,13 @@ public class CharacterMovement : MonoBehaviour {
 					shortestDist = dist;
 				}
 			}
-			if (Vector3.Distance (lastBlock.transform.position, point) < Vector3.Distance (returnedBlock.transform.position, point)) {
+			float distToLast = Vector3.Distance (lastBlock.transform.position, point);
+			float distToNew = Vector3.Distance (returnedBlock.transform.position, point);
+			if (distToLast < distToNew) {
 				returnedBlock = null;
 			}
-			if (path.Count > 1) {
-				if (lastBlock.tag == "Switch" && path[path.Count - 2] == returnedBlock) {
+			if (secondToLast != null) {
+				if (lastBlock.tag == "Switch" && secondToLast == returnedBlock) {
 					GetComponent<SwitchAttributes> ().buttonPress ();
 				}
 			}
@@ -202,7 +216,7 @@ public class CharacterMovement : MonoBehaviour {
 				Mathf.Round (player.transform.position.z)
 			);
 			if (playerFirstMoved) {
-				addToPath (player.GetComponent<DeleteCubes>().playerCurrentlyOn());
+				addToPath (playerOn);
 				if (checkAdjacent (nextPoint, roundedPlayerPos)) {
 					addToPath (target);
 				}
@@ -252,7 +266,7 @@ public class CharacterMovement : MonoBehaviour {
 
 	void addToPath (GameObject block) {
 		path.Add (block);
-		if (block.tag == "Switch" && player.GetComponent<DeleteCubes>().playerCurrentlyOn() != block) {
+		if (block.tag == "Switch" && playerOn != block) {
 			GetComponent<SwitchAttributes> ().buttonPress ();
 			pointOnSwitch = true;
 		}
@@ -274,18 +288,20 @@ public class CharacterMovement : MonoBehaviour {
 	void movePlayer () {
 		player.transform.position = Vector3.MoveTowards (
 			player.transform.position,
-			path[playerPosIndex].transform.position, 
+			path[0].transform.position, 
 			Time.deltaTime * playerSpeed
 		);
-		if (Vector3.Distance (player.transform.position, path[playerPosIndex].transform.position) < 0.2f) {
-			player.transform.position = path [playerPosIndex].transform.position;
-			if (playerPosIndex < path.Count - 1) {
+		if (Vector3.Distance (player.transform.position, path[0].transform.position) < 0.1f) {
+			player.transform.position = path [0].transform.position;
+			if (path.Count - 1 > 0) {
+				player.GetComponent<DeleteCubes> ().exitBlock (path[0]);
 				removeFromPath (0);
-			} else if (playerPosIndex == path.Count - 1) {
+				player.GetComponent<DeleteCubes> ().enterBlock (path [0]);
+			} else {
 				moveCharacter = false;
-				playerPosIndex = 0;
-				path.Clear ();
 				checkForSolution = true;
+				timerForSolution = 0;
+				path.Clear ();
 			}
 		}
 	}
@@ -321,20 +337,24 @@ public class CharacterMovement : MonoBehaviour {
 	}
 		
 	public void checkSolution () {
-		if ((GetComponent<BlockManagement> ().getNumberOfBlocks() == 1 &&
-		    player.GetComponent<DeleteCubes> ().playerCurrentlyOn ().tag != "Switch") ||
-			GetComponent<BlockManagement> ().getNumberOfBlocks() < 1) {
+		int numberOfBlocks = GetComponent<BlockManagement> ().getNumberOfBlocks ();
+		checkForSolution = false;
+		timerForSolution = 0;
+		if ((numberOfBlocks == 1 && playerOn.tag != "Switch") || numberOfBlocks < 1) {
 			GetComponent<GameplayInterface> ().winText ();
-		} else {
+			Destroy(GetComponent<CharacterMovement>());
+		} else if (cameraFixed) {
 			bool lose = true;
-			for (int i = 0; i < GetComponent<BlockManagement> ().getBlocks ().Count; i++) {
-				if (checkAdjacent (GetComponent<BlockManagement> ().getBlocks () [i].transform.position, player.transform.position)) {
+			List<GameObject> tempBlocks = GetComponent<BlockManagement> ().getBlocks();
+			for (int i = 0; i < tempBlocks.Count; i++) {
+				if (checkAdjacent (tempBlocks [i].transform.localPosition, playerOn.transform.localPosition)) { 
 					lose = false;
 					break;
 				}
 			}
 			if (lose) {
 				GetComponent<GameplayInterface> ().loseText ();
+				Destroy(GetComponent<CharacterMovement>());
 			}
 		}
 	}

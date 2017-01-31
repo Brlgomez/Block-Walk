@@ -11,12 +11,12 @@ public class BackgroundColorTransition : MonoBehaviour {
 	private float cubesSpeed = 0.2f;
 	private float colorSpeed = 0.5f;
 
-	bool transitionColor = false;
+	bool transitionToColor = false;
 	bool levelStart = false;
 	int colorIndex = 0;
 	float timer = 0;
 	string scene;
-	Color32 transitionalColor;
+	Color32 transitionColor;
 	GameObject ui;
 	GameObject cubes;
 	GameObject menuBackground;
@@ -41,15 +41,15 @@ public class BackgroundColorTransition : MonoBehaviour {
 				Destroy(GetComponent<BackgroundColorTransition>());
 			}
 		}
-		if (transitionColor) {
+		if (transitionToColor) {
 			timer += Time.deltaTime;
 			if (timer < transitionLength - 0.1f) {
-				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, transitionalColor, timer * colorSpeed);
+				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, transitionColor, timer * colorSpeed);
 				ui.transform.localScale = Vector3.Lerp (ui.transform.localScale, Vector3.zero, timer * uiSpeed);
 				cubes.transform.position = Vector3.Lerp (cubes.transform.position, Vector3.right * 25, timer * cubesSpeed);
 			}
 			else if (timer > transitionLength - 0.1f && timer < transitionLength) {
-				Camera.main.backgroundColor = transitionalColor;
+				Camera.main.backgroundColor = transitionColor;
 			}
 			else if (timer > transitionLength) {
 				if (scene == "Next Level From Game") {
@@ -69,8 +69,8 @@ public class BackgroundColorTransition : MonoBehaviour {
 	public void transition (int n, string s) {
 		colorIndex = n;
 		scene = s;
-		transitionColor = true;
-		transitionalColor = getColorFromFile (colorIndex);
+		transitionToColor = true;
+		transitionColor = getColorFromFile (colorIndex);
 	}
 
 	public void levelStarting () {

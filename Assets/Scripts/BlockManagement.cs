@@ -11,6 +11,9 @@ public class BlockManagement : MonoBehaviour {
 	public float rInc, gInc, bInc;
 	public bool rXorZ, gXorZ, bXorZ;
 	int numberOfBlocks;
+	float xMin, xMax = 0;
+	float zMin, zMax = 0;
+	Vector3 center;
 
 	void Awake () {
 		//randomColors ();
@@ -39,8 +42,25 @@ public class BlockManagement : MonoBehaviour {
 				if (block.tag == "Block" || block.tag == "RedBlock" || block.tag == "BlueBlock") {
 					numberOfBlocks++;
 				}
+				if (block.transform.position.x < xMin) {
+					xMin = block.transform.position.x;
+				} else if (block.transform.position.x > xMax) {
+					xMax = block.transform.position.x;
+				}
+				if (block.transform.position.z < zMin) {
+					zMin = block.transform.position.z;
+				} else if (block.transform.position.z > zMax) {
+					zMax = block.transform.position.z;
+				}
 			}
-		}  
+		}
+		float yHeight1 = Mathf.Abs (xMin) + Mathf.Abs (xMax);
+		float yHeight2 = Mathf.Abs (zMin) + Mathf.Abs (zMax);
+		if ((yHeight2 / yHeight1) < 1.75f) {
+			center = new Vector3 ((xMin + xMax) / 2, yHeight1 + 0.5f, (zMin + zMax) / 2);
+		} else {
+			center = new Vector3 ((xMin + xMax) / 2, (yHeight2/2) + 1.5f, (zMin + zMax) / 2);
+		}
 	}
 
 	public List<GameObject> getBlocks () {
@@ -58,6 +78,10 @@ public class BlockManagement : MonoBehaviour {
 
 	public int getNumberOfBlocks () {
 		return numberOfBlocks;
+	}
+
+	public Vector3 getCenter () {
+		return center;
 	}
 
 	void randomColors () {
