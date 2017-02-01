@@ -59,7 +59,7 @@ public class MainMenuInterface : MonoBehaviour {
 	public void nextScene (int n) {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		if (loading == false) {
-			SceneManager.LoadScene (49);
+			SceneManager.LoadScene (1);
 		}
 		loading = true;
 	}

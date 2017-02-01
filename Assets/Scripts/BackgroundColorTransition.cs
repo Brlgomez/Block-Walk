@@ -13,7 +13,6 @@ public class BackgroundColorTransition : MonoBehaviour {
 
 	bool transitionToColor = false;
 	bool levelStart = false;
-	int colorIndex = 0;
 	float timer = 0;
 	string scene;
 	Color32 newColor;
@@ -50,13 +49,13 @@ public class BackgroundColorTransition : MonoBehaviour {
 				Camera.main.backgroundColor = newColor;
 			} else if (timer > transitionLength) {
 				if (scene == "Next Level From Game") {
-					GetComponent<GameplayInterface> ().nextScene (49);
+					GetComponent<GameplayInterface> ().nextScene (1);
 				} else if (scene == "Next Level From Main Menu") {
-					GetComponent<MainMenuInterface> ().nextScene (49);
+					GetComponent<MainMenuInterface> ().nextScene (1);
 				} else if (scene == "Main Menu") {
 					GetComponent<GameplayInterface> ().nextScene (0);
 				} else if (scene == "Restart") {
-					GetComponent<GameplayInterface> ().nextScene (49);
+					GetComponent<GameplayInterface> ().nextScene (1);
 				}
 				Destroy (GetComponent<BackgroundColorTransition> ());
 			}
@@ -64,7 +63,6 @@ public class BackgroundColorTransition : MonoBehaviour {
 	}
 
 	public void transition (int n, string s) {
-		colorIndex = n;
 		scene = s;
 		transitionToColor = true;
 		newColor = getColorFromFile();
@@ -82,9 +80,13 @@ public class BackgroundColorTransition : MonoBehaviour {
 			return new Color32 (60,78,87, 255);
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
 			t = Resources.Load("World1") as TextAsset;
+		} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
+			t = Resources.Load("World2") as TextAsset;
+		} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
+			t = Resources.Load("World3") as TextAsset;
 		}
 		string[] level = t.text.Split ("*"[0]);
-		string[] lines = level [PlayerPrefs.GetInt("Level", 0) - 1].Split("\n"[0]);
+		string[] lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
 		string[] color = lines [0].Split (","[0]);
 		Color32 c = new Color32 (byte.Parse (color [0]), byte.Parse (color [1]), byte.Parse (color [2]), 255);
 		return c;

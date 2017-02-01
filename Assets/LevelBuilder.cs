@@ -11,18 +11,54 @@ public class LevelBuilder : MonoBehaviour {
 	int numberOfBlocks;
 	Vector3 center;
 	float xMin, xMax, zMin, zMax = 0;
+	float top = -100;
+	float bottom = 100;
 	GameObject cubes;
 	GameObject standardBlock;
+	GameObject multistepBlock;
+	GameObject switchBlock;
+	GameObject redOrBlueBlock;
 
 	void Awake () {
-		standardBlock = GameObject.Find ("Cube");
 		cubes = GameObject.Find ("Cubes");
+		standardBlock = GameObject.Find ("Standard Block");
+		multistepBlock = GameObject.Find ("Multistep Block");
+		switchBlock = GameObject.Find ("Switch Block");
+		redOrBlueBlock = GameObject.Find ("Red or Blue Block");
 		TextAsset t = new TextAsset();
 		if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
 			t = Resources.Load("World1") as TextAsset;
+		} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
+			t = Resources.Load("World2") as TextAsset;
+		} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
+			t = Resources.Load("World3") as TextAsset;
 		}
 		string[] level = t.text.Split ("*"[0]);
-		string[] lines = level [PlayerPrefs.GetInt("Level", 0) - 1].Split("\n"[0]);
+		string[] lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
+		setVariables(lines);
+		for (int i = 4; i < lines.Length; i++) {
+			for (int j = 0; j < lines[i].Length; j++) {
+				if (lines [i] [j] == 'C') {
+					numberOfBlocks++;
+					createBlock (standardBlock, j, i).tag = "Block";
+				} else if (lines [i] [j] == 'M') {
+					numberOfBlocks++;
+					createBlock (multistepBlock, j, i).tag = "Block";
+				} else if (lines [i] [j] == 'S') {
+					createBlock (switchBlock, j, i).tag = "Switch";
+				} else if (lines [i] [j] == 'R') {
+					numberOfBlocks++;
+					createBlock (redOrBlueBlock, j, i).tag = "RedBlock";
+				} else if (lines [i] [j] == 'B') {
+					numberOfBlocks++;
+					createBlock (redOrBlueBlock, j, i).tag = "BlueBlock";
+				} 
+			}
+		}
+		setCamera();
+	}
+
+	void setVariables (string[] lines) {
 		string[] color = lines [0].Split (","[0]);
 		string[] rgb = lines [1].Split (","[0]);
 		string[] rgbInc = lines [2].Split (","[0]);
@@ -37,29 +73,19 @@ public class LevelBuilder : MonoBehaviour {
 		rXorZ = bool.Parse (xOrZ [0]);
 		gXorZ = bool.Parse (xOrZ [1]);
 		bXorZ = bool.Parse (xOrZ [2]);
-		for (int i = 4; i < lines.Length; i++) {
-			for (int j = 0; j < lines[i].Length; j++) {
-				if (lines [i] [j] == 'S') {
-					createBlock (standardBlock, j, i);
-				}
-			}
-		}
-		float yHeight1 = Mathf.Abs (xMin) + Mathf.Abs (xMax);
-		float yHeight2 = Mathf.Abs (zMin) + Mathf.Abs (zMax);
-		Camera.main.orthographicSize = 14;
-		if ((yHeight2 / yHeight1) < 1.75f) {
-			center = new Vector3 ((xMin + xMax) / 2, yHeight1 + 0.5f, (zMin + zMax) / 2);
-		} else {
-			center = new Vector3 ((xMin + xMax) / 2, (yHeight2 / 2) + 1.5f, (zMin + zMax) / 2);
-		}
 	}
 
-	void createBlock (GameObject block, int x, int z) {
+	GameObject createBlock (GameObject block, int x, int z) {
 		GameObject temp = Instantiate(block);
 		temp.layer = 8;
 		temp.transform.position = new Vector3 (x - 3.5f, 0, -z + 10.5f);
 		addBlock (temp);
 		changeBlockColor (temp);
+		if ((temp.transform.position.x + temp.transform.position.z) > top) {
+			top = (temp.transform.position.x + temp.transform.position.z);
+		} if ((temp.transform.position.x + temp.transform.position.z) < bottom) {
+			bottom = (temp.transform.position.x + temp.transform.position.z);
+		}
 		temp.transform.SetParent (cubes.transform);
 		if (temp.transform.localPosition.x < xMin) {
 			xMin = temp.transform.localPosition.x;
@@ -71,6 +97,7 @@ public class LevelBuilder : MonoBehaviour {
 		} else if (temp.transform.localPosition.z > zMax) {
 			zMax = temp.transform.localPosition.z;
 		}
+		return temp;
 	}
 
 	void changeBlockColor (GameObject block) {
@@ -93,13 +120,31 @@ public class LevelBuilder : MonoBehaviour {
 		block.GetComponent<Renderer> ().material.color = new Color (tempR, tempG, tempB);
 	}
 
+	void setCamera () {
+		float yHeight1 = Mathf.Abs (xMin) + Mathf.Abs (xMax);
+		float yHeight2 = Mathf.Abs (zMin) + Mathf.Abs (zMax);
+		Camera.main.orthographicSize = (top + Mathf.Abs(bottom) - (top + Mathf.Abs(bottom))/4.5f);
+		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 5, 14);
+		if ((yHeight2 / yHeight1) < 1.75f) {
+			center = new Vector3 ((xMin + xMax) / 2, yHeight1 + 0.5f, (zMin + zMax) / 2);
+		} else {
+			center = new Vector3 ((xMin + xMax) / 2, (yHeight2 / 2) + 1.5f, (zMin + zMax) / 2);
+		}
+		if (top != Mathf.Abs(bottom)) {
+			Camera.main.transform.position = new Vector3 (
+				Camera.main.transform.position.x + ((top + bottom)/4), 
+				Camera.main.transform.position.y, 
+				Camera.main.transform.position.z + ((top + bottom)/4)
+			);
+		}
+	}
+
 	public List<GameObject> getBlocks () {
 		return blocks;
 	}
 
 	void addBlock (GameObject b) {
 		blocks.Add (b);
-		numberOfBlocks++;
 	}
 
 	public void removeBlock (GameObject b) {

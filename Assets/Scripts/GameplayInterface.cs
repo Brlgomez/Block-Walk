@@ -35,7 +35,7 @@ public class GameplayInterface : MonoBehaviour {
 		mainMenu = GameObject.Find ("Main Menu");
 		handle = GameObject.Find ("Handle");
 		turnOffButtons ();
-		levelNum = SceneManager.GetActiveScene ().buildIndex;
+		levelNum = PlayerPrefs.GetInt ("Level", 0);
 		gameStatus.GetComponent<Text> ().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
@@ -157,12 +157,12 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void winText () {
 		GetComponent<BlurOptimized> ().enabled = true;
-		//if (SceneManager.sceneCountInBuildSettings > levelNum + 1) {
+		if (PlayerPrefs.GetInt("Level", 0) + 1 <= 48) {
 			nextLevel.GetComponent<Button> ().enabled = true;
 			nextLevel.GetComponent<Button> ().image.color = Color.white;
 			nextLevel.GetComponentInChildren<Text> ().color = Color.white;
 			nextLevel.GetComponent<BoxCollider2D> ().size = Vector2.one * 64;
-		//}
+		}
 		gameStatus.GetComponent<Text> ().text = "Success";
 		timer = 0;
 		sliderMoving = true;
