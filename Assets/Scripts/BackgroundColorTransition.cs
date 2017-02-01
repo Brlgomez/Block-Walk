@@ -77,9 +77,14 @@ public class BackgroundColorTransition : MonoBehaviour {
 	}
 
 	Color32 getColorFromFile () {
-		TextAsset t = Resources.Load ("Levels") as TextAsset;
+		TextAsset t = new TextAsset ();
+		if (PlayerPrefs.GetInt("Level", 0) == 0) {
+			return new Color32 (60,78,87, 255);
+		} else if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
+			t = Resources.Load("World1") as TextAsset;
+		}
 		string[] level = t.text.Split ("*"[0]);
-		string[] lines = level [PlayerPrefs.GetInt("Level", 0)].Split("\n"[0]);
+		string[] lines = level [PlayerPrefs.GetInt("Level", 0) - 1].Split("\n"[0]);
 		string[] color = lines [0].Split (","[0]);
 		Color32 c = new Color32 (byte.Parse (color [0]), byte.Parse (color [1]), byte.Parse (color [2]), 255);
 		return c;
