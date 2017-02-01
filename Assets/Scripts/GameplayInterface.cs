@@ -133,14 +133,14 @@ public class GameplayInterface : MonoBehaviour {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		PlayerPrefs.SetInt ("Level", (PlayerPrefs.GetInt ("Level", 0) + 1));
 		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition (PlayerPrefs.GetInt ("Level", 0), "Next Level From Game");
+		GetComponent<BackgroundColorTransition> ().transition (PlayerPrefs.GetInt ("Level", 0), "Restart");
 	}
 
 	public void mainMenuClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		PlayerPrefs.SetInt ("Level", 0);
 		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition (0, "Main Menu");
+		GetComponent<BackgroundColorTransition> ().transition (0, "To Main Menu");
 	}
 
 	public void nextScene (int n) {

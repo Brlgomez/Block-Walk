@@ -53,7 +53,7 @@ public class MainMenuInterface : MonoBehaviour {
 	public void LoadLevel (int level) {
 		loadedLevel = (level + levelMultiplier);
 		PlayerPrefs.SetInt ("Level", loadedLevel);
-		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Next Level From Main Menu");
+		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Level From Main Menu");
 	}
 
 	public void nextScene (int n) {

@@ -48,11 +48,9 @@ public class BackgroundColorTransition : MonoBehaviour {
 			} else if (timer > transitionLength - 0.1f && timer < transitionLength) {
 				Camera.main.backgroundColor = newColor;
 			} else if (timer > transitionLength) {
-				if (scene == "Next Level From Game") {
-					GetComponent<GameplayInterface> ().nextScene (1);
-				} else if (scene == "Next Level From Main Menu") {
+				if (scene == "Level From Main Menu") {
 					GetComponent<MainMenuInterface> ().nextScene (1);
-				} else if (scene == "Main Menu") {
+				} else if (scene == "To Main Menu") {
 					GetComponent<GameplayInterface> ().nextScene (0);
 				} else if (scene == "Restart") {
 					GetComponent<GameplayInterface> ().nextScene (1);
@@ -77,7 +75,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 	Color32 getColorFromFile () {
 		TextAsset t = new TextAsset ();
 		if (PlayerPrefs.GetInt("Level", 0) == 0) {
-			return new Color32 (60,78,87, 255);
+			return new Color32 (60, 78, 87, 255);
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
 			t = Resources.Load("World1") as TextAsset;
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
