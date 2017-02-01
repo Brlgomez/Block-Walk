@@ -14,10 +14,6 @@ public class CharacterMovement : MonoBehaviour {
 	List<GameObject> path;
 	bool moveCharacter = false;
 	bool playerFirstMoved = false;
-	bool touchingSpinner = false;
-	float initialSpinnerTouch;
-	float currentSpinnerTouch;
-	Transform initialCameraPos;
 	float timerForDrag = 0.01f;
 	public Material mat;
 	Vector3 center;
@@ -35,21 +31,15 @@ public class CharacterMovement : MonoBehaviour {
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
-		center = GetComponent<BlockManagement>().getCenter();
-		initialCameraPos = GameObject.Find ("Initial Camera Spot").transform;
-		initialCameraPos.position = transform.position;
-		path = new List<GameObject>();
-		camRotateTarget = Quaternion.Euler(90, 0, 0);
+		center = GetComponent<BlockManagement> ().getCenter ();
+		path = new List<GameObject> ();
+		camRotateTarget = Quaternion.Euler (90, 0, 0);
 		initialOrthoSize = Camera.main.orthographicSize;
 		if (PlayerPrefs.GetInt ("Shift Camera", 0) == 1) {
-			Camera.main.orthographicSize = center.y;
-			transform.position = center;
-			transform.rotation = camRotateTarget;
-			cameraFixed = true;
-			PlayerPrefs.SetInt ("Shift Camera", 1);
+			setCameraFinalPosition ();
 		}
 	}
-	
+
 	void Update () {
 		if (!cameraFixed) {
 			moveCamera ();
@@ -87,16 +77,20 @@ public class CharacterMovement : MonoBehaviour {
 				Camera.main.orthographicSize -= shiftTimer;
 				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, center.y, initialOrthoSize);
 			}
-			transform.position = Vector3.Slerp(transform.position, center, shiftTimer);
+			transform.position = Vector3.Slerp (transform.position, center, shiftTimer);
 			transform.rotation = Quaternion.Lerp (transform.rotation, camRotateTarget, shiftTimer);
 		}
 		if (transform.rotation.eulerAngles.x >= 90) {
-			transform.position = center;
-			transform.rotation = camRotateTarget;
-			Camera.main.orthographicSize = center.y;
-			cameraFixed = true;
-			PlayerPrefs.SetInt ("Shift Camera", 1);
+			setCameraFinalPosition ();
 		}
+	}
+
+	void setCameraFinalPosition () {
+		transform.position = center;
+		transform.rotation = camRotateTarget;
+		Camera.main.orthographicSize = center.y;
+		cameraFixed = true;
+		PlayerPrefs.SetInt ("Shift Camera", 1);
 	}
 
 	void mouseDown () {
@@ -107,13 +101,12 @@ public class CharacterMovement : MonoBehaviour {
 	void mouseUp () {
 		timerForDrag = maxTimeForDrag;
 		isMouseDrag = false;
-		touchingSpinner = false;
 		if (path.Count > 0) {
 			playerOn = path [path.Count - 1];
 			moveCharacter = true;
 			if (!playerFirstMoved) {
 				player.transform.localScale = Vector3.one;
-				player.transform.position = new Vector3 (path[0].transform.position.x, 0, path[0].transform.position.z);
+				player.transform.position = new Vector3 (path [0].transform.position.x, 0, path [0].transform.position.z);
 				playerFirstMoved = true;
 			}
 		}
@@ -126,23 +119,12 @@ public class CharacterMovement : MonoBehaviour {
 	void mouseDrag () {
 		if (!GetComponent<GameplayInterface> ().isMenuOn ()) {
 			GameObject target = returnClickedObject ();
-			if (target != null) {
-				if (target.layer == 8 && !touchingSpinner && !moveCharacter) {
-					dragBlocks (target);
-				} else if (target.tag == "Spinner" && !touchingSpinner && path.Count == 0) {
-					touchingSpinner = true;
-					initialSpinnerTouch = Input.mousePosition.x;
-				}
+			if (target != null && target.layer == 8 && !moveCharacter) {
+				dragBlocks (target);
 			}
-			if (touchingSpinner) {
-				currentSpinnerTouch = Input.mousePosition.x;
-				float angle = (initialSpinnerTouch - currentSpinnerTouch) / 250;
-				transform.RotateAround (Vector3.zero, Vector3.up, -angle);
-				initialCameraPos.RotateAround (Vector3.zero, Vector3.up, -angle);
-			} 
 		}
 	}
-		
+
 	GameObject returnClickedObject () {
 		GameObject target = null;
 		RaycastHit hit;
@@ -206,18 +188,13 @@ public class CharacterMovement : MonoBehaviour {
 		}
 		return null;
 	}
-		
+
 	void dragBlocks (GameObject target) {
 		Vector3 nextPoint = new Vector3 (target.transform.position.x, 1, target.transform.position.z);
 		if (path.Count == 0) {
-			Vector3 roundedPlayerPos = new Vector3 (
-				Mathf.Round (player.transform.position.x), 
-				Mathf.Round (player.transform.position.y), 
-				Mathf.Round (player.transform.position.z)
-			);
 			if (playerFirstMoved) {
 				addToPath (playerOn);
-				if (checkAdjacent (nextPoint, roundedPlayerPos)) {
+				if (checkAdjacent (nextPoint, playerOn.transform.position)) {
 					addToPath (target);
 				}
 			} else {
@@ -280,7 +257,7 @@ public class CharacterMovement : MonoBehaviour {
 		if (path != null) {
 			return path;
 		} else {
-			path = new List <GameObject>();
+			path = new List <GameObject> ();
 			return path;
 		}
 	}
@@ -288,13 +265,13 @@ public class CharacterMovement : MonoBehaviour {
 	void movePlayer () {
 		player.transform.position = Vector3.MoveTowards (
 			player.transform.position,
-			path[0].transform.position, 
+			path [0].transform.position, 
 			Time.deltaTime * playerSpeed
 		);
-		if (Vector3.Distance (player.transform.position, path[0].transform.position) < 0.1f) {
+		if (Vector3.Distance (player.transform.position, path [0].transform.position) < 0.1f) {
 			player.transform.position = path [0].transform.position;
 			if (path.Count - 1 > 0) {
-				player.GetComponent<DeleteCubes> ().exitBlock (path[0]);
+				player.GetComponent<DeleteCubes> ().exitBlock (path [0]);
 				removeFromPath (0);
 				player.GetComponent<DeleteCubes> ().enterBlock (path [0]);
 			} else {
@@ -306,7 +283,7 @@ public class CharacterMovement : MonoBehaviour {
 		}
 	}
 
-	void OnPostRender() {
+	void OnPostRender () {
 		if (path.Count > 0) {
 			GL.PushMatrix ();
 			mat.SetPass (0);
@@ -335,17 +312,17 @@ public class CharacterMovement : MonoBehaviour {
 			GL.PopMatrix ();
 		}
 	}
-		
+
 	public void checkSolution () {
 		int numberOfBlocks = GetComponent<BlockManagement> ().getNumberOfBlocks ();
 		checkForSolution = false;
 		timerForSolution = 0;
 		if ((numberOfBlocks == 1 && playerOn.tag != "Switch") || numberOfBlocks < 1) {
 			GetComponent<GameplayInterface> ().winText ();
-			Destroy(GetComponent<CharacterMovement>());
+			Destroy (GetComponent<CharacterMovement> ());
 		} else if (cameraFixed) {
 			bool lose = true;
-			List<GameObject> tempBlocks = GetComponent<BlockManagement> ().getBlocks();
+			List<GameObject> tempBlocks = GetComponent<BlockManagement> ().getBlocks ();
 			for (int i = 0; i < tempBlocks.Count; i++) {
 				if (checkAdjacent (tempBlocks [i].transform.localPosition, playerOn.transform.localPosition)) { 
 					lose = false;
@@ -354,7 +331,7 @@ public class CharacterMovement : MonoBehaviour {
 			}
 			if (lose) {
 				GetComponent<GameplayInterface> ().loseText ();
-				Destroy(GetComponent<CharacterMovement>());
+				Destroy (GetComponent<CharacterMovement> ());
 			}
 		}
 	}

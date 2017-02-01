@@ -10,8 +10,8 @@ public class GameplayInterface : MonoBehaviour {
 
 	private int speedOfSlider = 2;
 	private float lengthOfTap = 0.2f;
-	private int maxBlur = 10;
 	private int blurDownsample = 2;
+	private int maxBlur = 10;
 
 	GameObject restartButton;
 	GameObject gameStatus;
@@ -23,8 +23,7 @@ public class GameplayInterface : MonoBehaviour {
 	float timer;
 	bool sliderMoving = false;
 	bool holdingOnToSlider = false;
-	float middleWidth;
-	float height;
+	float middleWidth, height;
 	Vector3 bottomOfScreen, topOfScreen;
 	float handleHeight;
 	Vector3 towards;
@@ -36,11 +35,8 @@ public class GameplayInterface : MonoBehaviour {
 		mainMenu = GameObject.Find ("Main Menu");
 		handle = GameObject.Find ("Handle");
 		turnOffButtons ();
-		restartButton.GetComponent<Button>().onClick.AddListener(delegate { restartButtonClick(); });
-		nextLevel.GetComponent<Button>().onClick.AddListener(delegate { nextLevelClick(); });
-		mainMenu.GetComponent<Button>().onClick.AddListener(delegate { mainMenuClick(); });
 		levelNum = SceneManager.GetActiveScene ().buildIndex;
-		gameStatus.GetComponent<Text>().text = (((levelNum - 1)/ 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
+		gameStatus.GetComponent<Text> ().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
 		handleHeight = handle.transform.position.y;
@@ -53,7 +49,7 @@ public class GameplayInterface : MonoBehaviour {
 
 	void Update () {
 		if (Input.GetMouseButtonDown (0)) {
-			checkOnSlider ();
+			checkOnButtons ();
 		}
 		if (holdingOnToSlider) {
 			sliderMovingWithMouse ();
@@ -66,13 +62,20 @@ public class GameplayInterface : MonoBehaviour {
 		}
 	}
 
-	void checkOnSlider () {
-		if (handle.GetComponent<BoxCollider2D> ().OverlapPoint (new Vector2 (Input.mousePosition.x, Input.mousePosition.y))) {
+	void checkOnButtons () {
+		Vector2 mousePos = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
+		if (handle.GetComponent<BoxCollider2D> ().OverlapPoint (mousePos)) {
 			holdingOnToSlider = true;
 			sliderMoving = false;
 			timer = 0;
 			turnOnButtons ();
 			GetComponent<BlurOptimized> ().enabled = true;
+		} else if (restartButton.GetComponent<BoxCollider2D> ().OverlapPoint (mousePos)) {
+			restartButtonClick ();
+		} else if (mainMenu.GetComponent<BoxCollider2D> ().OverlapPoint (mousePos)) {
+			mainMenuClick ();
+		} else if (nextLevel.GetComponent<BoxCollider2D> ().OverlapPoint (mousePos)) {
+			nextLevelClick ();
 		}
 	}
 
@@ -80,10 +83,11 @@ public class GameplayInterface : MonoBehaviour {
 		timer += Time.deltaTime;
 		handle.transform.position = new Vector3 (
 			middleWidth,
-			Mathf.Clamp(Input.mousePosition.y, handleHeight, height - handleHeight), 
+			Mathf.Clamp (Input.mousePosition.y, handleHeight, height - handleHeight), 
 			handle.transform.position.z
 		);
-		GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * maxBlur) / (height - handleHeight));
+		float blurSize = ((handle.transform.position.y - handleHeight) * maxBlur) / (height - handleHeight);
+		GetComponent<BlurOptimized> ().blurSize = (blurSize);
 	}
 
 	void letGoOfSlider () {
@@ -106,9 +110,10 @@ public class GameplayInterface : MonoBehaviour {
 
 	void sliderAutomaticallyMoving () {
 		timer += Time.deltaTime * speedOfSlider;
-		handle.transform.position = Vector3.Lerp (handle.transform.position, towards, timer);
-		GetComponent<BlurOptimized> ().blurSize = (((handle.transform.position.y - handleHeight) * maxBlur) / (height - handleHeight));
-		if (handle.transform.position.y < towards.y + handleHeight/2 && handle.transform.position.y > towards.y - handleHeight/2) {
+		Vector3 handlePos = handle.transform.position;
+		handle.transform.position = Vector3.Lerp (handlePos, towards, timer);
+		GetComponent<BlurOptimized> ().blurSize = (((handlePos.y - handleHeight) * maxBlur) / (height - handleHeight));
+		if (handlePos.y < towards.y + handleHeight / 2 && handlePos.y > towards.y - handleHeight / 2) {
 			handle.transform.position = towards;
 			sliderMoving = false;
 			timer = 0;
@@ -137,14 +142,14 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void nextScene (int n) {
 		if (loading == false) {
-			SceneManager.LoadScene(n);
+			SceneManager.LoadScene (n);
 		}
 		loading = true;
 	}
 
 	IEnumerator loadNewScene (int level) {
 		yield return null;
-		SceneManager.LoadScene(level);
+		SceneManager.LoadScene (level);
 	}
 
 	public void winText () {
@@ -153,8 +158,9 @@ public class GameplayInterface : MonoBehaviour {
 			nextLevel.GetComponent<Button> ().enabled = true;
 			nextLevel.GetComponent<Button> ().image.color = Color.white;
 			nextLevel.GetComponentInChildren<Text> ().color = Color.white;
+			nextLevel.GetComponent<BoxCollider2D> ().size = Vector2.one * 64;
 		}
-		gameStatus.GetComponent<Text>().text = "Success";
+		gameStatus.GetComponent<Text> ().text = "Success";
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;
@@ -163,7 +169,7 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void loseText () {
 		GetComponent<BlurOptimized> ().enabled = true;
-		gameStatus.GetComponent<Text>().text = "Stuck!";
+		gameStatus.GetComponent<Text> ().text = "Stuck!";
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;
@@ -192,9 +198,10 @@ public class GameplayInterface : MonoBehaviour {
 			nextLevel.GetComponent<Button> ().enabled = false;
 			nextLevel.GetComponent<Button> ().image.color = Color.clear;
 			nextLevel.GetComponentInChildren<Text> ().color = Color.clear;
+			nextLevel.GetComponent<BoxCollider2D> ().size = Vector2.zero;
 		}
 	}
-		
+
 	public bool isMenuOn () {
 		if (holdingOnToSlider || towards == topOfScreen || sliderMoving) {
 			return true;

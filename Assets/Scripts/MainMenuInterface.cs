@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 public class MainMenuInterface : MonoBehaviour {
 
 	bool loading = false;
-	Transform mainMenuButtons;
+	Transform mainMenu;
 	Transform worlds;
 	Transform levels;
 	GameObject worldText;
@@ -19,11 +19,11 @@ public class MainMenuInterface : MonoBehaviour {
 	bool transition = false;
 
 	void Start () {
-		mainMenuButtons = GameObject.Find ("World Select").transform;
+		mainMenu = GameObject.Find ("World Select").transform;
 		worlds = GameObject.Find ("Worlds").transform;
 		levels = GameObject.Find ("Levels").transform;
 		worldText = GameObject.Find ("World Text");
-		worldSelect ();
+		toWorldSelect ();
 	}
 
 	void Update () {
@@ -35,15 +35,15 @@ public class MainMenuInterface : MonoBehaviour {
 			if (interfaceMenu == 0) {
 				worlds.localScale = Vector3.Lerp (worlds.localScale, Vector3.zero, deltaTime);
 				levels.localScale = Vector3.Lerp (levels.localScale, Vector3.zero, deltaTime);
-				mainMenuButtons.localScale = Vector3.Lerp (mainMenuButtons.localScale, Vector3.one, deltaTime);
+				mainMenu.localScale = Vector3.Lerp (mainMenu.localScale, Vector3.one, deltaTime);
 			} else if (interfaceMenu == 1) {
 				worlds.localScale = Vector3.Lerp (worlds.localScale, Vector3.one, deltaTime);
 				levels.localScale = Vector3.Lerp (levels.localScale, Vector3.zero, deltaTime);
-				mainMenuButtons.localScale = Vector3.Lerp (mainMenuButtons.localScale, Vector3.zero, deltaTime);
+				mainMenu.localScale = Vector3.Lerp (mainMenu.localScale, Vector3.zero, deltaTime);
 			} else if (interfaceMenu == 2) {
 				worlds.transform.localScale = Vector3.Lerp (worlds.localScale, Vector3.zero, deltaTime);
 				levels.localScale = Vector3.Lerp (levels.localScale, Vector3.one, deltaTime);
-				mainMenuButtons.localScale = Vector3.Lerp (mainMenuButtons.localScale, Vector3.zero, deltaTime);
+				mainMenu.localScale = Vector3.Lerp (mainMenu.localScale, Vector3.zero, deltaTime);
 			}
 		}
 	}
@@ -56,22 +56,22 @@ public class MainMenuInterface : MonoBehaviour {
 	public void nextScene (int n) {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		if (loading == false) {
-			SceneManager.LoadScene(loadedLevel);
+			SceneManager.LoadScene (loadedLevel);
 		}
 		loading = true;
 	}
 
-	public void mainMenu () {
+	public void toMainMenu () {
 		enableTransition (0);
 	}
 
-	public void worldSelect () {
+	public void toWorldSelect () {
 		enableTransition (1);
 	}
 
-	public void levelSelect (int world) {
+	public void toLevelSelect (int world) {
 		enableTransition (2);
-		worldText.GetComponent<Text>().text = "World " + (world + 1);
+		worldText.GetComponent<Text> ().text = "World " + (world + 1);
 		levelMultiplier = world * 16;
 	}
 

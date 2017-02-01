@@ -52,9 +52,9 @@ public class SwitchAttributes : MonoBehaviour {
 				}
 			}
 		}
-		for (int i = 0; i < GetComponent<CharacterMovement>().getPath().Count; i++) {
-			if (GetComponent<CharacterMovement>().getPath() [i].transform.localScale.x < 1) {
-				GetComponent<CharacterMovement>().getPath() [i].GetComponent<BoxCollider> ().size = Vector3.one * 4;
+		for (int i = 0; i < GetComponent<CharacterMovement> ().getPath ().Count; i++) {
+			if (GetComponent<CharacterMovement> ().getPath () [i].transform.localScale.x < 1) {
+				GetComponent<CharacterMovement> ().getPath () [i].GetComponent<BoxCollider> ().size = Vector3.one * 4;
 			}
 		}
 	}
