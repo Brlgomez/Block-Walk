@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 
 public class MainMenuInterface : MonoBehaviour {
 
+	private int interfaceSpeed = 10;
+
 	bool loading = false;
 	Transform mainMenu;
 	Transform worlds;
@@ -28,22 +30,22 @@ public class MainMenuInterface : MonoBehaviour {
 
 	void Update () {
 		if (transition) { 
-			deltaTime += Time.deltaTime;
+			deltaTime = Time.deltaTime * interfaceSpeed;
 			if (deltaTime > 1) {
 				transition = false;
 			}
 			if (interfaceMenu == 0) {
-				worlds.localScale = Vector3.Lerp (worlds.localScale, Vector3.zero, deltaTime);
-				levels.localScale = Vector3.Lerp (levels.localScale, Vector3.zero, deltaTime);
-				mainMenu.localScale = Vector3.Lerp (mainMenu.localScale, Vector3.one, deltaTime);
+				worlds.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
+				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.zero, deltaTime);
+				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.one, deltaTime);
 			} else if (interfaceMenu == 1) {
-				worlds.localScale = Vector3.Lerp (worlds.localScale, Vector3.one, deltaTime);
-				levels.localScale = Vector3.Lerp (levels.localScale, Vector3.zero, deltaTime);
-				mainMenu.localScale = Vector3.Lerp (mainMenu.localScale, Vector3.zero, deltaTime);
+				worlds.localScale = Vector3.Slerp (worlds.localScale, Vector3.one, deltaTime);
+				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.zero, deltaTime);
+				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.zero, deltaTime);
 			} else if (interfaceMenu == 2) {
-				worlds.transform.localScale = Vector3.Lerp (worlds.localScale, Vector3.zero, deltaTime);
-				levels.localScale = Vector3.Lerp (levels.localScale, Vector3.one, deltaTime);
-				mainMenu.localScale = Vector3.Lerp (mainMenu.localScale, Vector3.zero, deltaTime);
+				worlds.transform.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
+				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.one, deltaTime);
+				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.zero, deltaTime);
 			}
 		}
 	}
