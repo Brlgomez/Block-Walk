@@ -5,11 +5,9 @@ using System.Collections.Generic;
 public class LevelBuilder : MonoBehaviour {
 
 	List<GameObject> blocks = new List<GameObject> ();
-	[Range (0.0f, 2.0f)]
-	public float r, g, b;
-	[Range (-1.0f, 1.0f)]
-	public float rInc, gInc, bInc;
-	public bool rXorZ, gXorZ, bXorZ;
+	float r, g, b;
+	float rInc, gInc, bInc;
+	bool rXorZ, gXorZ, bXorZ;
 	int numberOfBlocks;
 	Vector3 center;
 	float xMin, xMax, zMin, zMax = 0;
@@ -19,9 +17,22 @@ public class LevelBuilder : MonoBehaviour {
 	void Awake () {
 		standardBlock = GameObject.Find ("Cube");
 		cubes = GameObject.Find ("Cubes");
-		TextAsset colors = Resources.Load ("Levels") as TextAsset;
-		string[] lines = colors.text.Split ("\n" [0]);
-		for (int i = 0; i < lines.Length; i++) {
+		TextAsset t = Resources.Load ("Levels") as TextAsset;
+		string[] level = t.text.Split ("*"[0]);
+		string[] lines = level [PlayerPrefs.GetInt("Level", 0)].Split("\n"[0]);
+		string[] color = lines [0].Split (","[0]);
+		string[] blockColors = lines [1].Split (","[0]);
+		Camera.main.backgroundColor = new Color32 (byte.Parse (color[0]), byte.Parse (color [1]), byte.Parse (color [2]), 255);
+		r = float.Parse (blockColors [0]);
+		g = float.Parse (blockColors [1]);
+		b = float.Parse (blockColors [2]);
+		rInc = float.Parse (blockColors [3]);
+		gInc = float.Parse (blockColors [4]);
+		bInc = float.Parse (blockColors [5]);
+		rXorZ = bool.Parse (blockColors [6]);
+		gXorZ = bool.Parse (blockColors [7]);
+		bXorZ = bool.Parse (blockColors [8]);
+		for (int i = 2; i < lines.Length; i++) {
 			for (int j = 0; j < lines[i].Length; j++) {
 				if (lines [i] [j] == 'S') {
 					createBlock (standardBlock, j, i);
@@ -30,6 +41,7 @@ public class LevelBuilder : MonoBehaviour {
 		}
 		float yHeight1 = Mathf.Abs (xMin) + Mathf.Abs (xMax);
 		float yHeight2 = Mathf.Abs (zMin) + Mathf.Abs (zMax);
+		Camera.main.orthographicSize = 14;
 		if ((yHeight2 / yHeight1) < 1.75f) {
 			center = new Vector3 ((xMin + xMax) / 2, yHeight1 + 0.5f, (zMin + zMax) / 2);
 		} else {
@@ -40,7 +52,7 @@ public class LevelBuilder : MonoBehaviour {
 	void createBlock (GameObject block, int x, int z) {
 		GameObject temp = Instantiate(block);
 		temp.layer = 8;
-		temp.transform.position = new Vector3 (x - 3.5f, 0, -z + 6.5f);
+		temp.transform.position = new Vector3 (x - 3.5f, 0, -z + 8.5f);
 		addBlock (temp);
 		changeBlockColor (temp);
 		temp.transform.SetParent (cubes.transform);

@@ -52,13 +52,14 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void LoadLevel (int level) {
 		loadedLevel = level + levelMultiplier;
+		PlayerPrefs.SetInt ("Level", loadedLevel);
 		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Next Level From Main Menu");
 	}
 
 	public void nextScene (int n) {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		if (loading == false) {
-			SceneManager.LoadScene (loadedLevel);
+			SceneManager.LoadScene (49);
 		}
 		loading = true;
 	}

@@ -31,7 +31,7 @@ public class CharacterMovement : MonoBehaviour {
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
-		center = GetComponent<BlockManagement> ().getCenter ();
+		center = GetComponent<LevelBuilder> ().getCenter ();
 		path = new List<GameObject> ();
 		camRotateTarget = Quaternion.Euler (90, 0, 0);
 		initialOrthoSize = Camera.main.orthographicSize;
@@ -80,7 +80,7 @@ public class CharacterMovement : MonoBehaviour {
 			transform.position = Vector3.Slerp (transform.position, center, shiftTimer);
 			transform.rotation = Quaternion.Lerp (transform.rotation, camRotateTarget, shiftTimer);
 		}
-		if (transform.rotation.eulerAngles.x >= 90) {
+		if (transform.rotation.eulerAngles.x >= 90 && Camera.main.orthographicSize > center.y - 0.1f && Camera.main.orthographicSize < center.y + 0.1f) {
 			setCameraFinalPosition ();
 		}
 	}
@@ -149,7 +149,7 @@ public class CharacterMovement : MonoBehaviour {
 				secondToLast = path [path.Count - 2];
 			}
 			List <GameObject> nearbyBlocks = new List<GameObject> ();
-			List <GameObject> allBlocks = GetComponent<BlockManagement> ().getBlocks ();
+			List <GameObject> allBlocks = GetComponent<LevelBuilder> ().getBlocks ();
 			GameObject returnedBlock = null;
 			float shortestDist = 10000;
 			// add blocks to list
@@ -314,7 +314,7 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	public void checkSolution () {
-		int numberOfBlocks = GetComponent<BlockManagement> ().getNumberOfBlocks ();
+		int numberOfBlocks = GetComponent<LevelBuilder> ().getNumberOfBlocks ();
 		checkForSolution = false;
 		timerForSolution = 0;
 		if ((numberOfBlocks == 1 && playerOn.tag != "Switch") || numberOfBlocks < 1) {
@@ -322,7 +322,7 @@ public class CharacterMovement : MonoBehaviour {
 			Destroy (GetComponent<CharacterMovement> ());
 		} else if (cameraFixed) {
 			bool lose = true;
-			List<GameObject> tempBlocks = GetComponent<BlockManagement> ().getBlocks ();
+			List<GameObject> tempBlocks = GetComponent<LevelBuilder> ().getBlocks ();
 			for (int i = 0; i < tempBlocks.Count; i++) {
 				if (checkAdjacent (tempBlocks [i].transform.localPosition, playerOn.transform.localPosition)) { 
 					lose = false;

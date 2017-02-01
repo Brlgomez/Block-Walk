@@ -50,13 +50,13 @@ public class BackgroundColorTransition : MonoBehaviour {
 				Camera.main.backgroundColor = newColor;
 			} else if (timer > transitionLength) {
 				if (scene == "Next Level From Game") {
-					GetComponent<GameplayInterface> ().nextScene (colorIndex);
+					GetComponent<GameplayInterface> ().nextScene (49);
 				} else if (scene == "Next Level From Main Menu") {
-					GetComponent<MainMenuInterface> ().nextScene (colorIndex + 1);
+					GetComponent<MainMenuInterface> ().nextScene (49);
 				} else if (scene == "Main Menu") {
 					GetComponent<GameplayInterface> ().nextScene (0);
 				} else if (scene == "Restart") {
-					GetComponent<GameplayInterface> ().nextScene (colorIndex);
+					GetComponent<GameplayInterface> ().nextScene (49);
 				}
 				Destroy (GetComponent<BackgroundColorTransition> ());
 			}
@@ -67,7 +67,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 		colorIndex = n;
 		scene = s;
 		transitionToColor = true;
-		newColor = getColorFromFile (colorIndex);
+		newColor = getColorFromFile();
 	}
 
 	public void levelStarting () {
@@ -76,11 +76,12 @@ public class BackgroundColorTransition : MonoBehaviour {
 		levelStart = true;
 	}
 
-	Color32 getColorFromFile (int line) {
-		TextAsset colors = Resources.Load ("Colors") as TextAsset;
-		string[] lines = colors.text.Split ("\n" [0]);
-		string[] nums = lines [line].Split ("," [0]);
-		Color32 c = new Color32 (byte.Parse (nums [0]), byte.Parse (nums [1]), byte.Parse (nums [2]), 255);
+	Color32 getColorFromFile () {
+		TextAsset t = Resources.Load ("Levels") as TextAsset;
+		string[] level = t.text.Split ("*"[0]);
+		string[] lines = level [PlayerPrefs.GetInt("Level", 0)].Split("\n"[0]);
+		string[] color = lines [0].Split (","[0]);
+		Color32 c = new Color32 (byte.Parse (color [0]), byte.Parse (color [1]), byte.Parse (color [2]), 255);
 		return c;
 	}
 }

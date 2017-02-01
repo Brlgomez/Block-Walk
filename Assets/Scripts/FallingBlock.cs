@@ -8,7 +8,7 @@ public class FallingBlock : MonoBehaviour {
 
 	void Start () {
 		gameObject.GetComponent<BoxCollider> ().enabled = false;
-		Camera.main.GetComponent<BlockManagement> ().removeBlock (gameObject);
+		Camera.main.GetComponent<LevelBuilder> ().removeBlock (gameObject);
 	}
 
 	void Update () {

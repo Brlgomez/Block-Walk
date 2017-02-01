@@ -124,18 +124,21 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public void restartButtonClick () {
+		PlayerPrefs.SetInt ("Level", PlayerPrefs.GetInt ("Level", 0));
 		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition (levelNum, "Restart");
+		GetComponent<BackgroundColorTransition> ().transition (PlayerPrefs.GetInt("Level", 0), "Restart");
 	}
 
 	public void nextLevelClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
+		PlayerPrefs.SetInt ("Level", (PlayerPrefs.GetInt ("Level", 0) + 1));
 		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition (levelNum + 1, "Next Level From Game");
+		GetComponent<BackgroundColorTransition> ().transition (PlayerPrefs.GetInt ("Level", 0), "Next Level From Game");
 	}
 
 	public void mainMenuClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
+		PlayerPrefs.SetInt ("Level", 0);
 		gameObject.AddComponent<BackgroundColorTransition> ();
 		GetComponent<BackgroundColorTransition> ().transition (0, "Main Menu");
 	}
@@ -154,12 +157,12 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void winText () {
 		GetComponent<BlurOptimized> ().enabled = true;
-		if (SceneManager.sceneCountInBuildSettings > levelNum + 1) {
+		//if (SceneManager.sceneCountInBuildSettings > levelNum + 1) {
 			nextLevel.GetComponent<Button> ().enabled = true;
 			nextLevel.GetComponent<Button> ().image.color = Color.white;
 			nextLevel.GetComponentInChildren<Text> ().color = Color.white;
 			nextLevel.GetComponent<BoxCollider2D> ().size = Vector2.one * 64;
-		}
+		//}
 		gameStatus.GetComponent<Text> ().text = "Success";
 		timer = 0;
 		sliderMoving = true;
