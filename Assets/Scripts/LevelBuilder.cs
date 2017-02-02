@@ -11,8 +11,10 @@ public class LevelBuilder : MonoBehaviour {
 	int numberOfBlocks;
 	Vector3 center;
 	float xMin, xMax, zMin, zMax = 0;
-	float top = -100;
-	float bottom = 100;
+	float rightMost = -100;
+	float leftMost = 100;
+	float topMost = -100;
+	float bottomMost = 100;
 	GameObject cubes;
 	GameObject standardBlock;
 	GameObject multistepBlock;
@@ -81,10 +83,15 @@ public class LevelBuilder : MonoBehaviour {
 		temp.transform.position = new Vector3 (x - 3.5f, 0, -z + 10.5f);
 		addBlock (temp);
 		changeBlockColor (temp);
-		if ((temp.transform.position.x + temp.transform.position.z) > top) {
-			top = (temp.transform.position.x + temp.transform.position.z);
-		} if ((temp.transform.position.x + temp.transform.position.z) < bottom) {
-			bottom = (temp.transform.position.x + temp.transform.position.z);
+		if ((temp.transform.position.x + temp.transform.position.z) > rightMost) {
+			rightMost = (temp.transform.position.x + temp.transform.position.z);
+		} if ((temp.transform.position.x + temp.transform.position.z) < leftMost) {
+			leftMost = (temp.transform.position.x + temp.transform.position.z);
+		}
+		if ((-temp.transform.position.x + -temp.transform.position.z) > topMost) {
+			topMost = (-temp.transform.position.x + -temp.transform.position.z);
+		} if ((-temp.transform.position.x + -temp.transform.position.z) < bottomMost) {
+			bottomMost = (-temp.transform.position.x + -temp.transform.position.z);
 		}
 		temp.transform.SetParent (cubes.transform);
 		if (temp.transform.localPosition.x < xMin) {
@@ -123,20 +130,25 @@ public class LevelBuilder : MonoBehaviour {
 	void setCamera () {
 		float yHeight1 = Mathf.Abs (xMin) + Mathf.Abs (xMax);
 		float yHeight2 = Mathf.Abs (zMin) + Mathf.Abs (zMax);
-		Camera.main.orthographicSize = (top + Mathf.Abs(bottom) - (top + Mathf.Abs(bottom))/4.5f);
+		Camera.main.orthographicSize = (rightMost + Mathf.Abs(leftMost) - (rightMost + Mathf.Abs(leftMost))/4.5f);
 		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 5, 14);
 		if ((yHeight2 / yHeight1) < 1.75f) {
 			center = new Vector3 ((xMin + xMax) / 2, yHeight1 + 0.5f, (zMin + zMax) / 2);
 		} else {
 			center = new Vector3 ((xMin + xMax) / 2, (yHeight2 / 2) + 1.5f, (zMin + zMax) / 2);
 		}
-		if (top != Mathf.Abs(bottom)) {
+		if (rightMost != Mathf.Abs(leftMost)) {
 			Camera.main.transform.position = new Vector3 (
-				Camera.main.transform.position.x + ((top + bottom)/4), 
+				Camera.main.transform.position.x + ((rightMost + leftMost)/4), 
 				Camera.main.transform.position.y, 
-				Camera.main.transform.position.z + ((top + bottom)/4)
+				Camera.main.transform.position.z + ((rightMost + leftMost)/4)
 			);
 		}
+		Camera.main.transform.position = new Vector3 (
+			Camera.main.transform.position.x, 
+			Camera.main.transform.position.y + (topMost + bottomMost), 
+			Camera.main.transform.position.z
+		);
 	}
 
 	public List<GameObject> getBlocks () {

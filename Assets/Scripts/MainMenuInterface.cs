@@ -7,8 +7,6 @@ using UnityEngine.EventSystems;
 
 public class MainMenuInterface : MonoBehaviour {
 
-	private int interfaceSpeed = 10;
-
 	bool loading = false;
 	Transform mainMenu;
 	Transform worlds;
@@ -30,7 +28,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	void Update () {
 		if (transition) { 
-			deltaTime = Time.deltaTime * interfaceSpeed;
+			deltaTime += Time.deltaTime;
 			if (deltaTime > 1) {
 				transition = false;
 			}

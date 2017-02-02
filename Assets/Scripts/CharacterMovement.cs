@@ -108,6 +108,7 @@ public class CharacterMovement : MonoBehaviour {
 				player.transform.localScale = Vector3.one;
 				player.transform.position = new Vector3 (path [0].transform.position.x, 0, path [0].transform.position.z);
 				playerFirstMoved = true;
+				player.GetComponent<DeleteCubes> ().enterBlock (path [0]);
 			}
 		}
 		if (pointOnSwitch) {
@@ -270,7 +271,7 @@ public class CharacterMovement : MonoBehaviour {
 		);
 		if (Vector3.Distance (player.transform.position, path [0].transform.position) < 0.1f) {
 			player.transform.position = path [0].transform.position;
-			if (path.Count - 1 > 0) {
+			if (path.Count > 1) {
 				player.GetComponent<DeleteCubes> ().exitBlock (path [0]);
 				removeFromPath (0);
 				player.GetComponent<DeleteCubes> ().enterBlock (path [0]);
