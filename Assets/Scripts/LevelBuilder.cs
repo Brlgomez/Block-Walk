@@ -38,7 +38,7 @@ public class LevelBuilder : MonoBehaviour {
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
 			t = Resources.Load("World3") as TextAsset;
 		} 
-		if (PlayerPrefs.GetInt("Level", 0) <= 1600) {
+		if (PlayerPrefs.GetInt("Level", 0) < 1600) {
 			level = t.text.Split("*"[0]);
 			lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
 		} else {
@@ -110,6 +110,30 @@ public class LevelBuilder : MonoBehaviour {
 		}
 	}
 
+	void setCamera () {
+		float yHeight1 = Mathf.Abs (xMin) + Mathf.Abs (xMax);
+		float yHeight2 = Mathf.Abs (zMin) + Mathf.Abs (zMax);
+		Camera.main.orthographicSize = ((rightMost - leftMost) - (rightMost - leftMost) / 4.5f);
+		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 5, 14);
+		if ((yHeight2 / yHeight1) < 1.75f) {
+			center = new Vector3 ((xMin + xMax) / 2, yHeight1 + 0.5f, (zMin + zMax) / 2);
+		} else {
+			center = new Vector3 ((xMin + xMax) / 2, (yHeight2 / 2) + 1.5f, (zMin + zMax) / 2);
+		}
+		if (rightMost != Mathf.Abs(leftMost)) {
+			Camera.main.transform.position = new Vector3 (
+				Camera.main.transform.position.x + ((rightMost + leftMost) / 4), 
+				Camera.main.transform.position.y, 
+				Camera.main.transform.position.z + ((rightMost + leftMost) / 4)
+			);
+		}
+		Camera.main.transform.position = new Vector3 (
+			Camera.main.transform.position.x, 
+			Camera.main.transform.position.y + ((topMost + bottomMost) * 0.6f), 
+			Camera.main.transform.position.z
+		);
+	}
+
 	GameObject createBlock (GameObject block, int x, int z) {
 		GameObject temp = Instantiate(block);
 		temp.layer = 8;
@@ -126,10 +150,10 @@ public class LevelBuilder : MonoBehaviour {
 		} if ((temp.transform.position.x + temp.transform.position.z) < leftMost) {
 			leftMost = (temp.transform.position.x + temp.transform.position.z);
 		}
-		if ((-temp.transform.position.x + -temp.transform.position.z) > topMost) {
-			topMost = (-temp.transform.position.x + -temp.transform.position.z);
-		} if ((-temp.transform.position.x + -temp.transform.position.z) < bottomMost) {
-			bottomMost = (-temp.transform.position.x + -temp.transform.position.z);
+		if ((-x + 4 + -z + 10) > topMost) {
+			topMost = (-x + 4 + -z + 10);
+		} if ((-x + 4 + -z + 10) < bottomMost) {
+			bottomMost = (-x + 4 + -z + 10);
 		}
 		temp.transform.SetParent (cubes.transform);
 		if (temp.transform.localPosition.x < xMin) {
@@ -145,7 +169,7 @@ public class LevelBuilder : MonoBehaviour {
 		return temp;
 	}
 
-	void changeBlockColor (GameObject block) {
+	public void changeBlockColor (GameObject block) {
 		float tempR, tempG, tempB;
 		float xDeduct = 0;
 		float zDeduct = 0;
@@ -169,30 +193,6 @@ public class LevelBuilder : MonoBehaviour {
 			tempB = b + (bInc * (block.transform.localPosition.z + zDeduct));
 		}
 		block.GetComponent<Renderer> ().material.color = new Color (tempR, tempG, tempB);
-	}
-
-	void setCamera () {
-		float yHeight1 = Mathf.Abs (xMin) + Mathf.Abs (xMax);
-		float yHeight2 = Mathf.Abs (zMin) + Mathf.Abs (zMax);
-		Camera.main.orthographicSize = (rightMost + Mathf.Abs(leftMost) - (rightMost + Mathf.Abs(leftMost)) / 4.5f);
-		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 5, 14);
-		if ((yHeight2 / yHeight1) < 1.75f) {
-			center = new Vector3 ((xMin + xMax) / 2, yHeight1 + 0.5f, (zMin + zMax) / 2);
-		} else {
-			center = new Vector3 ((xMin + xMax) / 2, (yHeight2 / 2) + 1.5f, (zMin + zMax) / 2);
-		}
-		if (rightMost != Mathf.Abs(leftMost)) {
-			Camera.main.transform.position = new Vector3 (
-				Camera.main.transform.position.x + ((rightMost + leftMost) / 4), 
-				Camera.main.transform.position.y, 
-				Camera.main.transform.position.z + ((rightMost + leftMost) / 4)
-			);
-		}
-		Camera.main.transform.position = new Vector3 (
-			Camera.main.transform.position.x, 
-			Camera.main.transform.position.y + ((topMost + bottomMost)/16), 
-			Camera.main.transform.position.z
-		);
 	}
 
 	public List<GameObject> getBlocks () {

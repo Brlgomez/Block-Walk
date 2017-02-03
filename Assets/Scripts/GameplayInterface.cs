@@ -36,7 +36,11 @@ public class GameplayInterface : MonoBehaviour {
 		handle = GameObject.Find ("Handle");
 		turnOffButtons ();
 		levelNum = PlayerPrefs.GetInt ("Level", 0);
-		gameStatus.GetComponent<Text> ().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
+		if (PlayerPrefs.GetInt("Level") < 1600) {
+			gameStatus.GetComponent<Text>().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
+		} else {
+			gameStatus.GetComponent<Text>().text = "User-" + (levelNum - 1600);
+		}
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
 		handleHeight = handle.transform.position.y;

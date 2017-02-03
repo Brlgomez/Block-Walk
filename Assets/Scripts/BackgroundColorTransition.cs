@@ -24,9 +24,6 @@ public class BackgroundColorTransition : MonoBehaviour {
 		ui = GameObject.Find ("Handle").transform;
 		cubes = GameObject.Find ("Cubes").transform;
 		positionOfCubes = cubes.position;
-		/* Debug.Log (Mathf.Round(Camera.main.backgroundColor.r * 255) + ", " + 
-			Mathf.Round(Camera.main.backgroundColor.g * 255) + ", " + 
-			Mathf.Round(Camera.main.backgroundColor.b * 255)); */
 	}
 
 	void Update () {
@@ -77,6 +74,8 @@ public class BackgroundColorTransition : MonoBehaviour {
 
 	Color32 getColorFromFile () {
 		TextAsset t = new TextAsset ();
+		string[] level;
+		string[] lines;
 		if (PlayerPrefs.GetInt("Level", 0) == 0) {
 			return new Color32 (60, 78, 87, 255);
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
@@ -85,11 +84,21 @@ public class BackgroundColorTransition : MonoBehaviour {
 			t = Resources.Load("World2") as TextAsset;
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
 			t = Resources.Load("World3") as TextAsset;
-		} else if (PlayerPrefs.GetInt("Level", 0) >= 1601) {
-			return new Color32 (128, 128, 128, 255);
 		} 
-		string[] level = t.text.Split ("*"[0]);
-		string[] lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
+		if (PlayerPrefs.GetInt("Level", 0) < 1600) {
+			level = t.text.Split("*"[0]);
+			lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
+		} else  {
+			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
+			StreamReader r;
+			if (File.Exists(filePath)) {
+				r = File.OpenText(filePath);
+				level = r.ReadToEnd().Split("*"[0]);
+				lines = level[0].Split("\n"[0]);
+			} else {
+				return new Color32(128, 128, 128, 255);
+			}
+		} 
 		string[] color = lines [0].Split (","[0]);
 		Color32 c = new Color32 (byte.Parse (color [0]), byte.Parse (color [1]), byte.Parse (color [2]), 255);
 		return c;

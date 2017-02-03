@@ -30,7 +30,8 @@ public class EditorInterface : MonoBehaviour {
 		showMain();
 	}
 
-	public void setVariables (float sliderR, float sliderG, float sliderB, float sliderRInc, float sliderGInc, float sliderBInc, bool toggleR, bool toggleG, bool toggleB) {
+	public void setVariables (float sliderR, float sliderG, float sliderB, 
+		float sliderRInc, float sliderGInc, float sliderBInc, bool toggleR, bool toggleG, bool toggleB) {
 		r = GameObject.Find("R");
 		g = GameObject.Find("G");
 		b = GameObject.Find("B");
@@ -57,9 +58,9 @@ public class EditorInterface : MonoBehaviour {
 		gXorZ.GetComponent<Toggle>().isOn = toggleG;
 		bXorZ.GetComponent<Toggle>().isOn = toggleB;
 
-		r.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeColor ();});
-		g.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeColor ();});
-		b.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeColor ();});
+		r.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBackgroundColor ();});
+		g.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBackgroundColor ();});
+		b.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBackgroundColor ();});
 		rB.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
 		gB.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
 		bB.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
@@ -104,7 +105,6 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void toMainMenu () {
-		saveLevel();
 		SceneManager.LoadScene (0);
 	}
 
@@ -147,7 +147,7 @@ public class EditorInterface : MonoBehaviour {
 		return menuOn;
 	}
 
-	public void changeColor () {
+	public void changeBackgroundColor () {
 		byte backR = byte.Parse(r.GetComponent<Slider>().value.ToString());
 		byte backG = byte.Parse(g.GetComponent<Slider>().value.ToString());
 		byte backB = byte.Parse(b.GetComponent<Slider>().value.ToString());
@@ -160,23 +160,7 @@ public class EditorInterface : MonoBehaviour {
 			for (int i = 0; i < 14; i++) {
 				for (int j = 0; j < 8; j++) { 
 					if (blocks[i][j] != null) {
-						float tempR, tempG, tempB;
-						if (rXorZ.GetComponent<Toggle>().isOn) {
-							tempR = rB.GetComponent<Slider>().value + (rInc.GetComponent<Slider>().value * (blocks[i][j].transform.position.x - 3.5f));
-						} else {
-							tempR = rB.GetComponent<Slider>().value + (rInc.GetComponent<Slider>().value * (blocks[i][j].transform.position.z - 6.5f));
-						}
-						if (gXorZ.GetComponent<Toggle>().isOn) {
-							tempG = gB.GetComponent<Slider>().value + (gInc.GetComponent<Slider>().value * (blocks[i][j].transform.position.x - 3.5f));
-						} else {
-							tempG = gB.GetComponent<Slider>().value + (gInc.GetComponent<Slider>().value * (blocks[i][j].transform.position.z - 6.5f));
-						}
-						if (bXorZ.GetComponent<Toggle>().isOn) {
-							tempB = bB.GetComponent<Slider>().value + (bInc.GetComponent<Slider>().value * (blocks[i][j].transform.position.x - 3.5f));
-						} else {
-							tempB = bB.GetComponent<Slider>().value + (bInc.GetComponent<Slider>().value * (blocks[i][j].transform.position.z - 6.5f));
-						}
-						blocks[i][j].GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB);
+						changeBlockColor(blocks[i][j]);
 					}
 				}
 			}
@@ -185,20 +169,22 @@ public class EditorInterface : MonoBehaviour {
 
 	public void changeBlockColor (GameObject block) {
 		float tempR, tempG, tempB;
+		float blockX = block.transform.position.x - 3.5f;
+		float blockZ = block.transform.position.z - 6.5f;
 		if (rXorZ.GetComponent<Toggle>().isOn) {
-			tempR = rB.GetComponent<Slider>().value + (rInc.GetComponent<Slider>().value * (block.transform.position.x - 3.5f));
+			tempR = rB.GetComponent<Slider>().value + (rInc.GetComponent<Slider>().value * (blockX));
 		} else {
-			tempR = rB.GetComponent<Slider>().value + (rInc.GetComponent<Slider>().value * (block.transform.position.z - 6.5f));
+			tempR = rB.GetComponent<Slider>().value + (rInc.GetComponent<Slider>().value * (blockZ));
 		}
 		if (gXorZ.GetComponent<Toggle>().isOn) {
-			tempG = gB.GetComponent<Slider>().value + (gInc.GetComponent<Slider>().value * (block.transform.position.x - 3.5f));
+			tempG = gB.GetComponent<Slider>().value + (gInc.GetComponent<Slider>().value * (blockX));
 		} else {
-			tempG = gB.GetComponent<Slider>().value + (gInc.GetComponent<Slider>().value * (block.transform.position.z - 6.5f));
+			tempG = gB.GetComponent<Slider>().value + (gInc.GetComponent<Slider>().value * (blockZ));
 		}
 		if (bXorZ.GetComponent<Toggle>().isOn) {
-			tempB = bB.GetComponent<Slider>().value + (bInc.GetComponent<Slider>().value * (block.transform.position.x - 3.5f));
+			tempB = bB.GetComponent<Slider>().value + (bInc.GetComponent<Slider>().value * (blockX));
 		} else {
-			tempB = bB.GetComponent<Slider>().value + (bInc.GetComponent<Slider>().value * (block.transform.position.z - 6.5f));
+			tempB = bB.GetComponent<Slider>().value + (bInc.GetComponent<Slider>().value * (blockZ));
 		}
 		block.GetComponent<Renderer> ().material.color = new Color (tempR, tempG, tempB);
 	}
