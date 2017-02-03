@@ -11,6 +11,8 @@ public class MainMenuInterface : MonoBehaviour {
 	Transform mainMenu;
 	Transform worlds;
 	Transform levels;
+	Transform userCreated;
+	Transform playOrEdit;
 	GameObject worldText;
 	int levelMultiplier = 1;
 	int loadedLevel;
@@ -19,11 +21,13 @@ public class MainMenuInterface : MonoBehaviour {
 	bool transition = false;
 
 	void Start () {
-		mainMenu = GameObject.Find ("World Select").transform;
+		mainMenu = GameObject.Find ("Menu").transform;
 		worlds = GameObject.Find ("Worlds").transform;
 		levels = GameObject.Find ("Levels").transform;
+		userCreated = GameObject.Find("User Created").transform;
+		playOrEdit = GameObject.Find("Play or Edit").transform;
 		worldText = GameObject.Find ("World Text");
-		toWorldSelect ();
+		toMainMenu();
 	}
 
 	void Update () {
@@ -36,14 +40,32 @@ public class MainMenuInterface : MonoBehaviour {
 				worlds.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
 				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.zero, deltaTime);
 				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.one, deltaTime);
+				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.zero, deltaTime);
+				playOrEdit.localScale = Vector3.Slerp(playOrEdit.localScale, Vector3.zero, deltaTime);
 			} else if (interfaceMenu == 1) {
 				worlds.localScale = Vector3.Slerp (worlds.localScale, Vector3.one, deltaTime);
 				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.zero, deltaTime);
 				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.zero, deltaTime);
+				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.zero, deltaTime);
+				playOrEdit.localScale = Vector3.Slerp(playOrEdit.localScale, Vector3.zero, deltaTime);
 			} else if (interfaceMenu == 2) {
 				worlds.transform.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
 				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.one, deltaTime);
 				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.zero, deltaTime);
+				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.zero, deltaTime);
+				playOrEdit.localScale = Vector3.Slerp(playOrEdit.localScale, Vector3.zero, deltaTime);
+			} else if (interfaceMenu == 3) {
+				worlds.transform.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
+				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.zero, deltaTime);
+				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.zero, deltaTime);
+				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.one, deltaTime);
+				playOrEdit.localScale = Vector3.Slerp(playOrEdit.localScale, Vector3.zero, deltaTime);
+			} else if (interfaceMenu == 4) {
+				worlds.transform.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
+				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.zero, deltaTime);
+				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.zero, deltaTime);
+				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.zero, deltaTime);
+				playOrEdit.localScale = Vector3.Slerp(playOrEdit.localScale, Vector3.one, deltaTime);
 			}
 		}
 	}
@@ -54,10 +76,26 @@ public class MainMenuInterface : MonoBehaviour {
 		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Level From Main Menu");
 	}
 
+	public void playOrEditMenu (int level) {
+		loadedLevel = (level + levelMultiplier);
+		PlayerPrefs.SetInt ("Level", loadedLevel);
+		enableTransition(4);
+	}
+
+	public void openEditor () {
+		PlayerPrefs.SetInt("Back", 0);
+		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Editor From Main Menu");
+	}
+
+	public void loadUserLevel () {
+		PlayerPrefs.SetInt("Back", 1);
+		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Level From Main Menu");
+	}
+
 	public void nextScene (int n) {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		if (loading == false) {
-			SceneManager.LoadScene (1);
+			SceneManager.LoadScene (n);
 		}
 		loading = true;
 	}
@@ -74,6 +112,10 @@ public class MainMenuInterface : MonoBehaviour {
 		enableTransition (2);
 		worldText.GetComponent<Text> ().text = "World " + (world + 1);
 		levelMultiplier = world * 16;
+	}
+
+	public void toUserCreatedLevels () {
+		enableTransition (3);
 	}
 
 	void enableTransition (int i) {

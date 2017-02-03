@@ -31,6 +31,7 @@ public class LevelBuilder : MonoBehaviour {
 		redOrBlueBlock = GameObject.Find ("Red or Blue Block");
 		TextAsset t = new TextAsset();
 		string[] level;
+		string[] lines;
 		if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
 			t = Resources.Load("World1") as TextAsset;
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
@@ -38,13 +39,14 @@ public class LevelBuilder : MonoBehaviour {
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
 			t = Resources.Load("World3") as TextAsset;
 		} 
-		if (PlayerPrefs.GetInt("Level", 0) == -1) {
+		if (PlayerPrefs.GetInt("Level", 0) <= 1600) {
 			level = t.text.Split("*"[0]);
+			lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
 		} else {
-			StreamReader r = File.OpenText(Application.persistentDataPath + "/Editor.txt");
+			StreamReader r = File.OpenText(Application.persistentDataPath + "/" + (PlayerPrefs.GetInt ("Level", 0) - 1) + ".txt");
 			level = r.ReadToEnd().Split("*"[0]);
+			lines = level[0].Split("\n"[0]);
 		}
-		string[] lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
 		setVariables(lines);
 		for (int i = 4; i < lines.Length; i++) {
 			for (int j = 0; j < lines[i].Length; j++) {

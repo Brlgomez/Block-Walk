@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class EditorInterface : MonoBehaviour {
 
 	GameObject menuHolder;
 	GameObject colorHolder;
 	GameObject blockHolder;
+	GameObject optionHolder;
 
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
@@ -20,10 +22,11 @@ public class EditorInterface : MonoBehaviour {
 	private string filePath;
 
 	void Start () {
-		filePath = Application.persistentDataPath + "/Editor.txt";
+		filePath = Application.persistentDataPath + "/"+ (PlayerPrefs.GetInt ("Level", 0) - 1) + ".txt";
 		menuHolder = GameObject.Find("Menu Holder");
 		colorHolder = GameObject.Find("Color Holder");
 		blockHolder = GameObject.Find("Block Holder");
+		optionHolder = GameObject.Find("Option Holder");
 		r = GameObject.Find("R");
 		g = GameObject.Find("G");
 		b = GameObject.Find("B");
@@ -43,6 +46,7 @@ public class EditorInterface : MonoBehaviour {
 		menuOn = true;
 		blockMenu(Color.clear, false);
 		colorMenu(Color.clear, false);
+		optionMenu(Color.clear, false);
 		mainMenu(Color.white, true);
 	}
 
@@ -50,6 +54,7 @@ public class EditorInterface : MonoBehaviour {
 		menuOn = false;
 		mainMenu(Color.clear, false);
 		colorMenu(Color.clear, false);
+		optionMenu(Color.clear, false);
 		blockMenu(Color.white, true);
 	}
 
@@ -57,25 +62,56 @@ public class EditorInterface : MonoBehaviour {
 		menuOn = false;
 		mainMenu(Color.clear, false);
 		blockMenu(Color.clear, false);
+		optionMenu(Color.clear, false);
 		colorMenu(Color.white, true);
+	}
+
+	public void showOptionMenu () {
+		menuOn = false;
+		mainMenu(Color.clear, false);
+		blockMenu(Color.clear, false);
+		colorMenu(Color.clear, false);
+		optionMenu(Color.white, true);
+	}
+
+	public void toMainMenu () {
+		saveLevel();
+		SceneManager.LoadScene (0);
+	}
+
+	public void testLevel () {
+		saveLevel();
+		PlayerPrefs.SetInt("Back", 0);
+		PlayerPrefs.SetInt ("Shift Camera", 0);
+		SceneManager.LoadScene (1);
 	}
 
 	void blockMenu (Color c, bool b) {
 		menuHolder.transform.position = Vector3.one * 1000;
 		blockHolder.transform.position = Vector3.zero;
 		colorHolder.transform.position = Vector3.one * 1000;
+		optionHolder.transform.position = Vector3.one * 1000;
 	}
 
 	void colorMenu (Color c, bool b) {
 		menuHolder.transform.position = Vector3.one * 1000;
 		blockHolder.transform.position = Vector3.one * 1000;
 		colorHolder.transform.position = Vector3.zero;
+		optionHolder.transform.position = Vector3.one * 1000;
 	}
 
 	void mainMenu (Color c, bool b) {
 		menuHolder.transform.position = Vector3.zero;
 		blockHolder.transform.position = Vector3.one * 1000;
 		colorHolder.transform.position = Vector3.one * 1000;
+		optionHolder.transform.position = Vector3.one * 1000;
+	}
+
+	void optionMenu (Color c, bool b) {
+		menuHolder.transform.position = Vector3.one * 1000;
+		blockHolder.transform.position = Vector3.one * 1000;
+		colorHolder.transform.position = Vector3.one * 1000;
+		optionHolder.transform.position = Vector3.zero;
 	}
 
 	public bool isMenuOn () {
@@ -133,8 +169,7 @@ public class EditorInterface : MonoBehaviour {
 		block.GetComponent<Renderer> ().material.color = new Color (tempR, tempG, tempB);
 	}
 
-	public void printLevel () {
-		//TODO: save level into txt file
+	public void saveLevel () {
 		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
 		File.Delete(filePath);
 		File.AppendAllText(filePath, Mathf.RoundToInt(Camera.main.backgroundColor.r * 255) + "," + Mathf.RoundToInt(Camera.main.backgroundColor.b * 255) + "," + Mathf.RoundToInt(Camera.main.backgroundColor.b * 255));

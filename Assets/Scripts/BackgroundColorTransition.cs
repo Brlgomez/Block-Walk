@@ -55,6 +55,8 @@ public class BackgroundColorTransition : MonoBehaviour {
 					GetComponent<GameplayInterface> ().nextScene (0);
 				} else if (scene == "Restart") {
 					GetComponent<GameplayInterface> ().nextScene (1);
+				} else if (scene == "Editor From Main Menu") {
+					GetComponent<MainMenuInterface> ().nextScene (2);
 				}
 				Destroy (GetComponent<BackgroundColorTransition> ());
 			}
@@ -84,7 +86,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
 			t = Resources.Load("World3") as TextAsset;
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 1601) {
-			t = Resources.Load("User") as TextAsset;
+			return new Color32 (128, 128, 128, 255);
 		} 
 		string[] level = t.text.Split ("*"[0]);
 		string[] lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
