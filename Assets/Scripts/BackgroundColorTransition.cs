@@ -7,7 +7,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 
 	private float levelStartLength = 1.1f;
 	private int transitionLength = 1;
-	private float uiSpeed = 0.5f;
+	private int uiSpeed = 1;
 	private float cubesSpeed = 0.2f;
 	private float colorSpeed = 0.5f;
 
@@ -36,6 +36,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 			cubes.position = Vector3.Lerp (cubes.position, positionOfCubes, timer * cubesSpeed);
 			if (timer > levelStartLength) {
 				cubes.position = positionOfCubes;
+				ui.localScale = Vector3.one;
 				Destroy (GetComponent<BackgroundColorTransition> ());
 			}
 		}
