@@ -21,6 +21,8 @@ public class LevelBuilder : MonoBehaviour {
 	GameObject multistepBlock;
 	GameObject switchBlock;
 	GameObject redOrBlueBlock;
+	GameObject redBlock;
+	GameObject blueBlock;
 
 	void Awake () {
 		cubes = GameObject.Find ("Cubes");
@@ -42,6 +44,10 @@ public class LevelBuilder : MonoBehaviour {
 			level = t.text.Split("*"[0]);
 			lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
 		} else {
+			if (GetComponent<CharacterMovement>() == null) {
+				redBlock = GameObject.Find("Red Block");
+				blueBlock = GameObject.Find("Blue Block");
+			}
 			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
 			StreamReader r;
 			if (File.Exists(filePath)) {
@@ -101,10 +107,19 @@ public class LevelBuilder : MonoBehaviour {
 					createBlock (switchBlock, j, i).tag = "Switch";
 				} else if (lines [i] [j] == 'R') {
 					numberOfBlocks++;
-					createBlock (redOrBlueBlock, j, i).tag = "RedBlock";
+					if (PlayerPrefs.GetInt("Level", 0) < 1600 || GetComponent<CharacterMovement>() != null) {
+						createBlock(redOrBlueBlock, j, i).tag = "RedBlock";
+					} else {
+						createBlock(redBlock, j, i).tag = "RedBlock";
+					}
 				} else if (lines [i] [j] == 'B') {
 					numberOfBlocks++;
-					createBlock (redOrBlueBlock, j, i).tag = "BlueBlock";
+					if (PlayerPrefs.GetInt("Level", 0) < 1600 || GetComponent<CharacterMovement>() != null) {
+						createBlock(redOrBlueBlock, j, i).tag = "BlueBlock";
+					}
+					else {
+						createBlock(blueBlock, j, i).tag = "BlueBlock";
+					}
 				} 
 			}
 		}
