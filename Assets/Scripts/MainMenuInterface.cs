@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using System.IO;
 
 public class MainMenuInterface : MonoBehaviour {
 
@@ -32,7 +33,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	void Update () {
 		if (transition) { 
-			deltaTime += Time.deltaTime;
+			deltaTime += Time.deltaTime * 1.5f;
 			if (deltaTime > 1) {
 				transition = false;
 			}
@@ -85,6 +86,13 @@ public class MainMenuInterface : MonoBehaviour {
 	public void openEditor () {
 		PlayerPrefs.SetInt("Back", 0);
 		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Editor From Main Menu");
+	}
+
+	public void deleteLevel () {
+		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
+		if (File.Exists(filePath)) {
+			File.Delete(filePath);
+		}
 	}
 
 	public void loadUserLevel () {

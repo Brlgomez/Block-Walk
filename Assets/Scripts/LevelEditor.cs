@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class LevelEditor : MonoBehaviour {
 
@@ -10,15 +11,17 @@ public class LevelEditor : MonoBehaviour {
 	GameObject currentObject;
 	List<List<GameObject>> blockPos;
 
-	void Start () {
+	void Awake () {
         cubes = GameObject.Find ("Cubes");
         standardBlock = GameObject.Find ("Standard Block");
 		currentObject = standardBlock;
-		blockPos = new List<List<GameObject>>();
-		for (int i = 0; i < 14; i++) {
-			blockPos.Add (new List<GameObject>());
-			for (int j = 0; j < 8; j++) { 
-				blockPos[i].Add(null);
+		if (blockPos == null) {
+			blockPos = new List<List<GameObject>>();
+			for (int i = 0; i < 14; i++) {
+				blockPos.Add (new List<GameObject>());
+				for (int j = 0; j < 8; j++) { 
+					blockPos[i].Add(null);
+				}
 			}
 		}
 	}
@@ -89,5 +92,18 @@ public class LevelEditor : MonoBehaviour {
 
 	public List<List<GameObject>> getBlocks () {
 		return blockPos;
+	}
+
+	public void addToBlockList (int x, int z, GameObject obj) {
+		if (blockPos == null) {
+			blockPos = new List<List<GameObject>>();
+			for (int i = 0; i < 14; i++) {
+				blockPos.Add(new List<GameObject>());
+				for (int j = 0; j < 8; j++) { 
+					blockPos[i].Add(null);
+				}
+			}
+		}
+		blockPos[z][x] = obj;
 	}
 }
