@@ -83,7 +83,9 @@ public class BackgroundColorTransition : MonoBehaviour {
 			t = Resources.Load("World2") as TextAsset;
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
 			t = Resources.Load("World3") as TextAsset;
-		}
+		} else if (PlayerPrefs.GetInt("Level", 0) >= 1601) {
+			t = Resources.Load("User") as TextAsset;
+		} 
 		string[] level = t.text.Split ("*"[0]);
 		string[] lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
 		string[] color = lines [0].Split (","[0]);

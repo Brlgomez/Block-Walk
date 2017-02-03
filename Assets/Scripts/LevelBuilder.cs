@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class LevelBuilder : MonoBehaviour {
 
@@ -22,20 +23,27 @@ public class LevelBuilder : MonoBehaviour {
 	GameObject redOrBlueBlock;
 
 	void Awake () {
+		//PlayerPrefs.SetInt("Level", -1);  // for editor level
 		cubes = GameObject.Find ("Cubes");
 		standardBlock = GameObject.Find ("Standard Block");
 		multistepBlock = GameObject.Find ("Multistep Block");
 		switchBlock = GameObject.Find ("Switch Block");
 		redOrBlueBlock = GameObject.Find ("Red or Blue Block");
 		TextAsset t = new TextAsset();
+		string[] level;
 		if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
 			t = Resources.Load("World1") as TextAsset;
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
 			t = Resources.Load("World2") as TextAsset;
 		} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
 			t = Resources.Load("World3") as TextAsset;
+		} 
+		if (PlayerPrefs.GetInt("Level", 0) == -1) {
+			level = t.text.Split("*"[0]);
+		} else {
+			StreamReader r = File.OpenText(Application.persistentDataPath + "/Editor.txt");
+			level = r.ReadToEnd().Split("*"[0]);
 		}
-		string[] level = t.text.Split ("*"[0]);
 		string[] lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
 		setVariables(lines);
 		for (int i = 4; i < lines.Length; i++) {

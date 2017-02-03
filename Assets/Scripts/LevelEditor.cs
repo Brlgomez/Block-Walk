@@ -7,10 +7,6 @@ public class LevelEditor : MonoBehaviour {
 	bool isMouseDrag = false;
     GameObject cubes;
     GameObject standardBlock;
-    GameObject multistepBlock;
-    GameObject switchBlock;
-    GameObject redBlock;
-	GameObject blueBlock;
 	GameObject currentObject;
 	List<List<GameObject>> blockPos;
 
