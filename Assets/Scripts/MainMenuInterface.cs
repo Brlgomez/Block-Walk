@@ -27,6 +27,7 @@ public class MainMenuInterface : MonoBehaviour {
 	float deltaTime = 0;
 	bool transition = false;
 	int currentLevel = 1601;
+	bool movingFromLeft, movingToRightFromLeft, movingFromRight, movingToLeftFromRight = false;
 
 	void Start () {
 		mainMenu = GameObject.Find ("Menu").transform;
@@ -41,11 +42,6 @@ public class MainMenuInterface : MonoBehaviour {
 		switchBlock = GameObject.Find("Switch Block");
 		redBlock = GameObject.Find("Red Block");
 		blueBlock = GameObject.Find("Blue Block");
-		standardBlock.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(Screen.width/16, Screen.height/28);
-		multistepBlock.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(Screen.width/16, Screen.height/28);
-		switchBlock.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(Screen.width/16, Screen.height/28);
-		redBlock.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(Screen.width/16, Screen.height/28);
-		blueBlock.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(Screen.width/16, Screen.height/28);
 		toMainMenu();
 	}
 
@@ -54,9 +50,6 @@ public class MainMenuInterface : MonoBehaviour {
 			deltaTime += Time.deltaTime * 1.25f;
 			if (deltaTime > 1) {
 				transition = false;
-				if (interfaceMenu == 3) {
-					showLevel(currentLevel);
-				}
 			}
 			if (interfaceMenu == 0) {
 				worlds.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
@@ -80,6 +73,40 @@ public class MainMenuInterface : MonoBehaviour {
 				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.one, deltaTime);
 			}
 		}
+		if (movingFromLeft) {
+			blockHolder.transform.position = Vector3.Lerp(blockHolder.transform.position, Vector3.right * 15, Time.deltaTime * 20);
+			if (Vector3.Distance(blockHolder.transform.position, Vector3.right * 15) < 1) {
+				destroyBlockChildren();
+				blockHolder.transform.position = Vector3.zero;
+				showLevel(currentLevel);
+				blockHolder.transform.position = Vector3.left * 15;
+				movingFromLeft = false;
+				movingToRightFromLeft = true;
+			}
+		} else if (movingToRightFromLeft) {
+			blockHolder.transform.position = Vector3.Lerp(blockHolder.transform.position, Vector3.zero, Time.deltaTime * 20);
+			if (Vector3.Distance(blockHolder.transform.position, Vector3.zero) < 0.01f) {
+				blockHolder.transform.position = Vector3.zero;
+				movingToRightFromLeft = false;
+			}
+		} 
+		if (movingFromRight) {
+			blockHolder.transform.position = Vector3.Lerp(blockHolder.transform.position, Vector3.left * 15, Time.deltaTime * 20);
+			if (Vector3.Distance(blockHolder.transform.position, Vector3.left * 15) < 1) {
+				destroyBlockChildren();
+				blockHolder.transform.position = Vector3.zero;
+				showLevel(currentLevel);
+				blockHolder.transform.position = Vector3.right * 15;
+				movingFromRight = false;
+				movingToLeftFromRight = true;
+			}
+		} else if (movingToLeftFromRight) {
+			blockHolder.transform.position = Vector3.Lerp(blockHolder.transform.position, Vector3.zero, Time.deltaTime * 20);
+			if (Vector3.Distance(blockHolder.transform.position, Vector3.zero) < 0.01f) {
+				blockHolder.transform.position = Vector3.zero;
+				movingToLeftFromRight = false;
+			}
+		}
 	}
 
 	public void LoadLevel (int level) {
@@ -89,6 +116,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 		
 	public void openEditor () {
+		destroyBlockChildren();
 		PlayerPrefs.SetString("Back", "Go Back To Editor");
 		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Editor From Main Menu");
 	}
@@ -97,7 +125,8 @@ public class MainMenuInterface : MonoBehaviour {
 		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
 		if (File.Exists(filePath)) {
 			File.Delete(filePath);
-			userText.GetComponent<Text>().text =  (currentLevel - 1600) + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
+			userText.GetComponent<Text>().text = (currentLevel - 1600) + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
+			destroyBlockChildren();
 		}
 	}
 
@@ -105,6 +134,7 @@ public class MainMenuInterface : MonoBehaviour {
 		PlayerPrefs.SetString("Back", "Go Back To Menu");
 		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
 		if (File.Exists(filePath)) {
+			destroyBlockChildren();
 			GetComponent<BackgroundColorTransition>().transition(loadedLevel, "Level From Main Menu");
 		}
 	}
@@ -133,30 +163,31 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void toUserCreatedLevels () {
+		showLevel(currentLevel);
+		blockHolder.transform.position = Vector3.left * 15;
+		movingToRightFromLeft = true;
 		enableTransition (3);
 	}
 
 	public void left () {
-		if (currentLevel > 1601) {
-			destroyBlockChildren();
-			currentLevel--;
-			showLevel(currentLevel);
-		} else {
-			destroyBlockChildren();
-			currentLevel = 1700;
-			showLevel(currentLevel);
+		if (!movingFromLeft && !movingFromRight && !movingToLeftFromRight && !movingToRightFromLeft) {
+			movingFromLeft = true;
+			if (currentLevel > 1601) {
+				currentLevel--;
+			} else {
+				currentLevel = 1700;
+			}
 		}
 	}
 
 	public void right () {
-		if (currentLevel < 1700) {
-			destroyBlockChildren();
-			currentLevel++;
-			showLevel(currentLevel);
-		} else {
-			destroyBlockChildren();
-			currentLevel = 1601;
-			showLevel(currentLevel);
+		if (!movingFromLeft && !movingFromRight && !movingToLeftFromRight && !movingToRightFromLeft) {
+			movingFromRight = true;
+			if (currentLevel < 1700) {
+				currentLevel++;
+			} else {
+				currentLevel = 1601;
+			}
 		}
 	}
 
@@ -204,12 +235,7 @@ public class MainMenuInterface : MonoBehaviour {
 		GameObject block = b;
 		GameObject temp = Instantiate(block);
 		temp.transform.SetParent(blockHolder.transform);
-		temp.transform.position = new Vector3(
-			(Screen.width/2) - ((Screen.width/16) * 4) + ((j + 0.5f) * (Screen.width/16)), 
-			(Screen.height/2) + ((Screen.height/28) * 15) + (i * -(Screen.height/28))
-		);
-		temp.transform.localScale = Vector3.one/2;
-		temp.GetComponent<Image>().color = Color.white;
+		temp.transform.position = new Vector3(j, 0, -i);
 	}
 
 	void destroyBlockChildren () {

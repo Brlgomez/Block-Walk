@@ -118,7 +118,7 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void mouseDrag () {
-		if (!GetComponent<GameplayInterface> ().isMenuOn ()) {
+		if (!GetComponent<GameplayInterface> ().isMenuOn () && !moveCharacter) {
 			GameObject target = returnClickedObject ();
 			if (target != null && target.layer == 8 && !moveCharacter) {
 				dragBlocks (target);
@@ -175,14 +175,16 @@ public class CharacterMovement : MonoBehaviour {
 					shortestDist = dist;
 				}
 			}
-			float distToLast = Vector3.Distance (lastBlock.transform.position, point);
-			float distToNew = Vector3.Distance (returnedBlock.transform.position, point);
-			if (distToLast < distToNew) {
-				returnedBlock = null;
-			}
-			if (secondToLast != null) {
-				if (lastBlock.tag == "Switch" && secondToLast == returnedBlock) {
-					GetComponent<SwitchAttributes> ().buttonPress ();
+			if (returnedBlock != null) {
+				float distToLast = Vector3.Distance(lastBlock.transform.position, point);
+				float distToNew = Vector3.Distance(returnedBlock.transform.position, point);
+				if (distToLast < distToNew) {
+					returnedBlock = null;
+				}
+				if (secondToLast != null) {
+					if (lastBlock.tag == "Switch" && secondToLast == returnedBlock) {
+						GetComponent<SwitchAttributes>().buttonPress();
+					}
 				}
 			}
 			return returnedBlock;
