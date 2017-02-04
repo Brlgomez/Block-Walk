@@ -142,7 +142,7 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void mainMenuClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
-		if (PlayerPrefs.GetInt("Level", 0) < 1600 || PlayerPrefs.GetInt("Back", 0) == 1) {
+		if (PlayerPrefs.GetInt("Level", 0) < 1600 || PlayerPrefs.GetString("Back") == "Go Back To Menu") {
 			PlayerPrefs.SetInt("Level", 0);
 			gameObject.AddComponent<BackgroundColorTransition>();
 			GetComponent<BackgroundColorTransition>().transition(0, "To Main Menu");

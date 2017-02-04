@@ -15,6 +15,12 @@ public class MainMenuInterface : MonoBehaviour {
 	Transform userCreated;
 	GameObject worldText;
 	GameObject userText;
+	GameObject blockHolder;
+	GameObject standardBlock;
+	GameObject multistepBlock;
+	GameObject switchBlock;
+	GameObject redBlock;
+	GameObject blueBlock;
 	int levelMultiplier = 1;
 	int loadedLevel;
 	int interfaceMenu = 0;
@@ -29,6 +35,17 @@ public class MainMenuInterface : MonoBehaviour {
 		userCreated = GameObject.Find("User Created").transform;
 		worldText = GameObject.Find ("World Text");
 		userText = GameObject.Find("Level");
+		blockHolder = GameObject.Find("Block Holder");
+		standardBlock = GameObject.Find("Standard Block");
+		multistepBlock = GameObject.Find("Multistep Block");
+		switchBlock = GameObject.Find("Switch Block");
+		redBlock = GameObject.Find("Red Block");
+		blueBlock = GameObject.Find("Blue Block");
+		standardBlock.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(Screen.width/16, Screen.height/28);
+		multistepBlock.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(Screen.width/16, Screen.height/28);
+		switchBlock.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(Screen.width/16, Screen.height/28);
+		redBlock.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(Screen.width/16, Screen.height/28);
+		blueBlock.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(Screen.width/16, Screen.height/28);
 		toMainMenu();
 	}
 
@@ -37,6 +54,9 @@ public class MainMenuInterface : MonoBehaviour {
 			deltaTime += Time.deltaTime * 1.25f;
 			if (deltaTime > 1) {
 				transition = false;
+				if (interfaceMenu == 3) {
+					showLevel(currentLevel);
+				}
 			}
 			if (interfaceMenu == 0) {
 				worlds.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
@@ -69,7 +89,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 		
 	public void openEditor () {
-		PlayerPrefs.SetInt("Back", 0);
+		PlayerPrefs.SetString("Back", "Go Back To Editor");
 		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Editor From Main Menu");
 	}
 
@@ -82,7 +102,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void loadUserLevel () {
-		PlayerPrefs.SetInt("Back", 1);
+		PlayerPrefs.SetString("Back", "Go Back To Menu");
 		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
 		if (File.Exists(filePath)) {
 			GetComponent<BackgroundColorTransition>().transition(loadedLevel, "Level From Main Menu");
@@ -98,6 +118,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void toMainMenu () {
+		destroyBlockChildren();
 		enableTransition (0);
 	}
 
@@ -113,14 +134,15 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void toUserCreatedLevels () {
 		enableTransition (3);
-		showLevel(currentLevel);
 	}
 
 	public void left () {
 		if (currentLevel > 1601) {
+			destroyBlockChildren();
 			currentLevel--;
 			showLevel(currentLevel);
 		} else {
+			destroyBlockChildren();
 			currentLevel = 1700;
 			showLevel(currentLevel);
 		}
@@ -128,9 +150,11 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void right () {
 		if (currentLevel < 1700) {
+			destroyBlockChildren();
 			currentLevel++;
 			showLevel(currentLevel);
 		} else {
+			destroyBlockChildren();
 			currentLevel = 1601;
 			showLevel(currentLevel);
 		}
@@ -156,10 +180,16 @@ public class MainMenuInterface : MonoBehaviour {
 			lines = userLevel[0].Split("\n"[0]);
 			for (int i = 4; i < lines.Length; i++) {
 				for (int j = 0; j < lines[i].Length; j++) {
-					if (lines[i][j] != '-') {
-						level += lines[i][j];
-					} else {
-						level += "   ";
+					if (lines[i][j] == 'C') {
+						displayBlockImage(i, j, standardBlock);
+					} else if (lines[i][j] == 'M') {
+						displayBlockImage(i, j, multistepBlock);
+					} else if (lines[i][j] == 'S') {
+						displayBlockImage(i, j, switchBlock);
+					} else if (lines[i][j] == 'R') {
+						displayBlockImage(i, j, redBlock);
+					} else if (lines[i][j] == 'B') {
+						displayBlockImage(i, j, blueBlock);
 					}
 				}
 				level += "\n";
@@ -168,5 +198,23 @@ public class MainMenuInterface : MonoBehaviour {
 			level += "\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n\n";
 		}
 		userText.GetComponent<Text>().text = level;
+	}
+
+	void displayBlockImage (int i, int j, GameObject b) {
+		GameObject block = b;
+		GameObject temp = Instantiate(block);
+		temp.transform.SetParent(blockHolder.transform);
+		temp.transform.position = new Vector3(
+			(Screen.width/2) - ((Screen.width/16) * 4) + ((j + 0.5f) * (Screen.width/16)), 
+			(Screen.height/2) + ((Screen.height/28) * 15) + (i * -(Screen.height/28))
+		);
+		temp.transform.localScale = Vector3.one/2;
+		temp.GetComponent<Image>().color = Color.white;
+	}
+
+	void destroyBlockChildren () {
+		foreach (Transform child in blockHolder.transform) {
+			GameObject.Destroy(child.gameObject);
+		}
 	}
 }

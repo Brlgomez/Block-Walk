@@ -110,7 +110,7 @@ public class EditorInterface : MonoBehaviour {
 
 	public void testLevel () {
 		saveLevel();
-		PlayerPrefs.SetInt("Back", 0);
+		PlayerPrefs.SetString("Back", "Go Back To Editor");
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		SceneManager.LoadScene (1);
 	}
