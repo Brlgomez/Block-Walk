@@ -11,7 +11,10 @@ public class LevelBuilder : MonoBehaviour {
 	bool rXorZ, gXorZ, bXorZ;
 	int numberOfBlocks;
 	Vector3 center;
-	float xMin, xMax, zMin, zMax = 0;
+	float xMin = 100;
+	float xMax = -100;
+	float zMin = 100;
+	float zMax = -100;
 	float rightMost = -100;
 	float leftMost = 100;
 	float topMost = -100;
@@ -138,37 +141,41 @@ public class LevelBuilder : MonoBehaviour {
 		changeBlockColor (temp);
 		if ((temp.transform.position.x + temp.transform.position.z) > rightMost) {
 			rightMost = (temp.transform.position.x + temp.transform.position.z);
-		} if ((temp.transform.position.x + temp.transform.position.z) < leftMost) {
+		} 
+		if ((temp.transform.position.x + temp.transform.position.z) < leftMost) {
 			leftMost = (temp.transform.position.x + temp.transform.position.z);
 		}
 		if ((-x + 4 + -z + 10) > topMost) {
 			topMost = (-x + 4 + -z + 10);
-		} if ((-x + 4 + -z + 10) < bottomMost) {
+		} 
+		if ((-x + 4 + -z + 10) < bottomMost) {
 			bottomMost = (-x + 4 + -z + 10);
 		}
-		temp.transform.SetParent (cubes.transform);
 		if (temp.transform.localPosition.x < xMin) {
 			xMin = temp.transform.localPosition.x;
-		} else if (temp.transform.localPosition.x > xMax) {
+		} 
+		if (temp.transform.localPosition.x > xMax) {
 			xMax = temp.transform.localPosition.x;
 		}
 		if (temp.transform.localPosition.z < zMin) {
 			zMin = temp.transform.localPosition.z;
-		} else if (temp.transform.localPosition.z > zMax) {
+		} 
+		if (temp.transform.localPosition.z > zMax) {
 			zMax = temp.transform.localPosition.z;
 		}
+		temp.transform.SetParent (cubes.transform);
 		return temp;
 	}
 
 	void setCamera () {
-		float yHeight1 = Mathf.Abs (xMin) + Mathf.Abs (xMax);
-		float yHeight2 = Mathf.Abs (zMin) + Mathf.Abs (zMax);
+		float yHeight1 = Mathf.Abs (xMin - xMax);
+		float yHeight2 = Mathf.Abs (zMin - zMax);
 		Camera.main.orthographicSize = ((rightMost - leftMost) - (rightMost - leftMost) / 4.5f);
 		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 5, 14);
-		if ((yHeight2 / yHeight1) < 1.75f) {
-			center = new Vector3 ((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, 5, 8), (zMin + zMax) / 2);
+		if ((yHeight2 / yHeight1) < 1.625f) {
+			center = new Vector3 ((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, 4, 8), (zMin + zMax) / 2);
 		} else {
-			center = new Vector3 ((xMin + xMax) / 2, Mathf.Clamp((yHeight2 / 2) + 1.5f, 5, 8), (zMin + zMax) / 2);
+			center = new Vector3 ((xMin + xMax) / 2, Mathf.Clamp((yHeight2 / 2) + 1.25f, 4, 8), (zMin + zMax) / 2);
 		}
 		if (rightMost != Mathf.Abs(leftMost)) {
 			Camera.main.transform.position = new Vector3 (

@@ -27,7 +27,6 @@ public class MainMenuInterface : MonoBehaviour {
 	float deltaTime = 0;
 	bool transition = false;
 	int currentLevel = 1601;
-	bool movingFromLeft, movingToRightFromLeft, movingFromRight, movingToLeftFromRight = false;
 
 	void Start () {
 		mainMenu = GameObject.Find ("Menu").transform;
@@ -71,40 +70,6 @@ public class MainMenuInterface : MonoBehaviour {
 				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.zero, deltaTime);
 				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.zero, deltaTime);
 				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.one, deltaTime);
-			}
-		}
-		if (movingFromLeft) {
-			blockHolder.transform.position = Vector3.Lerp(blockHolder.transform.position, Vector3.right * 15, Time.deltaTime * 20);
-			if (Vector3.Distance(blockHolder.transform.position, Vector3.right * 15) < 1) {
-				destroyBlockChildren();
-				blockHolder.transform.position = Vector3.zero;
-				showLevel(currentLevel);
-				blockHolder.transform.position = Vector3.left * 15;
-				movingFromLeft = false;
-				movingToRightFromLeft = true;
-			}
-		} else if (movingToRightFromLeft) {
-			blockHolder.transform.position = Vector3.Lerp(blockHolder.transform.position, Vector3.zero, Time.deltaTime * 20);
-			if (Vector3.Distance(blockHolder.transform.position, Vector3.zero) < 0.01f) {
-				blockHolder.transform.position = Vector3.zero;
-				movingToRightFromLeft = false;
-			}
-		} 
-		if (movingFromRight) {
-			blockHolder.transform.position = Vector3.Lerp(blockHolder.transform.position, Vector3.left * 15, Time.deltaTime * 20);
-			if (Vector3.Distance(blockHolder.transform.position, Vector3.left * 15) < 1) {
-				destroyBlockChildren();
-				blockHolder.transform.position = Vector3.zero;
-				showLevel(currentLevel);
-				blockHolder.transform.position = Vector3.right * 15;
-				movingFromRight = false;
-				movingToLeftFromRight = true;
-			}
-		} else if (movingToLeftFromRight) {
-			blockHolder.transform.position = Vector3.Lerp(blockHolder.transform.position, Vector3.zero, Time.deltaTime * 20);
-			if (Vector3.Distance(blockHolder.transform.position, Vector3.zero) < 0.01f) {
-				blockHolder.transform.position = Vector3.zero;
-				movingToLeftFromRight = false;
 			}
 		}
 	}
@@ -164,30 +129,30 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void toUserCreatedLevels () {
 		showLevel(currentLevel);
-		blockHolder.transform.position = Vector3.left * 15;
-		movingToRightFromLeft = true;
 		enableTransition (3);
 	}
 
 	public void left () {
-		if (!movingFromLeft && !movingFromRight && !movingToLeftFromRight && !movingToRightFromLeft) {
-			movingFromLeft = true;
-			if (currentLevel > 1601) {
-				currentLevel--;
-			} else {
-				currentLevel = 1700;
-			}
+		if (currentLevel > 1601) {
+			destroyBlockChildren();
+			currentLevel--;
+			showLevel(currentLevel);
+		} else {
+			destroyBlockChildren();
+			currentLevel = 1700;
+			showLevel(currentLevel);
 		}
 	}
 
 	public void right () {
-		if (!movingFromLeft && !movingFromRight && !movingToLeftFromRight && !movingToRightFromLeft) {
-			movingFromRight = true;
-			if (currentLevel < 1700) {
-				currentLevel++;
-			} else {
-				currentLevel = 1601;
-			}
+		if (currentLevel < 1700) {
+			destroyBlockChildren();
+			currentLevel++;
+			showLevel(currentLevel);
+		} else {
+			destroyBlockChildren();
+			currentLevel = 1601;
+			showLevel(currentLevel);
 		}
 	}
 

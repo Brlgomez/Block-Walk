@@ -11,6 +11,7 @@ public class EditorInterface : MonoBehaviour {
 	GameObject colorHolder;
 	GameObject blockHolder;
 	GameObject optionHolder;
+	GameObject blockButton;
 
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
@@ -27,6 +28,7 @@ public class EditorInterface : MonoBehaviour {
 		colorHolder = GameObject.Find("Color Holder");
 		blockHolder = GameObject.Find("Block Holder");
 		optionHolder = GameObject.Find("Option Holder");
+		blockButton = GameObject.Find("Change Block");
 		showMain();
 	}
 
@@ -145,6 +147,10 @@ public class EditorInterface : MonoBehaviour {
 
 	public bool isMenuOn () {
 		return menuOn;
+	}
+
+	public void changeBlockIcon (Sprite s) {
+		blockButton.GetComponent<Image>().sprite = s;
 	}
 
 	public void changeBackgroundColor () {
