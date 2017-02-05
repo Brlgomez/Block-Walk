@@ -21,7 +21,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 	Vector3 positionOfCubes;
 
 	void Awake () {
-		ui = GameObject.Find ("Handle").transform;
+		ui = GameObject.Find ("Floor").transform;
 		cubes = GameObject.Find ("Cubes").transform;
 		positionOfCubes = cubes.position;
 	}
@@ -54,13 +54,19 @@ public class BackgroundColorTransition : MonoBehaviour {
 					GetComponent<GameplayInterface> ().nextScene (1);
 				} else if (scene == "Editor From Main Menu") {
 					GetComponent<MainMenuInterface> ().nextScene (2);
-				}
+				} else if (scene == "To Editor From Test") {
+					GetComponent<GameplayInterface> ().nextScene (2);
+				} else if (scene == "To Main Menu From Editor") {
+					GetComponent<EditorInterface> ().nextScene (0);
+				} else if (scene == "To Level From Editor") {
+					GetComponent<EditorInterface> ().nextScene (1);
+				} 
 				Destroy (GetComponent<BackgroundColorTransition> ());
 			}
 		}
 	}
 
-	public void transition (int n, string s) {
+	public void transition (string s) {
 		scene = s;
 		transitionToColor = true;
 		newColor = getColorFromFile();
@@ -76,20 +82,21 @@ public class BackgroundColorTransition : MonoBehaviour {
 		TextAsset t = new TextAsset ();
 		string[] level;
 		string[] lines;
-		if (PlayerPrefs.GetInt("Level", 0) == 0) {
-			return new Color32 (60, 78, 87, 255);
-		} else if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
-			t = Resources.Load("World1") as TextAsset;
-		} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
-			t = Resources.Load("World2") as TextAsset;
-		} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
-			t = Resources.Load("World3") as TextAsset;
-		} 
-		if (PlayerPrefs.GetInt("Level", 0) < 1600) {
+		if (scene == "To Main Menu" || scene == "To Main Menu From Editor") {
+			return new Color32(60, 78, 87, 255);
+		}
+		else if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
+			if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
+				t = Resources.Load("World1") as TextAsset;
+			} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
+				t = Resources.Load("World2") as TextAsset;
+			} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
+				t = Resources.Load("World3") as TextAsset;
+			} 
 			level = t.text.Split("*"[0]);
-			lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
-		} else  {
-			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
+			lines = level[(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
+		} else {
+			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 			StreamReader r;
 			if (File.Exists(filePath)) {
 				r = File.OpenText(filePath);

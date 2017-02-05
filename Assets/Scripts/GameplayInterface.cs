@@ -33,13 +33,14 @@ public class GameplayInterface : MonoBehaviour {
 		gameStatus = GameObject.Find ("Game Status");
 		nextLevel = GameObject.Find ("Next Level");
 		mainMenu = GameObject.Find ("Main Menu");
-		handle = GameObject.Find ("Handle");
+		handle = GameObject.Find ("Floor");
 		turnOffButtons ();
-		levelNum = PlayerPrefs.GetInt ("Level", 0);
-		if (PlayerPrefs.GetInt("Level") < 1600) {
+		if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
+			levelNum = PlayerPrefs.GetInt ("Level", 0);
 			gameStatus.GetComponent<Text>().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
 		} else {
-			gameStatus.GetComponent<Text>().text = "User-" + (levelNum - 1600);
+			levelNum = PlayerPrefs.GetInt("User Level", 0);
+			gameStatus.GetComponent<Text>().text = (levelNum - 1600).ToString();
 		}
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
@@ -130,24 +131,23 @@ public class GameplayInterface : MonoBehaviour {
 	public void restartButtonClick () {
 		PlayerPrefs.SetInt ("Level", PlayerPrefs.GetInt ("Level", 0));
 		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition (PlayerPrefs.GetInt("Level", 0), "Restart");
+		GetComponent<BackgroundColorTransition> ().transition ("Restart");
 	}
 
 	public void nextLevelClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		PlayerPrefs.SetInt ("Level", (PlayerPrefs.GetInt ("Level", 0) + 1));
 		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition (PlayerPrefs.GetInt ("Level", 0), "Restart");
+		GetComponent<BackgroundColorTransition> ().transition ("Restart");
 	}
 
 	public void mainMenuClick () {
-		PlayerPrefs.SetInt ("Shift Camera", 0);
-		if (PlayerPrefs.GetInt("Level", 0) < 1600 || PlayerPrefs.GetString("Back") == "Go Back To Menu") {
-			PlayerPrefs.SetInt("Level", 0);
+		if (PlayerPrefs.GetString("Last Menu") == "Campaign" || PlayerPrefs.GetString("Last Menu") == "User") {
 			gameObject.AddComponent<BackgroundColorTransition>();
-			GetComponent<BackgroundColorTransition>().transition(0, "To Main Menu");
-		} else {
-			SceneManager.LoadScene(2);
+			GetComponent<BackgroundColorTransition>().transition("To Main Menu");
+		} else if (PlayerPrefs.GetString("Last Menu") == "Editor") {
+			gameObject.AddComponent<BackgroundColorTransition>();
+			GetComponent<BackgroundColorTransition>().transition("To Editor From Test");
 		}
 	}
 
@@ -165,7 +165,7 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void winText () {
 		GetComponent<BlurOptimized> ().enabled = true;
-		if (PlayerPrefs.GetInt("Level", 0) + 1 <= 48) {
+		if (PlayerPrefs.GetInt("Level", 0) + 1 <= 48 && PlayerPrefs.GetString("Last Menu") == "Campaign") {
 			nextLevel.GetComponent<Button> ().enabled = true;
 			nextLevel.GetComponent<Button> ().image.color = Color.white;
 			nextLevel.GetComponentInChildren<Text> ().color = Color.white;

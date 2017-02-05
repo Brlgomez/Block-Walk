@@ -23,12 +23,13 @@ public class EditorInterface : MonoBehaviour {
 	private string filePath;
 
 	void Start () {
-		filePath = Application.persistentDataPath + "/"+ (PlayerPrefs.GetInt ("Level", 0) - 1) + ".txt";
+		filePath = Application.persistentDataPath + "/"+ (PlayerPrefs.GetInt ("User Level", 0)) + ".txt";
 		menuHolder = GameObject.Find("Menu Holder");
 		colorHolder = GameObject.Find("Color Holder");
 		blockHolder = GameObject.Find("Block Holder");
 		optionHolder = GameObject.Find("Option Holder");
 		blockButton = GameObject.Find("Change Block");
+		GetComponent<BackgroundColorTransition> ().levelStarting ();
 		showMain();
 	}
 
@@ -107,41 +108,48 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void toMainMenu () {
-		SceneManager.LoadScene (0);
+		PlayerPrefs.SetString("Last Menu", "User");
+		gameObject.AddComponent<BackgroundColorTransition>();
+		GetComponent<BackgroundColorTransition>().transition("To Main Menu From Editor");
+	}
+
+	public void nextScene (int n) {
+		SceneManager.LoadScene (n);
 	}
 
 	public void testLevel () {
+		PlayerPrefs.SetString("Last Menu", "Editor");
 		saveLevel();
-		PlayerPrefs.SetString("Back", "Go Back To Editor");
 		PlayerPrefs.SetInt ("Shift Camera", 0);
-		SceneManager.LoadScene (1);
+		gameObject.AddComponent<BackgroundColorTransition>();
+		GetComponent<BackgroundColorTransition>().transition("To Level From Editor");
 	}
 
 	void blockMenu (Color c, bool b) {
-		menuHolder.transform.position = Vector3.one * 1000;
+		menuHolder.transform.position = Vector3.one * 10000;
 		blockHolder.transform.position = Vector3.zero;
-		colorHolder.transform.position = Vector3.one * 1000;
-		optionHolder.transform.position = Vector3.one * 1000;
+		colorHolder.transform.position = Vector3.one * 10000;
+		optionHolder.transform.position = Vector3.one * 10000;
 	}
 
 	void colorMenu (Color c, bool b) {
-		menuHolder.transform.position = Vector3.one * 1000;
-		blockHolder.transform.position = Vector3.one * 1000;
+		menuHolder.transform.position = Vector3.one * 10000;
+		blockHolder.transform.position = Vector3.one * 10000;
 		colorHolder.transform.position = Vector3.zero;
-		optionHolder.transform.position = Vector3.one * 1000;
+		optionHolder.transform.position = Vector3.one * 10000;
 	}
 
 	void mainMenu (Color c, bool b) {
 		menuHolder.transform.position = Vector3.zero;
-		blockHolder.transform.position = Vector3.one * 1000;
-		colorHolder.transform.position = Vector3.one * 1000;
-		optionHolder.transform.position = Vector3.one * 1000;
+		blockHolder.transform.position = Vector3.one * 10000;
+		colorHolder.transform.position = Vector3.one * 10000;
+		optionHolder.transform.position = Vector3.one * 10000;
 	}
 
 	void optionMenu (Color c, bool b) {
-		menuHolder.transform.position = Vector3.one * 1000;
-		blockHolder.transform.position = Vector3.one * 1000;
-		colorHolder.transform.position = Vector3.one * 1000;
+		menuHolder.transform.position = Vector3.one * 10000;
+		blockHolder.transform.position = Vector3.one * 10000;
+		colorHolder.transform.position = Vector3.one * 10000;
 		optionHolder.transform.position = Vector3.zero;
 	}
 
@@ -192,7 +200,11 @@ public class EditorInterface : MonoBehaviour {
 		} else {
 			tempB = bB.GetComponent<Slider>().value + (bInc.GetComponent<Slider>().value * (blockZ));
 		}
-		block.GetComponent<Renderer> ().material.color = new Color (tempR, tempG, tempB);
+		if (block.name == "Multistep Block(Clone)") {
+			block.GetComponent<Renderer>().material.color = new Color((tempR + Camera.main.backgroundColor.r)/2, (tempG + Camera.main.backgroundColor.r)/2, (tempB + Camera.main.backgroundColor.r)/2);
+		} else {
+			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB);
+		}
 	}
 
 	public void saveLevel () {

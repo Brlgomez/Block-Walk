@@ -36,14 +36,14 @@ public class LevelBuilder : MonoBehaviour {
 		TextAsset t = new TextAsset();
 		string[] level;
 		string[] lines;
-		if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
-			t = Resources.Load("World1") as TextAsset;
-		} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
-			t = Resources.Load("World2") as TextAsset;
-		} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
-			t = Resources.Load("World3") as TextAsset;
-		} 
-		if (PlayerPrefs.GetInt("Level", 0) < 1600) {
+		if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
+			if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
+				t = Resources.Load("World1") as TextAsset;
+			} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
+				t = Resources.Load("World2") as TextAsset;
+			} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
+				t = Resources.Load("World3") as TextAsset;
+			}
 			level = t.text.Split("*"[0]);
 			lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
 		} else {
@@ -51,7 +51,7 @@ public class LevelBuilder : MonoBehaviour {
 				redBlock = GameObject.Find("Red Block");
 				blueBlock = GameObject.Find("Blue Block");
 			}
-			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
+			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 			StreamReader r;
 			if (File.Exists(filePath)) {
 				r = File.OpenText(filePath);
@@ -110,17 +110,16 @@ public class LevelBuilder : MonoBehaviour {
 					createBlock (switchBlock, j, i).tag = "Switch";
 				} else if (lines [i] [j] == 'R') {
 					numberOfBlocks++;
-					if (PlayerPrefs.GetInt("Level", 0) < 1600 || GetComponent<CharacterMovement>() != null) {
+					if (GetComponent<CharacterMovement>() != null) {
 						createBlock(redOrBlueBlock, j, i).tag = "RedBlock";
 					} else {
 						createBlock(redBlock, j, i).tag = "RedBlock";
 					}
 				} else if (lines [i] [j] == 'B') {
 					numberOfBlocks++;
-					if (PlayerPrefs.GetInt("Level", 0) < 1600 || GetComponent<CharacterMovement>() != null) {
+					if (GetComponent<CharacterMovement>() != null) {
 						createBlock(redOrBlueBlock, j, i).tag = "BlueBlock";
-					}
-					else {
+					} else {
 						createBlock(blueBlock, j, i).tag = "BlueBlock";
 					}
 				} 
@@ -214,7 +213,11 @@ public class LevelBuilder : MonoBehaviour {
 		} else {
 			tempB = b + (bInc * (block.transform.localPosition.z + zDeduct));
 		}
-		block.GetComponent<Renderer> ().material.color = new Color (tempR, tempG, tempB);
+		if (block.name == "Multistep Block(Clone)" && GetComponent<CharacterMovement>() == null) {
+			block.GetComponent<Renderer>().material.color = new Color((tempR + Camera.main.backgroundColor.r)/2, (tempG + Camera.main.backgroundColor.r)/2, (tempB + Camera.main.backgroundColor.r)/2);
+		} else {
+			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB);
+		}
 	}
 
 	public List<GameObject> getBlocks () {

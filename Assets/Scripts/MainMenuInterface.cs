@@ -13,6 +13,7 @@ public class MainMenuInterface : MonoBehaviour {
 	Transform worlds;
 	Transform levels;
 	Transform userCreated;
+	Transform confirmation;
 	GameObject worldText;
 	GameObject userText;
 	GameObject blockHolder;
@@ -21,18 +22,20 @@ public class MainMenuInterface : MonoBehaviour {
 	GameObject switchBlock;
 	GameObject redBlock;
 	GameObject blueBlock;
+	GameObject playButton;
+	GameObject editButton;
+	GameObject deleteButton;
 	int levelMultiplier = 1;
-	int loadedLevel;
 	int interfaceMenu = 0;
 	float deltaTime = 0;
 	bool transition = false;
-	int currentLevel = 1601;
 
 	void Start () {
 		mainMenu = GameObject.Find ("Menu").transform;
 		worlds = GameObject.Find ("Worlds").transform;
 		levels = GameObject.Find ("Levels").transform;
 		userCreated = GameObject.Find("User Created").transform;
+		confirmation = GameObject.Find("Confirmation").transform;
 		worldText = GameObject.Find ("World Text");
 		userText = GameObject.Find("Level");
 		blockHolder = GameObject.Find("Block Holder");
@@ -41,7 +44,24 @@ public class MainMenuInterface : MonoBehaviour {
 		switchBlock = GameObject.Find("Switch Block");
 		redBlock = GameObject.Find("Red Block");
 		blueBlock = GameObject.Find("Blue Block");
-		toMainMenu();
+		playButton = GameObject.Find("Play");
+		editButton = GameObject.Find("Edit");
+		deleteButton = GameObject.Find("Delete");
+
+		if (PlayerPrefs.GetInt("User Level") == 0) {
+			PlayerPrefs.SetInt("User Level", 1601);
+		}
+
+		if (PlayerPrefs.GetString("Last Menu") == "Campaign" && PlayerPrefs.GetInt("Level", 0) < 1600) {
+			toLevelSelect(((PlayerPrefs.GetInt("Level", 0) - 1)/16));
+		} else if (PlayerPrefs.GetString("Last Menu") == "User") {
+			toUserCreatedLevels();
+		} else {
+			toMainMenu();
+		}
+
+		PlayerPrefs.SetString("Last Menu", "");
+		PlayerPrefs.SetInt("Shift Camera", 0);
 	}
 
 	void Update () {
@@ -51,61 +71,83 @@ public class MainMenuInterface : MonoBehaviour {
 				transition = false;
 			}
 			if (interfaceMenu == 0) {
-				worlds.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
-				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.zero, deltaTime);
-				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.one, deltaTime);
-				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.zero, deltaTime);
+				worlds.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
+				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
+				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.one, deltaTime);
+				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
+				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
 			} else if (interfaceMenu == 1) {
-				worlds.localScale = Vector3.Slerp (worlds.localScale, Vector3.one, deltaTime);
-				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.zero, deltaTime);
-				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.zero, deltaTime);
-				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.zero, deltaTime);
+				worlds.localScale = Vector3.Slerp(worlds.localScale, Vector3.one, deltaTime);
+				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
+				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
+				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
+				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
 			} else if (interfaceMenu == 2) {
-				worlds.transform.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
-				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.one, deltaTime);
-				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.zero, deltaTime);
-				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.zero, deltaTime);
+				worlds.transform.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
+				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.one, deltaTime);
+				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
+				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
+				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
 			} else if (interfaceMenu == 3) {
-				worlds.transform.localScale = Vector3.Slerp (worlds.localScale, Vector3.zero, deltaTime);
-				levels.localScale = Vector3.Slerp (levels.localScale, Vector3.zero, deltaTime);
-				mainMenu.localScale = Vector3.Slerp (mainMenu.localScale, Vector3.zero, deltaTime);
-				userCreated.localScale = Vector3.Slerp (userCreated.localScale, Vector3.one, deltaTime);
+				worlds.transform.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
+				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
+				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
+				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.one, deltaTime);
+				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
+			} else if (interfaceMenu == 4) {
+				worlds.transform.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
+				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
+				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
+				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.one, deltaTime);
+				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.one, deltaTime);
 			}
 		}
 	}
 
 	public void LoadLevel (int level) {
-		loadedLevel = (level + levelMultiplier);
-		PlayerPrefs.SetInt ("Level", loadedLevel);
-		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Level From Main Menu");
+		PlayerPrefs.SetString("Last Menu", "Campaign");
+		PlayerPrefs.SetInt ("Level", level + levelMultiplier);
+		GetComponent<BackgroundColorTransition> ().transition ("Level From Main Menu");
 	}
 		
 	public void openEditor () {
+		PlayerPrefs.SetString("Last Menu", "User");
 		destroyBlockChildren();
-		PlayerPrefs.SetString("Back", "Go Back To Editor");
-		GetComponent<BackgroundColorTransition> ().transition (loadedLevel, "Editor From Main Menu");
+		GetComponent<BackgroundColorTransition> ().transition ("Editor From Main Menu");
+	}
+
+	public void openConfirmation () {
+		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
+		if (File.Exists(filePath)) {
+			enableTransition(4);
+		}
+	}
+
+	public void cancelDeletion () {
+		enableTransition(3);
 	}
 
 	public void deleteLevel () {
-		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
+		disableButtons();
+		enableTransition (3);
+		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 		if (File.Exists(filePath)) {
 			File.Delete(filePath);
-			userText.GetComponent<Text>().text = (currentLevel - 1600) + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
+			userText.GetComponent<Text>().text = (PlayerPrefs.GetInt("User Level") - 1600) + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
 			destroyBlockChildren();
 		}
 	}
 
 	public void loadUserLevel () {
-		PlayerPrefs.SetString("Back", "Go Back To Menu");
-		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
+		PlayerPrefs.SetString("Last Menu", "User");
+		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 		if (File.Exists(filePath)) {
 			destroyBlockChildren();
-			GetComponent<BackgroundColorTransition>().transition(loadedLevel, "Level From Main Menu");
+			GetComponent<BackgroundColorTransition>().transition("Level From Main Menu");
 		}
 	}
 
 	public void nextScene (int n) {
-		PlayerPrefs.SetInt ("Shift Camera", 0);
 		if (loading == false) {
 			SceneManager.LoadScene (n);
 		}
@@ -128,31 +170,36 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void toUserCreatedLevels () {
-		showLevel(currentLevel);
+		confirmation.localScale = Vector3.zero;
+		deltaTime = 0;
+		disableButtons();
+		showLevel();
 		enableTransition (3);
 	}
 
 	public void left () {
-		if (currentLevel > 1601) {
+		disableButtons();
+		if (PlayerPrefs.GetInt("User Level") > 1601) {
 			destroyBlockChildren();
-			currentLevel--;
-			showLevel(currentLevel);
+			PlayerPrefs.SetInt("User Level", PlayerPrefs.GetInt("User Level") - 1);
+			showLevel();
 		} else {
 			destroyBlockChildren();
-			currentLevel = 1700;
-			showLevel(currentLevel);
+			PlayerPrefs.SetInt("User Level", 1700);
+			showLevel();
 		}
 	}
 
 	public void right () {
-		if (currentLevel < 1700) {
+		disableButtons();
+		if (PlayerPrefs.GetInt("User Level") < 1700) {
 			destroyBlockChildren();
-			currentLevel++;
-			showLevel(currentLevel);
+			PlayerPrefs.SetInt("User Level", PlayerPrefs.GetInt("User Level") + 1);
+			showLevel();
 		} else {
 			destroyBlockChildren();
-			currentLevel = 1601;
-			showLevel(currentLevel);
+			PlayerPrefs.SetInt("User Level", 1601);
+			showLevel();
 		}
 	}
 
@@ -162,14 +209,31 @@ public class MainMenuInterface : MonoBehaviour {
 		transition = true;
 	}
 
-	public void showLevel(int n) {
-		PlayerPrefs.SetInt("Level", n);
+	void disableButtons () {
+		playButton.GetComponent<Image>().color = Color.clear;
+		deleteButton.GetComponent<Image>().color = Color.clear;
+		playButton.GetComponentInChildren<Text>().color = Color.clear;
+		deleteButton.GetComponentInChildren<Text>().color = Color.clear;
+		editButton.GetComponentInChildren<Text>().text = "Create";
+	}
+
+	void enableButtons () {
+		playButton.GetComponent<Image>().color = Color.white;
+		deleteButton.GetComponent<Image>().color = Color.white;
+		playButton.GetComponentInChildren<Text>().color = Color.white;
+		deleteButton.GetComponentInChildren<Text>().color = Color.white;
+		editButton.GetComponentInChildren<Text>().text = "Edit";
+	}
+
+	public void showLevel() {
+		int n = (PlayerPrefs.GetInt("User Level", 0));
 		string level = "";
 		string[] userLevel;
 		string[] lines;
-		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("Level", 0) - 1) + ".txt";
+		string filePath = Application.persistentDataPath + "/" + n + ".txt";
 		level += (n - 1600) + "\n";
 		if (File.Exists(filePath)) {
+			enableButtons();
 			StreamReader r;
 			r = File.OpenText(filePath);
 			userLevel = r.ReadToEnd().Split("*"[0]);
@@ -200,7 +264,7 @@ public class MainMenuInterface : MonoBehaviour {
 		GameObject block = b;
 		GameObject temp = Instantiate(block);
 		temp.transform.SetParent(blockHolder.transform);
-		temp.transform.position = new Vector3(j, 0, -i);
+		temp.transform.position = new Vector3(j - 3.5f, 0, -i + 10.5f);
 	}
 
 	void destroyBlockChildren () {
