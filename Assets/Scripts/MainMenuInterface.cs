@@ -98,7 +98,7 @@ public class MainMenuInterface : MonoBehaviour {
 				worlds.transform.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
 				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
 				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
-				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.one, deltaTime);
+				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
 				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.one, deltaTime);
 			}
 		}

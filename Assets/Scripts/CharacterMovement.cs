@@ -295,6 +295,13 @@ public class CharacterMovement : MonoBehaviour {
 			for (int i = 1; i < path.Count; i++) {
 				Vector3 point1 = path [i].transform.position;
 				Vector3 point2 = path [i - 1].transform.position;
+				Color lineColor = new Color(
+					1 - path[i].GetComponent<Renderer>().material.color.r/4, 
+					1 - path[i].GetComponent<Renderer>().material.color.g/4, 
+					1 - path[i].GetComponent<Renderer>().material.color.b/4, 
+					1
+				);
+				GL.Color(lineColor);
 				GL.Vertex3 (point1.x - pathThickness, point1.y + 1, point1.z + pathThickness);
 				GL.Vertex3 (point1.x + pathThickness, point1.y + 1, point1.z + pathThickness);
 				GL.Vertex3 (point1.x + pathThickness, point1.y + 1, point1.z - pathThickness);

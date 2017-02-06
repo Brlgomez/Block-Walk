@@ -9,14 +9,14 @@ public class EditorInterface : MonoBehaviour {
 
 	GameObject menuHolder;
 	GameObject colorHolder;
-	GameObject blockHolder;
 	GameObject optionHolder;
-	GameObject blockButton;
 
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
 	GameObject rInc, gInc, bInc;
 	GameObject rXorZ, gXorZ, bXorZ;
+
+	GameObject highlight;
 
 	bool menuOn = true;
 
@@ -26,9 +26,8 @@ public class EditorInterface : MonoBehaviour {
 		filePath = Application.persistentDataPath + "/"+ (PlayerPrefs.GetInt ("User Level", 0)) + ".txt";
 		menuHolder = GameObject.Find("Menu Holder");
 		colorHolder = GameObject.Find("Color Holder");
-		blockHolder = GameObject.Find("Block Holder");
 		optionHolder = GameObject.Find("Option Holder");
-		blockButton = GameObject.Find("Change Block");
+		highlight = GameObject.Find("Block Highlight");
 		GetComponent<BackgroundColorTransition> ().levelStarting ();
 		showMain();
 	}
@@ -77,7 +76,6 @@ public class EditorInterface : MonoBehaviour {
 
 	public void showMain () {
 		menuOn = true;
-		blockMenu(Color.clear, false);
 		colorMenu(Color.clear, false);
 		optionMenu(Color.clear, false);
 		mainMenu(Color.white, true);
@@ -88,13 +86,11 @@ public class EditorInterface : MonoBehaviour {
 		mainMenu(Color.clear, false);
 		colorMenu(Color.clear, false);
 		optionMenu(Color.clear, false);
-		blockMenu(Color.white, true);
 	}
 
 	public void showColorMenu () {
 		menuOn = false;
 		mainMenu(Color.clear, false);
-		blockMenu(Color.clear, false);
 		optionMenu(Color.clear, false);
 		colorMenu(Color.white, true);
 	}
@@ -102,7 +98,6 @@ public class EditorInterface : MonoBehaviour {
 	public void showOptionMenu () {
 		menuOn = false;
 		mainMenu(Color.clear, false);
-		blockMenu(Color.clear, false);
 		colorMenu(Color.clear, false);
 		optionMenu(Color.white, true);
 	}
@@ -125,30 +120,20 @@ public class EditorInterface : MonoBehaviour {
 		GetComponent<BackgroundColorTransition>().transition("To Level From Editor");
 	}
 
-	void blockMenu (Color c, bool b) {
-		menuHolder.transform.position = Vector3.one * 10000;
-		blockHolder.transform.position = Vector3.zero;
-		colorHolder.transform.position = Vector3.one * 10000;
-		optionHolder.transform.position = Vector3.one * 10000;
-	}
-
 	void colorMenu (Color c, bool b) {
 		menuHolder.transform.position = Vector3.one * 10000;
-		blockHolder.transform.position = Vector3.one * 10000;
 		colorHolder.transform.position = Vector3.zero;
 		optionHolder.transform.position = Vector3.one * 10000;
 	}
 
 	void mainMenu (Color c, bool b) {
 		menuHolder.transform.position = Vector3.zero;
-		blockHolder.transform.position = Vector3.one * 10000;
 		colorHolder.transform.position = Vector3.one * 10000;
 		optionHolder.transform.position = Vector3.one * 10000;
 	}
 
 	void optionMenu (Color c, bool b) {
 		menuHolder.transform.position = Vector3.one * 10000;
-		blockHolder.transform.position = Vector3.one * 10000;
 		colorHolder.transform.position = Vector3.one * 10000;
 		optionHolder.transform.position = Vector3.zero;
 	}
@@ -157,14 +142,17 @@ public class EditorInterface : MonoBehaviour {
 		return menuOn;
 	}
 
-	public void changeBlockIcon (Sprite s) {
-		blockButton.GetComponent<Image>().sprite = s;
+	public void shiftHighlight (GameObject button) {
+		highlight.transform.position = button.transform.position;
 	}
 
 	public void changeBackgroundColor () {
 		byte backR = byte.Parse(r.GetComponent<Slider>().value.ToString());
 		byte backG = byte.Parse(g.GetComponent<Slider>().value.ToString());
 		byte backB = byte.Parse(b.GetComponent<Slider>().value.ToString());
+		r.GetComponentsInChildren<Image>()[2].color = new Color32 (backR, 0, 0, 255);
+		g.GetComponentsInChildren<Image>()[2].color = new Color32 (0, backG, 0, 255);
+		b.GetComponentsInChildren<Image>()[2].color = new Color32 (0, 0, backB, 255);
 		Camera.main.backgroundColor = new Color32(backR, backG, backB, 255);
 	}
 
@@ -237,5 +225,26 @@ public class EditorInterface : MonoBehaviour {
 			File.AppendAllText(filePath, "\n");
 		}
 		File.AppendAllText(filePath, "*");
+	}
+
+	public void randomColor () {
+		r.GetComponent<Slider>().value = Random.Range (0, 255);
+		g.GetComponent<Slider>().value = Random.Range (0, 255);
+		b.GetComponent<Slider>().value = Random.Range (0, 255);
+		rB.GetComponent<Slider>().value = Random.Range (rB.GetComponent<Slider>().minValue, rB.GetComponent<Slider>().maxValue);
+		gB.GetComponent<Slider>().value = Random.Range (gB.GetComponent<Slider>().minValue, gB.GetComponent<Slider>().maxValue);
+		bB.GetComponent<Slider>().value = Random.Range (bB.GetComponent<Slider>().minValue, bB.GetComponent<Slider>().maxValue);
+		rInc.GetComponent<Slider>().value = Random.Range (rInc.GetComponent<Slider>().minValue, rInc.GetComponent<Slider>().maxValue);
+		gInc.GetComponent<Slider>().value = Random.Range (gInc.GetComponent<Slider>().minValue, gInc.GetComponent<Slider>().maxValue);
+		bInc.GetComponent<Slider>().value = Random.Range (bInc.GetComponent<Slider>().minValue, bInc.GetComponent<Slider>().maxValue);
+		if (Random.value > 0.5f) {
+			rXorZ.GetComponent<Toggle>().isOn = !rXorZ.GetComponent<Toggle>().isOn;
+		}
+		if (Random.value > 0.5f) {
+			gXorZ.GetComponent<Toggle>().isOn = !gXorZ.GetComponent<Toggle>().isOn;
+		}
+		if (Random.value > 0.5f) {
+			bXorZ.GetComponent<Toggle>().isOn = !bXorZ.GetComponent<Toggle>().isOn;
+		}
 	}
 }

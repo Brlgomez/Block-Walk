@@ -27,7 +27,7 @@ public class LevelEditor : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (Input.GetMouseButtonDown (0)) {
+		if (Input.GetMouseButtonDown (0) && cubes.transform.position == Vector3.zero) {
 			mouseDown ();
 		}
 		if (Input.GetMouseButtonUp (0)) {
