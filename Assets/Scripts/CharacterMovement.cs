@@ -28,14 +28,10 @@ public class CharacterMovement : MonoBehaviour {
 	int numberOfBlocks;
 	float initialOrthoSize;
 	GameObject playerOn;
-	GameObject[] playerClone;
-	float playerDirectionX;
-	float playerDirectionZ;
 	bool moveClones = false;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
-		playerClone = GameObject.FindGameObjectsWithTag("Player Clone");
 		center = GetComponent<LevelBuilder> ().getCenter ();
 		path = new List<GameObject> ();
 		camRotateTarget = Quaternion.Euler (90, 0, 0);
@@ -63,9 +59,6 @@ public class CharacterMovement : MonoBehaviour {
 		}
 		if (moveCharacter) {
 			movePlayer ();
-		}
-		if (moveClones) {
-			moveAllClones();
 		}
 		if (checkForSolution) {
 			timerForSolution += Time.deltaTime;
@@ -253,18 +246,10 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void addToPath (GameObject block) {
-		bool addBlock = true;
-		for (int i = 0; i < playerClone.Length; i++) {
-			if (playerClone[i].GetComponent<PlayerClone>().getCurrentBlock() == block) {
-				addBlock = false;
-			}
-		}
-		if (addBlock) {
-			path.Add(block);
-			if (block.tag == "Switch" && playerOn != block) {
-				GetComponent<SwitchAttributes>().buttonPress();
-				pointOnSwitch = true;
-			}
+		path.Add(block);
+		if (block.tag == "Switch" && playerOn != block) {
+			GetComponent<SwitchAttributes>().buttonPress();
+			pointOnSwitch = true;
 		}
 	}
 
@@ -290,31 +275,7 @@ public class CharacterMovement : MonoBehaviour {
 		if (Vector3.Distance (player.transform.position, path [0].transform.position) < 0.2f) {
 			player.transform.position = path [0].transform.position;
 			if (path.Count > 1) {
-				playerDirectionX = path[1].transform.position.x - path[0].transform.position.x;
-				playerDirectionZ = path[1].transform.position.z - path[0].transform.position.z;
 				Camera.main.GetComponent<DeleteCubes> ().exitBlock (path [0]);
-				for (int i = 0; i < playerClone.Length; i++) {
-					Vector3 nextPos = new Vector3(
-						playerClone[i].transform.position.x + playerDirectionX, 
-						playerClone[i].transform.position.y, 
-						playerClone[i].transform.position.z + playerDirectionZ
-					);
-					Collider [] col1 = Physics.OverlapSphere(nextPos, 0.05f);
-					bool addToClone = true;
-					if (col1.Length > 0) {
-						for (int j = 0; j < path.Count; j++) {
-							if (path[j] == col1[0].gameObject) {
-								addToClone = false;
-							}
-						}
-					}
-					if (col1.Length > 0 && addToClone && path[0] != col1[0].gameObject) {
-						playerClone[i].GetComponent<PlayerClone>().addNextPosition(col1[0].gameObject);
-					} else {
-						playerClone[i].GetComponent<PlayerClone>().addNextPosition(playerClone[i].GetComponent<PlayerClone>().getNextPositions()[playerClone[i].GetComponent<PlayerClone>().getCount() - 1]);
-					}
-					moveClones = true;
-				}
 				removeFromPath (0);
 				Camera.main.GetComponent<DeleteCubes> ().enterBlock (path [0]);
 			} else {
@@ -325,37 +286,7 @@ public class CharacterMovement : MonoBehaviour {
 			}
 		}
 	}
-
-	void moveAllClones () {
-		for (int i = 0; i < playerClone.Length; i++) {
-			playerClone[i].transform.position = Vector3.MoveTowards (
-				playerClone[i].transform.position,
-				playerClone[i].GetComponent<PlayerClone>().getNextPositions()[0].transform.position, 
-				Time.deltaTime * playerSpeed
-			);
-			if (Vector3.Distance(playerClone[i].transform.position, playerClone[i].GetComponent<PlayerClone>().getNextPositions()[0].transform.position) < 0.2f) {
-				playerClone[i].GetComponent<PlayerClone>().setCurrentBlock(playerClone[i].GetComponent<PlayerClone>().getNextPositions()[0]);
-				playerClone[i].transform.position = playerClone[i].GetComponent<PlayerClone>().getNextPositions()[0].transform.position;
-				if (playerClone[i].GetComponent<PlayerClone>().getNextPositions().Count > 1) {
-					bool moved = true;
-					if (playerClone[i].GetComponent<PlayerClone>().getNextPositions()[0] != playerClone[i].GetComponent<PlayerClone>().getNextPositions()[1]) {
-						Camera.main.GetComponent<DeleteCubes>().exitBlock(playerClone[i].GetComponent<PlayerClone>().getNextPositions()[0]);
-						moved = false;
-					}
-					playerClone[i].GetComponent<PlayerClone>().getNextPositions().RemoveAt(0);
-					if (moved) {
-						Camera.main.GetComponent<DeleteCubes>().enterBlock(playerClone[i].GetComponent<PlayerClone>().getNextPositions()[0]);
-					}
-				}
-			}
-			if (playerClone[i].GetComponent<PlayerClone>().getNextPositions().Count == 0) {
-				moveClones = false;
-				playerClone[i].GetComponent<PlayerClone>().getNextPositions().Clear();
-				playerClone[i].GetComponent<PlayerClone>().addNextPosition(playerClone[i].GetComponent<PlayerClone>().getCurrentBlock());
-			}
-		}
-	}
-
+		
 	void OnPostRender () {
 		if (path.Count > 0) {
 			GL.PushMatrix ();

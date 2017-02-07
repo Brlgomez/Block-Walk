@@ -36,6 +36,10 @@ public class PlayerClone : MonoBehaviour {
 		return nextPositions.Count;
 	}
 
+	public GameObject getLastInList () {
+		return nextPositions[nextPositions.Count - 1];
+	}
+
 	public void setCurrentBlock (GameObject current) {
 		currentBlock = current;
 	}
