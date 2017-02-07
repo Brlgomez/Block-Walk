@@ -8,7 +8,7 @@ public class LevelBuilder : MonoBehaviour {
 	List<GameObject> blocks = new List<GameObject> ();
 	float r, g, b;
 	float rInc, gInc, bInc;
-	bool rXorZ, gXorZ, bXorZ;
+	float rInc2, gInc2, bInc2;
 	int numberOfBlocks;
 	Vector3 center;
 	float xMin = 100;
@@ -56,7 +56,7 @@ public class LevelBuilder : MonoBehaviour {
 			if (File.Exists(filePath)) {
 				r = File.OpenText(filePath);
 			} else {
-				File.AppendAllText(filePath, "255,128,128\n0.1,0.2,0.3\n0.05,0.03,0.015\ntrue, false, false\n");
+				File.AppendAllText(filePath, "255,128,128\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n");
 				for (int i = 0; i < 14; i++) {
 					File.AppendAllText(filePath, "--------\n");
 				}
@@ -89,11 +89,11 @@ public class LevelBuilder : MonoBehaviour {
 		rInc = float.Parse (rgbInc [0]);
 		gInc = float.Parse (rgbInc [1]);
 		bInc = float.Parse (rgbInc [2]);
-		rXorZ = bool.Parse (xOrZ [0]);
-		gXorZ = bool.Parse (xOrZ [1]);
-		bXorZ = bool.Parse (xOrZ [2]);
+		rInc2 = float.Parse (xOrZ [0]);
+		gInc2 = float.Parse (xOrZ [1]);
+		bInc2 = float.Parse (xOrZ [2]);
 		if (GetComponent<CharacterMovement>() == null) {
-			GetComponent<EditorInterface>().setVariables(r, g, b, rInc, gInc, bInc, rXorZ, gXorZ, bXorZ);
+			GetComponent<EditorInterface>().setVariables(r, g, b, rInc, gInc, bInc, rInc2, gInc2, bInc2);
 		}
 	}
 
@@ -192,27 +192,15 @@ public class LevelBuilder : MonoBehaviour {
 
 	public void changeBlockColor (GameObject block) {
 		float tempR, tempG, tempB;
-		float xDeduct = 0;
-		float zDeduct = 0;
+		float xDeduct = block.transform.localPosition.x;
+		float zDeduct = block.transform.localPosition.z;
 		if (GetComponent<CharacterMovement>() == null) {
-			xDeduct = -3.5f;
-			zDeduct = -6.5f;
+			xDeduct += -3.5f;
+			zDeduct += -6.5f;
 		}
-		if (rXorZ) {
-			tempR = r + (rInc * (block.transform.localPosition.x + xDeduct));
-		} else {
-			tempR = r + (rInc * (block.transform.localPosition.z + zDeduct));
-		}
-		if (gXorZ) {
-			tempG = g + (gInc * (block.transform.localPosition.x + xDeduct));
-		} else {
-			tempG = g + (gInc * (block.transform.localPosition.z + zDeduct));
-		}
-		if (bXorZ) {
-			tempB = b + (bInc * (block.transform.localPosition.x + xDeduct));
-		} else {
-			tempB = b + (bInc * (block.transform.localPosition.z + zDeduct));
-		}
+		tempR = r + ((rInc * xDeduct) + (rInc2 * zDeduct));
+		tempG = g + ((gInc * xDeduct) + (gInc2 * zDeduct));
+		tempB = b + ((bInc * xDeduct) + (bInc2 * zDeduct));
 		if (block.name == "Multistep Block(Clone)" && GetComponent<CharacterMovement>() == null) {
 			block.GetComponent<Renderer>().material.color = new Color((tempR + Camera.main.backgroundColor.r)/2, (tempG + Camera.main.backgroundColor.g)/2, (tempB + Camera.main.backgroundColor.b)/2);
 		} else {
@@ -247,26 +235,14 @@ public class LevelBuilder : MonoBehaviour {
 			Random.Range (0.0f, 1.0f), 
 			Random.Range (0.0f, 1.0f)
 		);
-		if (Random.Range (0.0f, 1.0f) > 0.5) {
-			rXorZ = true;
-		} else {
-			rXorZ = false;
-		}
-		if (Random.Range (0.0f, 1.0f) > 0.5) {
-			gXorZ = true;
-		} else {
-			gXorZ = false;
-		}
-		if (Random.Range (0.0f, 1.0f) > 0.5) {
-			bXorZ = true;
-		} else {
-			bXorZ = false;
-		}
 		r = Random.Range (0.0f, 0.5f);
 		g = Random.Range (0.0f, 0.5f);
 		b = Random.Range (0.0f, 0.5f);
 		rInc = Random.Range (-0.15f, 0.15f);
 		gInc = Random.Range (-0.15f, 0.15f);
 		bInc = Random.Range (-0.15f, 0.15f);
+		rInc2 = Random.Range (-0.15f, 0.15f);
+		gInc2 = Random.Range (-0.15f, 0.15f);
+		bInc2 = Random.Range (-0.15f, 0.15f);
 	}
 }

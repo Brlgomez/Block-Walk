@@ -28,7 +28,6 @@ public class CharacterMovement : MonoBehaviour {
 	int numberOfBlocks;
 	float initialOrthoSize;
 	GameObject playerOn;
-	bool moveClones = false;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
