@@ -47,19 +47,16 @@ public class MainMenuInterface : MonoBehaviour {
 		playButton = GameObject.Find("Play");
 		editButton = GameObject.Find("Edit");
 		deleteButton = GameObject.Find("Delete");
-
-		if (PlayerPrefs.GetInt("User Level") == 0) {
-			PlayerPrefs.SetInt("User Level", 1601);
+		if (PlayerPrefs.GetInt("User Level") == 0 || PlayerPrefs.GetInt("User Level") > 100) {
+			PlayerPrefs.SetInt("User Level", 1);
 		}
-
-		if (PlayerPrefs.GetString("Last Menu") == "Campaign" && PlayerPrefs.GetInt("Level", 0) < 1600) {
+		if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
 			toLevelSelect(((PlayerPrefs.GetInt("Level", 0) - 1)/16));
 		} else if (PlayerPrefs.GetString("Last Menu") == "User") {
 			toUserCreatedLevels();
 		} else {
 			toMainMenu();
 		}
-
 		PlayerPrefs.SetString("Last Menu", "");
 		PlayerPrefs.SetInt("Shift Camera", 0);
 	}
@@ -133,7 +130,7 @@ public class MainMenuInterface : MonoBehaviour {
 		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 		if (File.Exists(filePath)) {
 			File.Delete(filePath);
-			userText.GetComponent<Text>().text = (PlayerPrefs.GetInt("User Level") - 1600) + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
+			userText.GetComponent<Text>().text = PlayerPrefs.GetInt("User Level") + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
 			destroyBlockChildren();
 		}
 	}
@@ -179,26 +176,26 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void left () {
 		disableButtons();
-		if (PlayerPrefs.GetInt("User Level") > 1601) {
+		if (PlayerPrefs.GetInt("User Level") > 1) {
 			destroyBlockChildren();
 			PlayerPrefs.SetInt("User Level", PlayerPrefs.GetInt("User Level") - 1);
 			showLevel();
 		} else {
 			destroyBlockChildren();
-			PlayerPrefs.SetInt("User Level", 1700);
+			PlayerPrefs.SetInt("User Level", 100);
 			showLevel();
 		}
 	}
 
 	public void right () {
 		disableButtons();
-		if (PlayerPrefs.GetInt("User Level") < 1700) {
+		if (PlayerPrefs.GetInt("User Level") < 100) {
 			destroyBlockChildren();
 			PlayerPrefs.SetInt("User Level", PlayerPrefs.GetInt("User Level") + 1);
 			showLevel();
 		} else {
 			destroyBlockChildren();
-			PlayerPrefs.SetInt("User Level", 1601);
+			PlayerPrefs.SetInt("User Level", 1);
 			showLevel();
 		}
 	}
@@ -231,7 +228,7 @@ public class MainMenuInterface : MonoBehaviour {
 		string[] userLevel;
 		string[] lines;
 		string filePath = Application.persistentDataPath + "/" + n + ".txt";
-		level += (n - 1600) + "\n";
+		level += n + "\n";
 		if (File.Exists(filePath)) {
 			enableButtons();
 			StreamReader r;

@@ -40,7 +40,7 @@ public class GameplayInterface : MonoBehaviour {
 			gameStatus.GetComponent<Text>().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
 		} else {
 			levelNum = PlayerPrefs.GetInt("User Level", 0);
-			gameStatus.GetComponent<Text>().text = (levelNum - 1600).ToString();
+			gameStatus.GetComponent<Text>().text = levelNum.ToString();
 		}
 		middleWidth = Screen.width / 2;
 		height = Screen.height;

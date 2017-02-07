@@ -87,7 +87,6 @@ public class LevelEditor : MonoBehaviour {
 
 	public void changeBlock (GameObject block){
 		currentObject = block;
-		GetComponent<EditorInterface>().showMain();
 	}
 
 	public List<List<GameObject>> getBlocks () {

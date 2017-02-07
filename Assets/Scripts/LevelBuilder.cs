@@ -26,6 +26,8 @@ public class LevelBuilder : MonoBehaviour {
 	GameObject redOrBlueBlock;
 	GameObject redBlock;
 	GameObject blueBlock;
+	GameObject rotatorR;
+	GameObject rotatorL;
 
 	void Awake () {
 		cubes = GameObject.Find ("Cubes");
@@ -33,6 +35,8 @@ public class LevelBuilder : MonoBehaviour {
 		multistepBlock = GameObject.Find ("Multistep Block");
 		switchBlock = GameObject.Find ("Switch Block");
 		redOrBlueBlock = GameObject.Find ("Red or Blue Block");
+		rotatorR = GameObject.Find ("Rotate Block R");
+		rotatorL = GameObject.Find ("Rotate Block L");
 		TextAsset t = new TextAsset();
 		string[] level;
 		string[] lines;
@@ -122,6 +126,10 @@ public class LevelBuilder : MonoBehaviour {
 					} else {
 						createBlock(blueBlock, j, i).tag = "BlueBlock";
 					}
+				} else if (lines [i] [j] == 'E') {
+					createBlock (rotatorR, j, i).tag = "RotatorR";
+				} else if (lines [i] [j] == 'W') {
+					createBlock (rotatorL, j, i).tag = "RotatorL";
 				} 
 			}
 		}

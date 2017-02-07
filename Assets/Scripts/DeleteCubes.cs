@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DeleteCubes : MonoBehaviour {
 
@@ -22,6 +23,10 @@ public class DeleteCubes : MonoBehaviour {
 		if (other.transform.tag == "Switch") {
 			Camera.main.GetComponent<SwitchAttributes> ().buttonPress ();
 			Camera.main.GetComponent<SwitchAttributes> ().saveState ();
-		}
+		} else if (other.transform.tag == "RotatorR") {
+			GetComponent<Rotator>().rotateAt(other.transform.position, 1);
+		} else if (other.transform.tag == "RotatorL") {
+			GetComponent<Rotator>().rotateAt(other.transform.position, -1);
+		} 
 	}
 }

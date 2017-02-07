@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class CharacterMovement : MonoBehaviour {
 
 	private float maxTimeForDrag = 0.25f;
-	private float maxTimeForSolution = 0.75f;
+	private float maxTimeForSolution = 0.5f;
 	private float pathThickness = 0.03f;
 	private int playerSpeed = 10;
 
@@ -101,6 +101,7 @@ public class CharacterMovement : MonoBehaviour {
 	void mouseUp () {
 		timerForDrag = maxTimeForDrag;
 		isMouseDrag = false;
+		timerForSolution = 0;
 		if (path.Count > 0) {
 			playerOn = path [path.Count - 1];
 			moveCharacter = true;
@@ -245,7 +246,13 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void addToPath (GameObject block) {
-		path.Add(block);
+		if (path.Count == 0) {
+			path.Add(block);
+		} else {
+			if ((path[path.Count - 1].tag != "RotatorR" && path[path.Count - 1].tag != "RotatorL") || path.Count == 1) {
+				path.Add(block);
+			}
+		}
 		if (block.tag == "Switch" && playerOn != block) {
 			GetComponent<SwitchAttributes>().buttonPress();
 			pointOnSwitch = true;

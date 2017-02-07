@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.IO;
 using UnityEngine.SceneManagement;
+using UnityStandardAssets.ImageEffects;
 
 public class EditorInterface : MonoBehaviour {
+
+	private int blurDownsample = 2;
 
 	GameObject menuHolder;
 	GameObject colorHolder;
@@ -32,6 +35,7 @@ public class EditorInterface : MonoBehaviour {
 		colorHolder = GameObject.Find("Color Holder");
 		optionHolder = GameObject.Find("Option Holder");
 		highlight = GameObject.Find("Block Highlight");
+		GetComponent<BlurOptimized> ().downsample = blurDownsample;
 		GetComponent<BackgroundColorTransition> ().levelStarting ();
 		showMain();
 	}
@@ -42,19 +46,33 @@ public class EditorInterface : MonoBehaviour {
 			if (deltaTime > 1) {
 				transition = false;
 				deltaTime = 0;
+				if (transitionNum == 0) {
+					Camera.main.orthographicSize = 8;
+				}
+			}
+			if (transitionNum == 0 && deltaTime > 0.25f) {
+				GetComponent<BlurOptimized>().enabled = false;
 			}
 			if (transitionNum == 0) {
 				menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.one, deltaTime);
 				colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
 				optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
+				GetComponent<BlurOptimized>().blurSize = colorHolder.transform.localScale.x * 10;
+				Camera.main.orthographicSize -= deltaTime;
+				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 100);
 			} else if (transitionNum == 1) {
 				menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
 				colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
 				optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.one, deltaTime);
+				GetComponent<BlurOptimized>().blurSize = optionHolder.transform.localScale.x * 10;
+				Camera.main.orthographicSize -= deltaTime;
+				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 100);
 			} else if (transitionNum == 2) {
 				menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
 				colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.one, deltaTime);
 				optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
+				Camera.main.orthographicSize += deltaTime;
+				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 100);
 			}
 		}
 	}
@@ -105,30 +123,24 @@ public class EditorInterface : MonoBehaviour {
 
 	public void showMain () {
 		menuOn = true;
-		colorMenu(Color.clear, false);
-		optionMenu(Color.clear, false);
-		mainMenu(Color.white, true);
-	}
-
-	public void showBlockMenu () {
-		menuOn = false;
-		mainMenu(Color.clear, false);
-		colorMenu(Color.clear, false);
-		optionMenu(Color.clear, false);
+		transition = true;
+		transitionNum = 0;
+		deltaTime = 0;
 	}
 
 	public void showColorMenu () {
 		menuOn = false;
-		mainMenu(Color.clear, false);
-		optionMenu(Color.clear, false);
-		colorMenu(Color.white, true);
+		transition = true;
+		transitionNum = 2;
+		deltaTime = 0;
 	}
 
 	public void showOptionMenu () {
 		menuOn = false;
-		mainMenu(Color.clear, false);
-		colorMenu(Color.clear, false);
-		optionMenu(Color.white, true);
+		transition = true;
+		transitionNum = 1;
+		deltaTime = 0;
+		GetComponent<BlurOptimized>().enabled = true;
 	}
 
 	public void toMainMenu () {
@@ -148,25 +160,7 @@ public class EditorInterface : MonoBehaviour {
 		gameObject.AddComponent<BackgroundColorTransition>();
 		GetComponent<BackgroundColorTransition>().transition("To Level From Editor");
 	}
-
-	void colorMenu (Color c, bool b) {
-		transition = true;
-		transitionNum = 2;
-		deltaTime = 0;
-	}
-
-	void mainMenu (Color c, bool b) {
-		transition = true;
-		transitionNum = 0;
-		deltaTime = 0;
-	}
-
-	void optionMenu (Color c, bool b) {
-		transition = true;
-		transitionNum = 1;
-		deltaTime = 0;
-	}
-
+		
 	public bool isMenuOn () {
 		return menuOn;
 	}
