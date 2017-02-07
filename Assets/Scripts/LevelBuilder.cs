@@ -36,7 +36,7 @@ public class LevelBuilder : MonoBehaviour {
 		TextAsset t = new TextAsset();
 		string[] level;
 		string[] lines;
-		if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
+		if (PlayerPrefs.GetString("Last Menu") == "Campaign" && GetComponent<CharacterMovement>() != null) {
 			if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
 				t = Resources.Load("World1") as TextAsset;
 			} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
@@ -56,7 +56,7 @@ public class LevelBuilder : MonoBehaviour {
 			if (File.Exists(filePath)) {
 				r = File.OpenText(filePath);
 			} else {
-				File.AppendAllText(filePath, "128,128,128\n0.1,0.2,0.3\n0.05,0.03,0.015\ntrue, false, false\n");
+				File.AppendAllText(filePath, "255,128,128\n0.1,0.2,0.3\n0.05,0.03,0.015\ntrue, false, false\n");
 				for (int i = 0; i < 14; i++) {
 					File.AppendAllText(filePath, "--------\n");
 				}
@@ -110,7 +110,7 @@ public class LevelBuilder : MonoBehaviour {
 					createBlock (switchBlock, j, i).tag = "Switch";
 				} else if (lines [i] [j] == 'R') {
 					numberOfBlocks++;
-					if (GetComponent<CharacterMovement>() != null) {
+					if (GetComponent<CharacterMovement>() != null) {		
 						createBlock(redOrBlueBlock, j, i).tag = "RedBlock";
 					} else {
 						createBlock(redBlock, j, i).tag = "RedBlock";
@@ -214,7 +214,7 @@ public class LevelBuilder : MonoBehaviour {
 			tempB = b + (bInc * (block.transform.localPosition.z + zDeduct));
 		}
 		if (block.name == "Multistep Block(Clone)" && GetComponent<CharacterMovement>() == null) {
-			block.GetComponent<Renderer>().material.color = new Color((tempR + Camera.main.backgroundColor.r)/2, (tempG + Camera.main.backgroundColor.r)/2, (tempB + Camera.main.backgroundColor.r)/2);
+			block.GetComponent<Renderer>().material.color = new Color((tempR + Camera.main.backgroundColor.r)/2, (tempG + Camera.main.backgroundColor.g)/2, (tempB + Camera.main.backgroundColor.b)/2);
 		} else {
 			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB);
 		}

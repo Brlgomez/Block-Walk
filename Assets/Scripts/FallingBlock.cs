@@ -12,7 +12,7 @@ public class FallingBlock : MonoBehaviour {
 	}
 
 	void Update () {
-		float deltaTime = Time.deltaTime;
+		float deltaTime = Time.deltaTime * 1.5f;
 		timer += deltaTime;
 		transform.localScale = Vector3.Lerp (transform.localScale, Vector3.zero, deltaTime * speed);
 		if (timer > 1) {

@@ -66,7 +66,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	void Update () {
 		if (transition) { 
-			deltaTime += Time.deltaTime * 1.25f;
+			deltaTime += Time.deltaTime * 1.5f;
 			if (deltaTime > 1) {
 				transition = false;
 			}
@@ -220,8 +220,8 @@ public class MainMenuInterface : MonoBehaviour {
 	void enableButtons () {
 		playButton.GetComponent<Image>().color = Color.white;
 		deleteButton.GetComponent<Image>().color = Color.white;
-		playButton.GetComponentInChildren<Text>().color = Color.white;
-		deleteButton.GetComponentInChildren<Text>().color = Color.white;
+		playButton.GetComponentInChildren<Text>().color = Color.black;
+		deleteButton.GetComponentInChildren<Text>().color = Color.black;
 		editButton.GetComponentInChildren<Text>().text = "Edit";
 	}
 

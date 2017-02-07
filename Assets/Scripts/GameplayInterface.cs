@@ -168,8 +168,8 @@ public class GameplayInterface : MonoBehaviour {
 		if (PlayerPrefs.GetInt("Level", 0) + 1 <= 48 && PlayerPrefs.GetString("Last Menu") == "Campaign") {
 			nextLevel.GetComponent<Button> ().enabled = true;
 			nextLevel.GetComponent<Button> ().image.color = Color.white;
-			nextLevel.GetComponentInChildren<Text> ().color = Color.white;
-			nextLevel.GetComponent<BoxCollider2D> ().size = Vector2.one * 64;
+			nextLevel.GetComponentInChildren<Text> ().color = Color.black;
+			nextLevel.GetComponent<BoxCollider2D> ().size = Vector2.one * 96;
 		}
 		gameStatus.GetComponent<Text> ().text = "Success";
 		timer = 0;
@@ -190,11 +190,11 @@ public class GameplayInterface : MonoBehaviour {
 	void turnOnButtons () {
 		if (!mainMenu.GetComponent<Button> ().enabled) {
 			mainMenu.GetComponent<Button> ().enabled = true;
-			mainMenu.GetComponent<Button> ().image.color = Color.white;
-			mainMenu.GetComponentInChildren<Text> ().color = Color.white;
+			mainMenu.GetComponent<Button>().image.color = Color.white;
+			mainMenu.GetComponentInChildren<Text> ().color = Color.black;
 			restartButton.GetComponent<Button> ().enabled = true;
 			restartButton.GetComponent<Button> ().image.color = Color.white;
-			restartButton.GetComponentInChildren<Text> ().color = Color.white;
+			restartButton.GetComponentInChildren<Text> ().color = Color.black;
 		}
 	}
 
