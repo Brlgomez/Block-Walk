@@ -59,20 +59,20 @@ public class EditorInterface : MonoBehaviour {
 				optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
 				GetComponent<BlurOptimized>().blurSize = colorHolder.transform.localScale.x * 10;
 				Camera.main.orthographicSize -= deltaTime;
-				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 100);
+				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 20);
 			} else if (transitionNum == 1) {
 				menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
 				colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
 				optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.one, deltaTime);
 				GetComponent<BlurOptimized>().blurSize = optionHolder.transform.localScale.x * 10;
 				Camera.main.orthographicSize -= deltaTime;
-				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 100);
+				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 20);
 			} else if (transitionNum == 2) {
 				menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
 				colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.one, deltaTime);
 				optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
 				Camera.main.orthographicSize += deltaTime;
-				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 100);
+				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 20);
 			}
 		}
 	}

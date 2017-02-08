@@ -22,6 +22,8 @@ public class MainMenuInterface : MonoBehaviour {
 	GameObject switchBlock;
 	GameObject redBlock;
 	GameObject blueBlock;
+	GameObject rotateRBlock;
+	GameObject rotateLBlock;
 	GameObject playButton;
 	GameObject editButton;
 	GameObject deleteButton;
@@ -44,6 +46,8 @@ public class MainMenuInterface : MonoBehaviour {
 		switchBlock = GameObject.Find("Switch Block");
 		redBlock = GameObject.Find("Red Block");
 		blueBlock = GameObject.Find("Blue Block");
+		rotateRBlock = GameObject.Find("Rotate Right Block");
+		rotateLBlock = GameObject.Find("Rotate Left Block");
 		playButton = GameObject.Find("Play");
 		editButton = GameObject.Find("Edit");
 		deleteButton = GameObject.Find("Delete");
@@ -248,9 +252,9 @@ public class MainMenuInterface : MonoBehaviour {
 					} else if (lines[i][j] == 'B') {
 						displayBlockImage(i, j, blueBlock);
 					} else if (lines[i][j] == 'E') {
-						displayBlockImage(i, j, standardBlock);
+						displayBlockImage(i, j, rotateRBlock);
 					} else if (lines[i][j] == 'W') {
-						displayBlockImage(i, j, standardBlock);
+						displayBlockImage(i, j, rotateLBlock);
 					}
 				}
 				level += "\n";
