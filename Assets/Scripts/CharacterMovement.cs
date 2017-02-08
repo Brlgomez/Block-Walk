@@ -343,7 +343,7 @@ public class CharacterMovement : MonoBehaviour {
 			List<GameObject> tempBlocks = GetComponent<LevelBuilder> ().getBlocks ();
 			for (int i = 0; i < tempBlocks.Count; i++) {
 				if (tempBlocks[i].transform.localScale.x > 0.5f) {
-					if (checkAdjacent(tempBlocks[i].transform.localPosition, playerOn.transform.localPosition)) { 
+					if (checkAdjacent(tempBlocks[i].transform.position, playerOn.transform.position)) { 
 						lose = false;
 						break;
 					}

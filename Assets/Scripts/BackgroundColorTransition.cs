@@ -103,7 +103,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 				level = r.ReadToEnd().Split("*"[0]);
 				lines = level[0].Split("\n"[0]);
 			} else {
-				return new Color32(255, 128, 128, 255);
+				return new Color32(160, 192, 224, 255);
 			}
 		} 
 		string[] color = lines [0].Split (","[0]);

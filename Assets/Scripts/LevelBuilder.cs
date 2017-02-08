@@ -60,7 +60,7 @@ public class LevelBuilder : MonoBehaviour {
 			if (File.Exists(filePath)) {
 				r = File.OpenText(filePath);
 			} else {
-				File.AppendAllText(filePath, "255,128,128\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n");
+				File.AppendAllText(filePath, "160,192,224\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n");
 				for (int i = 0; i < 14; i++) {
 					File.AppendAllText(filePath, "--------\n");
 				}

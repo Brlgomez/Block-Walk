@@ -8,72 +8,93 @@ using UnityStandardAssets.ImageEffects;
 
 public class EditorInterface : MonoBehaviour {
 
+	private int maxBlurSize = 10;
 	private int blurDownsample = 2;
 
+	GameObject cubes;
 	GameObject menuHolder;
 	GameObject colorHolder;
 	GameObject optionHolder;
-
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
 	GameObject rInc, gInc, bInc;
 	GameObject rInc2, gInc2, bInc2;
-
 	GameObject highlight;
 
 	bool menuOn = true;
-
 	private string filePath;
-
 	bool transition;
 	int transitionNum = 0;
 	float deltaTime;
+	Vector3 initialCamPos;
+	Vector3 colorMenuCamPos;
 
 	void Start () {
 		filePath = Application.persistentDataPath + "/"+ (PlayerPrefs.GetInt ("User Level", 0)) + ".txt";
+		cubes = GameObject.Find ("Cubes");
 		menuHolder = GameObject.Find("Menu Holder");
 		colorHolder = GameObject.Find("Color Holder");
 		optionHolder = GameObject.Find("Option Holder");
 		highlight = GameObject.Find("Block Highlight");
 		GetComponent<BlurOptimized> ().downsample = blurDownsample;
 		GetComponent<BackgroundColorTransition> ().levelStarting ();
+		initialCamPos = transform.position;
+		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 4.75f);
 		showMain();
 	}
 
 	void Update () {
 		if (transition) { 
-			deltaTime += Time.deltaTime * 1.5f;
-			if (deltaTime > 1) {
-				transition = false;
-				deltaTime = 0;
-				if (transitionNum == 0) {
-					Camera.main.orthographicSize = 8;
-				}
+			transitionInterface();
+		} else {
+			if (Input.GetMouseButtonDown (0) && cubes.transform.position == Vector3.zero && transitionNum == 0) {
+				GetComponent<LevelEditor>().mouseDown();
 			}
-			if (transitionNum == 0 && deltaTime > 0.25f) {
+			if (Input.GetMouseButtonUp (0)) {
+				GetComponent<LevelEditor>().mouseUp();
+			}
+			if (GetComponent<LevelEditor>().getMouseDrag()) {
+				GetComponent<LevelEditor>().mouseDrag();
+			}
+		}
+	}
+
+	void transitionInterface () {
+		deltaTime += Time.deltaTime * 1.5f;
+		if (deltaTime > 1) {
+			GetComponent<LevelEditor>().mouseUp();
+			transition = false;
+			deltaTime = 0;
+			if (transitionNum == 0) {
+				Camera.main.orthographicSize = 8;
+			}
+		}
+		if (transitionNum == 0) {
+			if (deltaTime > 0.25f) {
 				GetComponent<BlurOptimized>().enabled = false;
 			}
-			if (transitionNum == 0) {
-				menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.one, deltaTime);
-				colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
-				optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
-				GetComponent<BlurOptimized>().blurSize = colorHolder.transform.localScale.x * 10;
-				Camera.main.orthographicSize -= deltaTime;
-				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 20);
-			} else if (transitionNum == 1) {
-				menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
-				colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
-				optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.one, deltaTime);
-				GetComponent<BlurOptimized>().blurSize = optionHolder.transform.localScale.x * 10;
-				Camera.main.orthographicSize -= deltaTime;
-				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 20);
-			} else if (transitionNum == 2) {
-				menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
-				colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.one, deltaTime);
-				optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
-				Camera.main.orthographicSize += deltaTime;
-				Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 8, 20);
-			}
+			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.one, deltaTime);
+			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
+			optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
+			transform.position = Vector3.Lerp(transform.position, initialCamPos, deltaTime);
+			GetComponent<BlurOptimized>().blurSize = colorHolder.transform.localScale.x * maxBlurSize;
+			Camera.main.orthographicSize -= deltaTime;
+			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 8, 17);
+		} else if (transitionNum == 1) {
+			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
+			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
+			optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.one, deltaTime);
+			transform.position = Vector3.Lerp(transform.position, initialCamPos, deltaTime);
+			GetComponent<BlurOptimized>().blurSize = optionHolder.transform.localScale.x * maxBlurSize;
+			Camera.main.orthographicSize -= deltaTime;
+			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 8, 17);
+		} else if (transitionNum == 2) {
+			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
+			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.one, deltaTime);
+			optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
+			transform.position = Vector3.Lerp(transform.position, colorMenuCamPos, deltaTime);
+			Camera.main.orthographicSize += deltaTime;
+			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 8, 17);
 		}
 	}
 
