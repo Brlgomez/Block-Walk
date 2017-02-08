@@ -19,7 +19,7 @@ public class DeleteCubes : MonoBehaviour {
 	}
 
 	public void enterBlock (GameObject other) {
-		// switch block
+		// switch block, rotate blocks
 		if (other.transform.tag == "Switch") {
 			Camera.main.GetComponent<SwitchAttributes> ().buttonPress ();
 			Camera.main.GetComponent<SwitchAttributes> ().saveState ();

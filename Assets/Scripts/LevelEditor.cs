@@ -46,12 +46,10 @@ public class LevelEditor : MonoBehaviour {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray.origin, ray.direction, out hit)) {
-				if (hit.transform.name != (currentObject.name + "(Clone)")) {
-					Vector3 point = ray.GetPoint(hit.distance);
-					int x = Mathf.RoundToInt(point.x);
-					int z = Mathf.RoundToInt(point.z);
-					spawnObject(x, z);
-				}
+				Vector3 point = ray.GetPoint(hit.distance);
+				int x = Mathf.RoundToInt(point.x);
+				int z = Mathf.RoundToInt(point.z);
+				spawnObject(x, z);
 			}
 		}
 	}
@@ -62,7 +60,7 @@ public class LevelEditor : MonoBehaviour {
 		} else {
 			if (currentObject.name == "Player") {
 				Destroy(blockPos[z][x]);
-			} else {
+			} else if (blockPos[z][x].name != currentObject.name + "(Clone)") {
 				Destroy(blockPos[z][x]);
 				createBlock(x, z);
 			}

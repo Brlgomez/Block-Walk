@@ -10,58 +10,64 @@ public class Rotator : MonoBehaviour {
 		tempList = GetComponent<LevelBuilder>().getBlocks();
 		if (direction == 1) {
 			for (int i = 0; i < tempList.Count; i++) {
-				if (tempList[i].transform.position.x == point.x && tempList[i].transform.position.z == point.z + direction) {
+				float x = tempList[i].transform.position.x;
+				float y = tempList[i].transform.position.y;
+				float z = tempList[i].transform.position.z;
+				if (x == point.x && z == point.z + direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x + direction, tempList[i].transform.position.y, tempList[i].transform.position.z));
-				} else if (tempList[i].transform.position.x == point.x + direction && tempList[i].transform.position.z == point.z + direction) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x + direction, y, z));
+				} else if (x == point.x + direction && z == point.z + direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x, tempList[i].transform.position.y, tempList[i].transform.position.z - direction));
-				} else if (tempList[i].transform.position.x == point.x + direction && tempList[i].transform.position.z == point.z) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x, y, z - direction));
+				} else if (x == point.x + direction && z == point.z) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x, tempList[i].transform.position.y, tempList[i].transform.position.z - direction));
-				} else if (tempList[i].transform.position.x == point.x + direction && tempList[i].transform.position.z == point.z - direction) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x, y, z - direction));
+				} else if (x == point.x + direction && z == point.z - direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x - direction, tempList[i].transform.position.y, tempList[i].transform.position.z));
-				} else if (tempList[i].transform.position.x == point.x && tempList[i].transform.position.z == point.z - direction) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x - direction, y, z));
+				} else if (x == point.x && z == point.z - direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x - direction, tempList[i].transform.position.y, tempList[i].transform.position.z));
-				} else if (tempList[i].transform.position.x == point.x - direction && tempList[i].transform.position.z == point.z - direction) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x - direction, y, z));
+				} else if (x == point.x - direction && z == point.z - direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x, tempList[i].transform.position.y, tempList[i].transform.position.z + direction));
-				} else if (tempList[i].transform.position.x == point.x - direction && tempList[i].transform.position.z == point.z) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x, y, z + direction));
+				} else if (x == point.x - direction && z == point.z) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x, tempList[i].transform.position.y, tempList[i].transform.position.z + direction));
-				} else if (tempList[i].transform.position.x == point.x - direction && tempList[i].transform.position.z == point.z + direction) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x, y, z + direction));
+				} else if (x == point.x - direction && z == point.z + direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x + direction, tempList[i].transform.position.y, tempList[i].transform.position.z));
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x + direction, y, z));
 				}
 			}
 		} else {
 			for (int i = 0; i < tempList.Count; i++) {
-				if (tempList[i].transform.position.x == point.x && tempList[i].transform.position.z == point.z - direction) {
+				float x = tempList[i].transform.position.x;
+				float y = tempList[i].transform.position.y;
+				float z = tempList[i].transform.position.z;
+				if (x == point.x && z == point.z - direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x + direction, tempList[i].transform.position.y, tempList[i].transform.position.z));
-				} else if (tempList[i].transform.position.x == point.x - direction && tempList[i].transform.position.z == point.z - direction) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x + direction, y, z));
+				} else if (x == point.x - direction && z == point.z - direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x + direction, tempList[i].transform.position.y, tempList[i].transform.position.z));
-				} else if (tempList[i].transform.position.x == point.x - direction && tempList[i].transform.position.z == point.z) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x + direction, y, z));
+				} else if (x == point.x - direction && z == point.z) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x, tempList[i].transform.position.y, tempList[i].transform.position.z - direction));
-				} else if (tempList[i].transform.position.x == point.x - direction && tempList[i].transform.position.z == point.z + direction) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x, y, z - direction));
+				} else if (x == point.x - direction && z == point.z + direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x, tempList[i].transform.position.y, tempList[i].transform.position.z - direction));
-				} else if (tempList[i].transform.position.x == point.x && tempList[i].transform.position.z == point.z + direction) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x, y, z - direction));
+				} else if (x == point.x && z == point.z + direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x - direction, tempList[i].transform.position.y, tempList[i].transform.position.z));
-				} else if (tempList[i].transform.position.x == point.x + direction && tempList[i].transform.position.z == point.z + direction) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x - direction, y, z));
+				} else if (x == point.x + direction && z == point.z + direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x - direction, tempList[i].transform.position.y, tempList[i].transform.position.z));
-				} else if (tempList[i].transform.position.x == point.x + direction && tempList[i].transform.position.z == point.z) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x - direction, y, z));
+				} else if (x == point.x + direction && z == point.z) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x, tempList[i].transform.position.y, tempList[i].transform.position.z + direction));
-				} else if (tempList[i].transform.position.x == point.x + direction && tempList[i].transform.position.z == point.z - direction) {
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x, y, z + direction));
+				} else if (x == point.x + direction && z == point.z - direction) {
 					tempList[i].AddComponent<RotateBlock>();
-					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(tempList[i].transform.position.x, tempList[i].transform.position.y, tempList[i].transform.position.z + direction));
+					tempList[i].GetComponent<RotateBlock>().setPoint(new Vector3(x, y, z + direction));
 				}
 			}
 		}

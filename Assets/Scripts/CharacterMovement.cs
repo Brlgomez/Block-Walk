@@ -122,7 +122,7 @@ public class CharacterMovement : MonoBehaviour {
 	void mouseDrag () {
 		if (!GetComponent<GameplayInterface> ().isMenuOn () && !moveCharacter && canPlayerMove) {
 			GameObject target = returnClickedObject ();
-			if (target != null && target.layer == 8 && !moveCharacter) {
+			if (target != null && target.layer == 8) {
 				dragBlocks (target);
 			}
 		}

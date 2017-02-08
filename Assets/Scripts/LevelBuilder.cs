@@ -23,7 +23,6 @@ public class LevelBuilder : MonoBehaviour {
 	GameObject standardBlock;
 	GameObject multistepBlock;
 	GameObject switchBlock;
-	GameObject redOrBlueBlock;
 	GameObject redBlock;
 	GameObject blueBlock;
 	GameObject rotatorR;
@@ -34,12 +33,16 @@ public class LevelBuilder : MonoBehaviour {
 		standardBlock = GameObject.Find ("Standard Block");
 		multistepBlock = GameObject.Find ("Multistep Block");
 		switchBlock = GameObject.Find ("Switch Block");
-		redOrBlueBlock = GameObject.Find ("Red or Blue Block");
 		rotatorR = GameObject.Find ("Rotate Block R");
 		rotatorL = GameObject.Find ("Rotate Block L");
+		redBlock = GameObject.Find("Red Block");
+		blueBlock = GameObject.Find("Blue Block");
+		builder (parseFile());
+	}
+
+	string [] parseFile () {
 		TextAsset t = new TextAsset();
 		string[] level;
-		string[] lines;
 		if (PlayerPrefs.GetString("Last Menu") == "Campaign" && GetComponent<CharacterMovement>() != null) {
 			if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
 				t = Resources.Load("World1") as TextAsset;
@@ -49,12 +52,8 @@ public class LevelBuilder : MonoBehaviour {
 				t = Resources.Load("World3") as TextAsset;
 			}
 			level = t.text.Split("*"[0]);
-			lines = level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
+			return level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
 		} else {
-			if (GetComponent<CharacterMovement>() == null) {
-				redBlock = GameObject.Find("Red Block");
-				blueBlock = GameObject.Find("Blue Block");
-			}
 			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 			StreamReader r;
 			if (File.Exists(filePath)) {
@@ -68,9 +67,8 @@ public class LevelBuilder : MonoBehaviour {
 				r = File.OpenText(filePath);
 			}
 			level = r.ReadToEnd().Split("*"[0]);
-			lines = level[0].Split("\n"[0]);
+			return level[0].Split("\n"[0]);
 		}
-		builder (lines);
 	}
 
 	public void builder (string[] lines) {
@@ -114,18 +112,10 @@ public class LevelBuilder : MonoBehaviour {
 					createBlock (switchBlock, j, i).tag = "Switch";
 				} else if (lines [i] [j] == 'R') {
 					numberOfBlocks++;
-					if (GetComponent<CharacterMovement>() != null) {		
-						createBlock(redOrBlueBlock, j, i).tag = "RedBlock";
-					} else {
-						createBlock(redBlock, j, i).tag = "RedBlock";
-					}
+					createBlock(redBlock, j, i).tag = "RedBlock";
 				} else if (lines [i] [j] == 'B') {
 					numberOfBlocks++;
-					if (GetComponent<CharacterMovement>() != null) {
-						createBlock(redOrBlueBlock, j, i).tag = "BlueBlock";
-					} else {
-						createBlock(blueBlock, j, i).tag = "BlueBlock";
-					}
+					createBlock(blueBlock, j, i).tag = "BlueBlock";
 				} else if (lines [i] [j] == 'E') {
 					createBlock (rotatorR, j, i).tag = "RotatorR";
 				} else if (lines [i] [j] == 'W') {
@@ -210,10 +200,11 @@ public class LevelBuilder : MonoBehaviour {
 		tempG = g + ((gInc * xDeduct) + (gInc2 * zDeduct));
 		tempB = b + ((bInc * xDeduct) + (bInc2 * zDeduct));
 		if (block.name == "Multistep Block(Clone)" && GetComponent<CharacterMovement>() == null) {
-			block.GetComponent<Renderer>().material.color = new Color((tempR + Camera.main.backgroundColor.r)/2, (tempG + Camera.main.backgroundColor.g)/2, (tempB + Camera.main.backgroundColor.b)/2);
-		} else {
-			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB);
+			tempR = ((tempR + Camera.main.backgroundColor.r) / 2);
+			tempG = ((tempG + Camera.main.backgroundColor.g) / 2);
+			tempB = ((tempB + Camera.main.backgroundColor.b) / 2);
 		}
+		block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB);
 	}
 
 	public List<GameObject> getBlocks () {
@@ -235,22 +226,5 @@ public class LevelBuilder : MonoBehaviour {
 
 	public Vector3 getCenter () {
 		return center;
-	}
-
-	void randomColors () {
-		Camera.main.backgroundColor = new Color (
-			Random.Range (0.0f, 1.0f), 
-			Random.Range (0.0f, 1.0f), 
-			Random.Range (0.0f, 1.0f)
-		);
-		r = Random.Range (0.0f, 0.5f);
-		g = Random.Range (0.0f, 0.5f);
-		b = Random.Range (0.0f, 0.5f);
-		rInc = Random.Range (-0.15f, 0.15f);
-		gInc = Random.Range (-0.15f, 0.15f);
-		bInc = Random.Range (-0.15f, 0.15f);
-		rInc2 = Random.Range (-0.15f, 0.15f);
-		gInc2 = Random.Range (-0.15f, 0.15f);
-		bInc2 = Random.Range (-0.15f, 0.15f);
 	}
 }
