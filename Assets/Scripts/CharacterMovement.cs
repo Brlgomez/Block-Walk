@@ -28,6 +28,7 @@ public class CharacterMovement : MonoBehaviour {
 	int numberOfBlocks;
 	float initialOrthoSize;
 	GameObject playerOn;
+	bool canPlayerMove = true;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
@@ -59,7 +60,7 @@ public class CharacterMovement : MonoBehaviour {
 		if (moveCharacter) {
 			movePlayer ();
 		}
-		if (checkForSolution) {
+		if (checkForSolution && canPlayerMove) {
 			timerForSolution += Time.deltaTime;
 			if (timerForSolution > maxTimeForSolution) {
 				checkSolution ();
@@ -119,7 +120,7 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void mouseDrag () {
-		if (!GetComponent<GameplayInterface> ().isMenuOn () && !moveCharacter) {
+		if (!GetComponent<GameplayInterface> ().isMenuOn () && !moveCharacter && canPlayerMove) {
 			GameObject target = returnClickedObject ();
 			if (target != null && target.layer == 8 && !moveCharacter) {
 				dragBlocks (target);
@@ -334,7 +335,7 @@ public class CharacterMovement : MonoBehaviour {
 		int numberOfBlocks = GetComponent<LevelBuilder> ().getNumberOfBlocks ();
 		checkForSolution = false;
 		timerForSolution = 0;
-		if ((numberOfBlocks == 1 && playerOn.tag != "Switch") || numberOfBlocks < 1) {
+		if ((numberOfBlocks == 1 && (playerOn.tag != "Switch" && playerOn.tag != "RotatorR" && playerOn.tag != "RotatorL")) || numberOfBlocks < 1) {
 			GetComponent<GameplayInterface> ().winText ();
 			Destroy (GetComponent<CharacterMovement> ());
 		} else if (cameraFixed) {
@@ -353,5 +354,9 @@ public class CharacterMovement : MonoBehaviour {
 				Destroy (GetComponent<CharacterMovement> ());
 			}
 		}
+	}
+
+	public void setIfPlayerCanMove (bool b) {
+		canPlayerMove = b;
 	}
 }

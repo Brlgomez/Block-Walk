@@ -234,6 +234,10 @@ public class EditorInterface : MonoBehaviour {
 					File.AppendAllText(filePath, "R");
 				} else if (blocks[i][j].name == "Blue Block(Clone)") {
 					File.AppendAllText(filePath, "B");
+				} else if (blocks[i][j].name == "Rotate Block R(Clone)") {
+					File.AppendAllText(filePath, "E");
+				} else if (blocks[i][j].name == "Rotate Block L(Clone)") {
+					File.AppendAllText(filePath, "W");
 				}
 			}
 			File.AppendAllText(filePath, "\n");

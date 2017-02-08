@@ -247,6 +247,10 @@ public class MainMenuInterface : MonoBehaviour {
 						displayBlockImage(i, j, redBlock);
 					} else if (lines[i][j] == 'B') {
 						displayBlockImage(i, j, blueBlock);
+					} else if (lines[i][j] == 'E') {
+						displayBlockImage(i, j, standardBlock);
+					} else if (lines[i][j] == 'W') {
+						displayBlockImage(i, j, standardBlock);
 					}
 				}
 				level += "\n";
