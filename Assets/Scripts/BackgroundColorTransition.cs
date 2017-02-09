@@ -82,10 +82,18 @@ public class BackgroundColorTransition : MonoBehaviour {
 		TextAsset t = new TextAsset ();
 		string[] level;
 		string[] lines;
-		if (scene == "To Main Menu" || scene == "To Main Menu From Editor") {
-			return new Color32(60, 78, 87, 255);
-		}
-		else if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
+		if (scene == "To Main Menu" || scene == "To Main Menu From Editor")  {
+			if (PlayerPrefs.GetString("Last Menu") == "User") {
+				return MenuColors.editorColor;
+			} else if (((PlayerPrefs.GetInt("Level", 0) - 1)/16) == 0) {
+				return MenuColors.world1Color;
+			} else if (((PlayerPrefs.GetInt("Level", 0) - 1)/16) == 1) {
+				return MenuColors.world2Color;
+			} else if (((PlayerPrefs.GetInt("Level", 0) - 1)/16) == 2) {
+				return MenuColors.world3Color;
+			}
+			return MenuColors.menuColor;
+		} else if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
 			if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
 				t = Resources.Load("World1") as TextAsset;
 			} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
@@ -103,7 +111,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 				level = r.ReadToEnd().Split("*"[0]);
 				lines = level[0].Split("\n"[0]);
 			} else {
-				return new Color32(160, 192, 224, 255);
+				return MenuColors.editorInterface;
 			}
 		} 
 		string[] color = lines [0].Split (","[0]);

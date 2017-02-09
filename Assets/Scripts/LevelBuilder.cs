@@ -5,10 +5,15 @@ using System.IO;
 
 public class LevelBuilder : MonoBehaviour {
 
+	private int startOrthoMin = 5;
+	private int startOrthoMax = 14;
+	private int endOrthoMin = 4;
+	private int endOrthoMax = 8;
+
 	List<GameObject> blocks = new List<GameObject> ();
 	float r, g, b;
-	float rInc, gInc, bInc;
-	float rInc2, gInc2, bInc2;
+	float rIncX, gIncX, bIncX;
+	float rIncZ, gIncZ, bIncZ;
 	int numberOfBlocks;
 	Vector3 center;
 	float xMin = 100;
@@ -80,22 +85,22 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	void setVariables (string[] lines) {
-		string[] color = lines [0].Split (","[0]);
-		string[] rgb = lines [1].Split (","[0]);
-		string[] rgbInc = lines [2].Split (","[0]);
-		string[] xOrZ = lines [3].Split (","[0]);
-		Camera.main.backgroundColor = new Color32 (byte.Parse (color[0]), byte.Parse (color [1]), byte.Parse (color [2]), 255);
-		r = float.Parse (rgb [0]);
-		g = float.Parse (rgb [1]);
-		b = float.Parse (rgb [2]);
-		rInc = float.Parse (rgbInc [0]);
-		gInc = float.Parse (rgbInc [1]);
-		bInc = float.Parse (rgbInc [2]);
-		rInc2 = float.Parse (xOrZ [0]);
-		gInc2 = float.Parse (xOrZ [1]);
-		bInc2 = float.Parse (xOrZ [2]);
+		string[] bg = lines [0].Split (","[0]);
+		string[] blockRGB = lines [1].Split (","[0]);
+		string[] rgbIncX = lines [2].Split (","[0]);
+		string[] rgbIncZ = lines [3].Split (","[0]);
+		Camera.main.backgroundColor = new Color32 (byte.Parse (bg [0]), byte.Parse (bg [1]), byte.Parse (bg [2]), 255);
+		r = float.Parse (blockRGB [0]);
+		g = float.Parse (blockRGB [1]);
+		b = float.Parse (blockRGB [2]);
+		rIncX = float.Parse (rgbIncX [0]);
+		gIncX = float.Parse (rgbIncX [1]);
+		bIncX = float.Parse (rgbIncX [2]);
+		rIncZ = float.Parse (rgbIncZ [0]);
+		gIncZ = float.Parse (rgbIncZ [1]);
+		bIncZ = float.Parse (rgbIncZ [2]);
 		if (GetComponent<CharacterMovement>() == null) {
-			GetComponent<EditorInterface>().setVariables(r, g, b, rInc, gInc, bInc, rInc2, gInc2, bInc2);
+			GetComponent<EditorInterface>().setVariables(r, g, b, rIncX, gIncX, bIncX, rIncZ, gIncZ, bIncZ);
 		}
 	}
 
@@ -168,11 +173,11 @@ public class LevelBuilder : MonoBehaviour {
 		float yHeight1 = Mathf.Abs (xMin - xMax);
 		float yHeight2 = Mathf.Abs (zMin - zMax);
 		Camera.main.orthographicSize = ((rightMost - leftMost) - (rightMost - leftMost) / 4.5f);
-		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 5, 14);
+		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, startOrthoMin, startOrthoMax);
 		if ((yHeight2 / yHeight1) < 1.625f) {
-			center = new Vector3 ((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, 4, 8), (zMin + zMax) / 2);
+			center = new Vector3 ((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
 		} else {
-			center = new Vector3 ((xMin + xMax) / 2, Mathf.Clamp((yHeight2 / 2) + 1.25f, 4, 8), (zMin + zMax) / 2);
+			center = new Vector3 ((xMin + xMax) / 2, Mathf.Clamp((yHeight2 / 2) + 1.25f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
 		}
 		if (rightMost != Mathf.Abs(leftMost)) {
 			Camera.main.transform.position = new Vector3 (
@@ -196,9 +201,9 @@ public class LevelBuilder : MonoBehaviour {
 			xDeduct += -3.5f;
 			zDeduct += -6.5f;
 		}
-		tempR = r + ((rInc * xDeduct) + (rInc2 * zDeduct));
-		tempG = g + ((gInc * xDeduct) + (gInc2 * zDeduct));
-		tempB = b + ((bInc * xDeduct) + (bInc2 * zDeduct));
+		tempR = r + ((rIncX * xDeduct) + (rIncZ * zDeduct));
+		tempG = g + ((gIncX * xDeduct) + (gIncZ * zDeduct));
+		tempB = b + ((bIncX * xDeduct) + (bIncZ * zDeduct));
 		if (block.name == "Multistep Block(Clone)" && GetComponent<CharacterMovement>() == null) {
 			tempR = ((tempR + Camera.main.backgroundColor.r) / 2);
 			tempG = ((tempG + Camera.main.backgroundColor.g) / 2);

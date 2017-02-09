@@ -9,28 +9,14 @@ using System.IO;
 public class MainMenuInterface : MonoBehaviour {
 
 	bool loading = false;
-	Transform mainMenu;
-	Transform worlds;
-	Transform levels;
-	Transform userCreated;
-	Transform confirmation;
-	GameObject worldText;
-	GameObject userText;
-	GameObject blockHolder;
-	GameObject standardBlock;
-	GameObject multistepBlock;
-	GameObject switchBlock;
-	GameObject redBlock;
-	GameObject blueBlock;
-	GameObject rotateRBlock;
-	GameObject rotateLBlock;
-	GameObject playButton;
-	GameObject editButton;
-	GameObject deleteButton;
+	Transform mainMenu, worlds, levels, userCreated, confirmation;
+	GameObject worldText, userText, blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock;
+	GameObject rotateRBlock, rotateLBlock, playButton, editButton, deleteButton;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
 	float deltaTime = 0;
 	bool transition = false;
+	Vector3 levelIconStart, levelIconEnd;
 
 	void Start () {
 		mainMenu = GameObject.Find ("Menu").transform;
@@ -56,10 +42,19 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 		if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
 			toLevelSelect(((PlayerPrefs.GetInt("Level", 0) - 1)/16));
+			if (((PlayerPrefs.GetInt("Level", 0) - 1)/16) == 0) {
+				Camera.main.backgroundColor = MenuColors.world1Color;
+			} else if (((PlayerPrefs.GetInt("Level", 0) - 1)/16) == 1) {
+				Camera.main.backgroundColor = MenuColors.world2Color;
+			} else if (((PlayerPrefs.GetInt("Level", 0) - 1)/16) == 2) {
+				Camera.main.backgroundColor = MenuColors.world3Color;
+			}
 		} else if (PlayerPrefs.GetString("Last Menu") == "User") {
 			toUserCreatedLevels();
+			Camera.main.backgroundColor = MenuColors.editorColor;
 		} else {
 			toMainMenu();
+			Camera.main.backgroundColor = MenuColors.menuColor;
 		}
 		PlayerPrefs.SetString("Last Menu", "");
 		PlayerPrefs.SetInt("Shift Camera", 0);
@@ -77,24 +72,34 @@ public class MainMenuInterface : MonoBehaviour {
 				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.one, deltaTime);
 				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
 				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
+				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.menuColor, deltaTime);
 			} else if (interfaceMenu == 1) {
 				worlds.localScale = Vector3.Slerp(worlds.localScale, Vector3.one, deltaTime);
 				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
 				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
 				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
 				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
+				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.worldColor, deltaTime);
 			} else if (interfaceMenu == 2) {
 				worlds.transform.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
 				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.one, deltaTime);
 				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
 				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
 				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
+				if (levelMultiplier/16 == 0) {
+					Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.world1Color, deltaTime);
+				} else if (levelMultiplier/16 == 1) {
+					Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.world2Color, deltaTime);
+				} else if (levelMultiplier/16 == 2) {
+					Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.world3Color, deltaTime);
+				}
 			} else if (interfaceMenu == 3) {
 				worlds.transform.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
 				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
 				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
 				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.one, deltaTime);
 				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
+				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.editorColor, deltaTime);
 			} else if (interfaceMenu == 4) {
 				worlds.transform.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
 				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
@@ -113,7 +118,6 @@ public class MainMenuInterface : MonoBehaviour {
 		
 	public void openEditor () {
 		PlayerPrefs.SetString("Last Menu", "User");
-		destroyBlockChildren();
 		GetComponent<BackgroundColorTransition> ().transition ("Editor From Main Menu");
 	}
 
@@ -143,7 +147,6 @@ public class MainMenuInterface : MonoBehaviour {
 		PlayerPrefs.SetString("Last Menu", "User");
 		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 		if (File.Exists(filePath)) {
-			destroyBlockChildren();
 			GetComponent<BackgroundColorTransition>().transition("Level From Main Menu");
 		}
 	}
@@ -168,6 +171,9 @@ public class MainMenuInterface : MonoBehaviour {
 		enableTransition (2);
 		worldText.GetComponent<Text> ().text = "World " + (world + 1);
 		levelMultiplier = world * 16;
+		for (int i = 0; i < 16; i++) {
+			levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = Resources.Load<Sprite>("Levels/" + ((world + 1) + "-" + (i + 1)));
+		}
 	}
 
 	public void toUserCreatedLevels () {

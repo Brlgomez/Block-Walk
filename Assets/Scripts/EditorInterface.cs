@@ -17,8 +17,8 @@ public class EditorInterface : MonoBehaviour {
 	GameObject optionHolder;
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
-	GameObject rInc, gInc, bInc;
-	GameObject rInc2, gInc2, bInc2;
+	GameObject rIncX, gIncX, bIncX;
+	GameObject rIncZ, gIncZ, bIncZ;
 	GameObject highlight;
 
 	bool menuOn = true;
@@ -105,12 +105,12 @@ public class EditorInterface : MonoBehaviour {
 		rB = GameObject.Find("Block R");
 		gB = GameObject.Find("Block G");
 		bB = GameObject.Find("Block B");
-		rInc = GameObject.Find("R Inc");
-		gInc = GameObject.Find("G Inc");
-		bInc = GameObject.Find("B Inc");
-		rInc2 = GameObject.Find("R Inc 2");
-		gInc2 = GameObject.Find("G Inc 2");
-		bInc2 = GameObject.Find("B Inc 2");
+		rIncX = GameObject.Find("R Inc");
+		gIncX = GameObject.Find("G Inc");
+		bIncX = GameObject.Find("B Inc");
+		rIncZ = GameObject.Find("R Inc 2");
+		gIncZ = GameObject.Find("G Inc 2");
+		bIncZ = GameObject.Find("B Inc 2");
 
 		r.GetComponent<Slider>().value = (Camera.main.backgroundColor.r * 255);
 		g.GetComponent<Slider>().value = (Camera.main.backgroundColor.g * 255);
@@ -118,12 +118,12 @@ public class EditorInterface : MonoBehaviour {
 		rB.GetComponent<Slider>().value = sR;
 		gB.GetComponent<Slider>().value = sG;
 		bB.GetComponent<Slider>().value = sB;
-		rInc.GetComponent<Slider>().value = sRInc;
-		gInc.GetComponent<Slider>().value = sGInc;
-		bInc.GetComponent<Slider>().value = sBInc;
-		rInc2.GetComponent<Slider>().value = sRInc2;
-		gInc2.GetComponent<Slider>().value = sGInc2;
-		bInc2.GetComponent<Slider>().value = sBInc2;
+		rIncX.GetComponent<Slider>().value = sRInc;
+		gIncX.GetComponent<Slider>().value = sGInc;
+		bIncX.GetComponent<Slider>().value = sBInc;
+		rIncZ.GetComponent<Slider>().value = sRInc2;
+		gIncZ.GetComponent<Slider>().value = sGInc2;
+		bIncZ.GetComponent<Slider>().value = sBInc2;
 
 		r.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBackgroundColor ();});
 		g.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBackgroundColor ();});
@@ -131,12 +131,12 @@ public class EditorInterface : MonoBehaviour {
 		rB.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
 		gB.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
 		bB.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		rInc.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		gInc.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		bInc.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		rInc2.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		gInc2.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		bInc2.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
+		rIncX.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
+		gIncX.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
+		bIncX.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
+		rIncZ.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
+		gIncZ.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
+		bIncZ.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
 
 		changeBackgroundColor();
 	}
@@ -220,9 +220,9 @@ public class EditorInterface : MonoBehaviour {
 		float tempR, tempG, tempB;
 		float blockX = block.transform.position.x - 3.5f;
 		float blockZ = block.transform.position.z - 6.5f;
-		tempR = rB.GetComponent<Slider>().value + ((rInc.GetComponent<Slider>().value * blockX) + (rInc2.GetComponent<Slider>().value * blockZ));
-		tempG = gB.GetComponent<Slider>().value + ((gInc.GetComponent<Slider>().value * blockX) + (gInc2.GetComponent<Slider>().value * blockZ));
-		tempB = bB.GetComponent<Slider>().value + ((bInc.GetComponent<Slider>().value * blockX) + (bInc2.GetComponent<Slider>().value * blockZ));
+		tempR = rB.GetComponent<Slider>().value + ((rIncX.GetComponent<Slider>().value * blockX) + (rIncZ.GetComponent<Slider>().value * blockZ));
+		tempG = gB.GetComponent<Slider>().value + ((gIncX.GetComponent<Slider>().value * blockX) + (gIncZ.GetComponent<Slider>().value * blockZ));
+		tempB = bB.GetComponent<Slider>().value + ((bIncX.GetComponent<Slider>().value * blockX) + (bIncZ.GetComponent<Slider>().value * blockZ));
 		if (block.name == "Multistep Block(Clone)") {
 			tempR = ((tempR + Camera.main.backgroundColor.r) / 2);
 			tempG = ((tempG + Camera.main.backgroundColor.g) / 2);
@@ -238,9 +238,9 @@ public class EditorInterface : MonoBehaviour {
 		File.AppendAllText(filePath, "\n");
 		File.AppendAllText(filePath, rB.GetComponent<Slider>().value + "," + gB.GetComponent<Slider>().value + "," + bB.GetComponent<Slider>().value);
 		File.AppendAllText(filePath, "\n");
-		File.AppendAllText(filePath, rInc.GetComponent<Slider>().value + "," + gInc.GetComponent<Slider>().value + "," + bInc.GetComponent<Slider>().value);
+		File.AppendAllText(filePath, rIncX.GetComponent<Slider>().value + "," + gIncX.GetComponent<Slider>().value + "," + bIncX.GetComponent<Slider>().value);
 		File.AppendAllText(filePath, "\n");
-		File.AppendAllText(filePath, rInc2.GetComponent<Slider>().value + "," + gInc2.GetComponent<Slider>().value + "," + bInc2.GetComponent<Slider>().value);		
+		File.AppendAllText(filePath, rIncZ.GetComponent<Slider>().value + "," + gIncZ.GetComponent<Slider>().value + "," + bIncZ.GetComponent<Slider>().value);		
 		File.AppendAllText(filePath, "\n");
 		for (int i = 13; i >= 0; i--) {
 			for (int j = 0; j < 8; j++) { 
@@ -274,11 +274,11 @@ public class EditorInterface : MonoBehaviour {
 		rB.GetComponent<Slider>().value = Random.Range (rB.GetComponent<Slider>().minValue, rB.GetComponent<Slider>().maxValue);
 		gB.GetComponent<Slider>().value = Random.Range (gB.GetComponent<Slider>().minValue, gB.GetComponent<Slider>().maxValue);
 		bB.GetComponent<Slider>().value = Random.Range (bB.GetComponent<Slider>().minValue, bB.GetComponent<Slider>().maxValue);
-		rInc.GetComponent<Slider>().value = Random.Range (rInc.GetComponent<Slider>().minValue, rInc.GetComponent<Slider>().maxValue);
-		gInc.GetComponent<Slider>().value = Random.Range (gInc.GetComponent<Slider>().minValue, gInc.GetComponent<Slider>().maxValue);
-		bInc.GetComponent<Slider>().value = Random.Range (bInc.GetComponent<Slider>().minValue, bInc.GetComponent<Slider>().maxValue);
-		rInc2.GetComponent<Slider>().value = Random.Range (rInc2.GetComponent<Slider>().minValue, rInc2.GetComponent<Slider>().maxValue);
-		gInc2.GetComponent<Slider>().value = Random.Range (gInc2.GetComponent<Slider>().minValue, gInc2.GetComponent<Slider>().maxValue);
-		bInc2.GetComponent<Slider>().value = Random.Range (bInc2.GetComponent<Slider>().minValue, bInc2.GetComponent<Slider>().maxValue);
+		rIncX.GetComponent<Slider>().value = Random.Range (rIncX.GetComponent<Slider>().minValue, rIncX.GetComponent<Slider>().maxValue);
+		gIncX.GetComponent<Slider>().value = Random.Range (gIncX.GetComponent<Slider>().minValue, gIncX.GetComponent<Slider>().maxValue);
+		bIncX.GetComponent<Slider>().value = Random.Range (bIncX.GetComponent<Slider>().minValue, bIncX.GetComponent<Slider>().maxValue);
+		rIncZ.GetComponent<Slider>().value = Random.Range (rIncZ.GetComponent<Slider>().minValue, rIncZ.GetComponent<Slider>().maxValue);
+		gIncZ.GetComponent<Slider>().value = Random.Range (gIncZ.GetComponent<Slider>().minValue, gIncZ.GetComponent<Slider>().maxValue);
+		bIncZ.GetComponent<Slider>().value = Random.Range (bIncZ.GetComponent<Slider>().minValue, bIncZ.GetComponent<Slider>().maxValue);
 	}
 }
