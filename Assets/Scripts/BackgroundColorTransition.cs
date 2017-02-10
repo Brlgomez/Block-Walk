@@ -36,7 +36,9 @@ public class BackgroundColorTransition : MonoBehaviour {
 			if (timer > levelStartLength) {
 				cubes.position = positionOfCubes;
 				ui.localScale = Vector3.one;
-				Camera.main.GetComponent<CharacterMovement>().setIfPlayerCanMove(true);
+				if (GetComponent<CharacterMovement>() != null) {
+					GetComponent<CharacterMovement>().setIfPlayerCanMove(true);
+				}
 				Destroy (GetComponent<BackgroundColorTransition> ());
 			}
 		}

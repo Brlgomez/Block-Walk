@@ -11,6 +11,8 @@ public class LevelBuilder : MonoBehaviour {
 	private int endOrthoMax = 8;
 
 	List<GameObject> blocks = new List<GameObject> ();
+	List<GameObject> redBlocks = new List<GameObject> ();
+	List<GameObject> blueBlocks = new List<GameObject> ();
 	float r, g, b;
 	float rIncX, gIncX, bIncX;
 	float rIncZ, gIncZ, bIncZ;
@@ -233,11 +235,36 @@ public class LevelBuilder : MonoBehaviour {
 
 	void addBlock (GameObject b) {
 		blocks.Add (b);
+		if (b.name == "Red Block(Clone)") {
+			addSpecialBlock(redBlocks, b);
+		} else if (b.name == "Blue Block(Clone)") {
+			addSpecialBlock(blueBlocks, b);
+		}
+	}
+
+	void addSpecialBlock (List<GameObject> list, GameObject b) {
+		list.Add(b);
 	}
 
 	public void removeBlock (GameObject b) {
 		blocks.Remove (b);
 		numberOfBlocks--;
+	}
+
+	public void removeRedBlock (GameObject b) {
+		redBlocks.Remove (b);
+	}
+
+	public void removeBlueBlock (GameObject b) {
+		blueBlocks.Remove (b);
+	}
+
+	public List<GameObject> getRedBlocks () {
+		return redBlocks;
+	}
+
+	public List<GameObject> getBlueBlocks () {
+		return blueBlocks;
 	}
 
 	public int getNumberOfBlocks () {
