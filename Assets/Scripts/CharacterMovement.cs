@@ -28,7 +28,10 @@ public class CharacterMovement : MonoBehaviour {
 	int numberOfBlocks;
 	float initialOrthoSize;
 	GameObject playerOn;
-	bool canPlayerMove = true;
+	bool canPlayerMove = false;
+	bool panUp = false;
+	float panTimer = 0;
+	float panLimit = 1;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
@@ -42,6 +45,14 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void Update () {
+		if (panUp) {
+			panTimer += Time.deltaTime;
+			if (panTimer < panLimit) {
+				Camera.main.orthographicSize += Time.deltaTime * 1.5f;
+			} else {
+				panUp = false;
+			}
+		}
 		if (!cameraFixed) {
 			moveCamera ();
 		}
@@ -69,6 +80,7 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void moveCamera () {
+		center = GetComponent<LevelBuilder> ().getCenter ();
 		if (playerFirstMoved) {
 			shiftTimer += Time.deltaTime / 2;
 			if (center.y > initialOrthoSize) {
@@ -87,11 +99,17 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void setCameraFinalPosition () {
+		center = GetComponent<LevelBuilder> ().getCenter ();
 		transform.position = center;
 		transform.rotation = camRotateTarget;
 		Camera.main.orthographicSize = center.y;
 		cameraFixed = true;
 		PlayerPrefs.SetInt ("Shift Camera", 1);
+	}
+
+	public void setPan () {
+		panUp = true;
+		panTimer = 0;
 	}
 
 	void mouseDown () {

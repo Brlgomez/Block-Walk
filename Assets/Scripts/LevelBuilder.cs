@@ -193,6 +193,19 @@ public class LevelBuilder : MonoBehaviour {
 		);
 	}
 
+	public Vector4 getMinAndMax(){
+		return new Vector4(xMin, xMax, zMin, zMax);
+	}
+
+	public void setMinAndMax(){
+		xMin -= 1;
+		xMax += 1;
+		zMin -= 1;
+		zMax += 1;
+		GetComponent<CharacterMovement>().setPan();
+		center = new Vector3(center.x, center.y + 2, center.z);
+	}
+
 	public void changeBlockColor (GameObject block) {
 		float tempR, tempG, tempB;
 		float xDeduct = block.transform.localPosition.x;

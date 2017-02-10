@@ -148,6 +148,9 @@ public class GameplayInterface : MonoBehaviour {
 		} else if (PlayerPrefs.GetString("Last Menu") == "Editor") {
 			gameObject.AddComponent<BackgroundColorTransition>();
 			GetComponent<BackgroundColorTransition>().transition("To Editor From Test");
+		} else {
+			gameObject.AddComponent<BackgroundColorTransition>();
+			GetComponent<BackgroundColorTransition>().transition("To Main Menu");
 		}
 	}
 
