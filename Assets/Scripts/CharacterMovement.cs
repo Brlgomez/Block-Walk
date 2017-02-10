@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class CharacterMovement : MonoBehaviour {
 
-	private float maxTimeForDrag = 0.25f;
-	private float maxTimeForSolution = 0.5f;
-	private float pathThickness = 0.03f;
-	private int playerSpeed = 10;
+	static float maxTimeForDrag = 0.25f;
+	static float maxTimeForSolution = 0.5f;
+	static float pathThickness = 0.03f;
+	static int playerSpeed = 10;
 
 	GameObject player;
 	bool isMouseDrag;

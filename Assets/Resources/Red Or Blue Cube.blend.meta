@@ -6,12 +6,21 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: RedOrBlue
+    100004: RedOrBlue_000
     400000: //RootNode
+    400002: RedOrBlue
+    400004: RedOrBlue_000
     2300000: //RootNode
+    2300002: RedOrBlue
+    2300004: RedOrBlue_000
     3300000: //RootNode
+    3300002: RedOrBlue
+    3300004: RedOrBlue_000
     4300000: Cube
     4300002: Red_or_Blue
     4300004: RedOrBlue
+    4300006: RedOrBlue_000
     7400000: Default Take
     9500000: //RootNode
   materials:

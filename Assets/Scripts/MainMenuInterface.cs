@@ -9,21 +9,25 @@ using System.IO;
 public class MainMenuInterface : MonoBehaviour {
 
 	bool loading = false;
-	Transform mainMenu, worlds, levels, userCreated, confirmation;
+	GameObject mainMenu, worlds, levels, userCreated, confirmation;
 	GameObject worldText, userText, blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock;
 	GameObject rotateRBlock, rotateLBlock, playButton, editButton, deleteButton;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
-	float deltaTime = 0;
-	bool transition = false;
+	bool canTransition = true;
 	Vector3 levelIconStart, levelIconEnd;
 
 	void Start () {
-		mainMenu = GameObject.Find ("Menu").transform;
-		worlds = GameObject.Find ("Worlds").transform;
-		levels = GameObject.Find ("Levels").transform;
-		userCreated = GameObject.Find("User Created").transform;
-		confirmation = GameObject.Find("Confirmation").transform;
+		mainMenu = GameObject.Find ("Menu");
+		mainMenu.transform.position = new Vector3(-Screen.width/2, Screen.height/2, 0);
+		worlds = GameObject.Find ("Worlds");
+		worlds.transform.position = new Vector3(-Screen.width/2, Screen.height/2, 0);
+		levels = GameObject.Find ("Levels");
+		levels.transform.position = new Vector3(-Screen.width/2, Screen.height/2, 0);
+		userCreated = GameObject.Find("User Created");
+		userCreated.transform.position = new Vector3(-Screen.width/2, Screen.height/2, 0);
+		confirmation = GameObject.Find("Confirmation");
+		confirmation.transform.position = new Vector3(-Screen.width/2, Screen.height/2, 0);
 		worldText = GameObject.Find ("World Text");
 		userText = GameObject.Find("Level");
 		blockHolder = GameObject.Find("Block Holder");
@@ -41,6 +45,7 @@ public class MainMenuInterface : MonoBehaviour {
 			PlayerPrefs.SetInt("User Level", 1);
 		}
 		if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
+			interfaceMenu = 2;
 			toLevelSelect(((PlayerPrefs.GetInt("Level", 0) - 1)/16));
 			if (((PlayerPrefs.GetInt("Level", 0) - 1)/16) == 0) {
 				Camera.main.backgroundColor = MenuColors.world1Color;
@@ -50,9 +55,11 @@ public class MainMenuInterface : MonoBehaviour {
 				Camera.main.backgroundColor = MenuColors.world3Color;
 			}
 		} else if (PlayerPrefs.GetString("Last Menu") == "User") {
+			interfaceMenu = 3;
 			toUserCreatedLevels();
 			Camera.main.backgroundColor = MenuColors.editorColor;
 		} else {
+			interfaceMenu = 0;
 			toMainMenu();
 			Camera.main.backgroundColor = MenuColors.menuColor;
 		}
@@ -60,81 +67,101 @@ public class MainMenuInterface : MonoBehaviour {
 		PlayerPrefs.SetInt("Shift Camera", 0);
 	}
 
-	void Update () {
-		if (transition) { 
-			deltaTime += Time.deltaTime * 1.5f;
-			if (deltaTime > 1) {
-				transition = false;
-			}
-			if (interfaceMenu == 0) {
-				worlds.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
-				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
-				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.one, deltaTime);
-				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
-				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
-				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.menuColor, deltaTime);
-			} else if (interfaceMenu == 1) {
-				worlds.localScale = Vector3.Slerp(worlds.localScale, Vector3.one, deltaTime);
-				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
-				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
-				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
-				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
-				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.worldColor, deltaTime);
-			} else if (interfaceMenu == 2) {
-				worlds.transform.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
-				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.one, deltaTime);
-				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
-				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
-				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
-				if (levelMultiplier/16 == 0) {
-					Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.world1Color, deltaTime);
-				} else if (levelMultiplier/16 == 1) {
-					Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.world2Color, deltaTime);
-				} else if (levelMultiplier/16 == 2) {
-					Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.world3Color, deltaTime);
-				}
+	public void menuCanTransition () {
+		canTransition = true;
+	}
+
+	public void toMainMenu () {
+		if (canTransition) {
+			canTransition = false;
+			destroyBlockChildren();
+			mainMenu.AddComponent<MenuTransitions>();
+			mainMenu.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.menuColor);
+			if (interfaceMenu == 1) {
+				worlds.AddComponent<MenuTransitions>();
 			} else if (interfaceMenu == 3) {
-				worlds.transform.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
-				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
-				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
-				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.one, deltaTime);
-				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.zero, deltaTime);
-				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, MenuColors.editorColor, deltaTime);
-			} else if (interfaceMenu == 4) {
-				worlds.transform.localScale = Vector3.Slerp(worlds.localScale, Vector3.zero, deltaTime);
-				levels.localScale = Vector3.Slerp(levels.localScale, Vector3.zero, deltaTime);
-				mainMenu.localScale = Vector3.Slerp(mainMenu.localScale, Vector3.zero, deltaTime);
-				userCreated.localScale = Vector3.Slerp(userCreated.localScale, Vector3.zero, deltaTime);
-				confirmation.localScale = Vector3.Slerp(confirmation.localScale, Vector3.one, deltaTime);
+				userCreated.AddComponent<MenuTransitions>();
 			}
+			interfaceMenu = 0;
+		}
+	}
+
+	public void toWorldSelect () {
+		if (canTransition) {
+			canTransition = false;
+			worlds.AddComponent<MenuTransitions>();
+			worlds.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
+			if (interfaceMenu == 0) {
+				mainMenu.AddComponent<MenuTransitions>();
+			} else if (interfaceMenu == 2) {
+				levels.AddComponent<MenuTransitions>();
+			}
+			interfaceMenu = 1;
+		}
+	}
+
+	public void toLevelSelect (int world) {
+		if (canTransition) {
+			canTransition = false;
+			if (interfaceMenu == 1) {
+				worlds.AddComponent<MenuTransitions>();
+			}
+			levels.AddComponent<MenuTransitions>();
+			if (world == 0) {
+				levels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.world1Color);
+			} else if (world == 1) {
+				levels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.world2Color);
+			} else if (world == 2) {
+				levels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.world3Color);
+			}
+			interfaceMenu = 2;
+			worldText.GetComponent<Text>().text = "World " + (world + 1);
+			levelMultiplier = world * 16;
+			for (int i = 0; i < 16; i++) {
+				levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = Resources.Load<Sprite>("Levels/" + ((world + 1) + "-" + (i + 1)));
+			}
+		}
+	}
+
+	public void toUserCreatedLevels () {
+		if (canTransition) {
+			disableButtons();
+			showLevel();
+			if (interfaceMenu == 0) {
+				mainMenu.AddComponent<MenuTransitions>();
+			}
+			userCreated.AddComponent<MenuTransitions>();
+			userCreated.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
+			interfaceMenu = 3;
 		}
 	}
 
 	public void LoadLevel (int level) {
 		PlayerPrefs.SetString("Last Menu", "Campaign");
 		PlayerPrefs.SetInt ("Level", level + levelMultiplier);
+		gameObject.AddComponent<BackgroundColorTransition> ();
 		GetComponent<BackgroundColorTransition> ().transition ("Level From Main Menu");
 	}
 		
 	public void openEditor () {
 		PlayerPrefs.SetString("Last Menu", "User");
+		gameObject.AddComponent<BackgroundColorTransition> ();
 		GetComponent<BackgroundColorTransition> ().transition ("Editor From Main Menu");
 	}
 
 	public void openConfirmation () {
 		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 		if (File.Exists(filePath)) {
-			enableTransition(4);
+
 		}
 	}
 
 	public void cancelDeletion () {
-		enableTransition(3);
+
 	}
 
 	public void deleteLevel () {
 		disableButtons();
-		enableTransition (3);
 		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 		if (File.Exists(filePath)) {
 			File.Delete(filePath);
@@ -147,6 +174,7 @@ public class MainMenuInterface : MonoBehaviour {
 		PlayerPrefs.SetString("Last Menu", "User");
 		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 		if (File.Exists(filePath)) {
+			gameObject.AddComponent<BackgroundColorTransition> ();
 			GetComponent<BackgroundColorTransition>().transition("Level From Main Menu");
 		}
 	}
@@ -156,32 +184,6 @@ public class MainMenuInterface : MonoBehaviour {
 			SceneManager.LoadScene (n);
 		}
 		loading = true;
-	}
-
-	public void toMainMenu () {
-		destroyBlockChildren();
-		enableTransition (0);
-	}
-
-	public void toWorldSelect () {
-		enableTransition (1);
-	}
-
-	public void toLevelSelect (int world) {
-		enableTransition (2);
-		worldText.GetComponent<Text> ().text = "World " + (world + 1);
-		levelMultiplier = world * 16;
-		for (int i = 0; i < 16; i++) {
-			levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = Resources.Load<Sprite>("Levels/" + ((world + 1) + "-" + (i + 1)));
-		}
-	}
-
-	public void toUserCreatedLevels () {
-		confirmation.localScale = Vector3.zero;
-		deltaTime = 0;
-		disableButtons();
-		showLevel();
-		enableTransition (3);
 	}
 
 	public void left () {
@@ -208,12 +210,6 @@ public class MainMenuInterface : MonoBehaviour {
 			PlayerPrefs.SetInt("User Level", 1);
 			showLevel();
 		}
-	}
-
-	void enableTransition (int i) {
-		interfaceMenu = i;
-		deltaTime = 0;
-		transition = true;
 	}
 
 	void disableButtons () {
