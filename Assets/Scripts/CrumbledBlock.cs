@@ -15,11 +15,10 @@ public class CrumbledBlock : MonoBehaviour {
 		r = mat.color.r;
 		g = mat.color.g;
 		b = mat.color.b;
-		mat.color = new Color ((r + bg.r) / colorDivide, (g + bg.g) / colorDivide, (b + bg.b) / colorDivide, 1);
+		mat.color = new Color ((r + bg.r) / colorDivide, (g + bg.g) / colorDivide, (b + bg.b) / colorDivide, 0.75f);
 	}
 
 	public void decreaseSteps () {
-		GetComponent<MeshFilter> ().mesh = (Mesh)Resources.Load ("StandardBlock", typeof(Mesh));
 		Renderer renderer = GetComponent<Renderer> ();
 		Material mat = renderer.material;
 		if (numberOfSteps > 1) {

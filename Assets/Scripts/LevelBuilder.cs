@@ -208,8 +208,10 @@ public class LevelBuilder : MonoBehaviour {
 			tempR = ((tempR + Camera.main.backgroundColor.r) / 2);
 			tempG = ((tempG + Camera.main.backgroundColor.g) / 2);
 			tempB = ((tempB + Camera.main.backgroundColor.b) / 2);
+			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB, 0.75f);
+		} else {
+			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB);
 		}
-		block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB);
 	}
 
 	public List<GameObject> getBlocks () {
