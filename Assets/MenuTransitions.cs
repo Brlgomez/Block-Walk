@@ -9,7 +9,7 @@ public class MenuTransitions : MonoBehaviour {
 	Vector3 [] newPos;
 	float direction;
 	float timer = 0;
-	float timerLimit = 1f;
+	float timerLimit = 0.75f;
 	Color32 backgroundColor;
 
 	void Start () {
@@ -32,7 +32,7 @@ public class MenuTransitions : MonoBehaviour {
 	}
 
 	void Update () {
-		timer += Time.deltaTime * 2f;
+		timer += Time.deltaTime * 1.5f;
 		if (timer > timerLimit) {
 			for (int i = 0; i < items.Count; i++) {
 				if (items[i].GetComponent<Button>() != null) {
@@ -51,7 +51,7 @@ public class MenuTransitions : MonoBehaviour {
 				Camera.main.backgroundColor = Color32.Lerp(Camera.main.backgroundColor, backgroundColor, timer);
 			}
 			for (int i = 0; i < items.Count; i++) {
-				items[i].transform.position = Vector3.Slerp(items[i].transform.position, newPos[i], timer * ((items[i].transform.position.y)/(Screen.height/2)));
+				items[i].transform.position = Vector3.Lerp(items[i].transform.position, newPos[i], timer * ((i + 10) * 0.05f));
 			}
 		}
 	}

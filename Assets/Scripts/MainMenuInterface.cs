@@ -129,11 +129,36 @@ public class MainMenuInterface : MonoBehaviour {
 			showLevel();
 			if (interfaceMenu == 0) {
 				mainMenu.AddComponent<MenuTransitions>();
+			} else if (interfaceMenu == 4) {
+				confirmation.AddComponent<MenuTransitions>();
 			}
 			userCreated.AddComponent<MenuTransitions>();
 			userCreated.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
 			interfaceMenu = 3;
 		}
+	}
+
+	public void openConfirmation () {
+		if (interfaceMenu == 3) {
+			confirmation.AddComponent<MenuTransitions>();
+			confirmation.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
+			userCreated.AddComponent<MenuTransitions>();
+			interfaceMenu = 4;
+			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
+			if (File.Exists(filePath)) {
+			}
+		}
+	}
+
+	public void deleteLevel () {
+		disableButtons();
+		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
+		if (File.Exists(filePath)) {
+			File.Delete(filePath);
+			userText.GetComponent<Text>().text = PlayerPrefs.GetInt("User Level") + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
+			destroyBlockChildren();
+		}
+		toUserCreatedLevels();
 	}
 
 	public void LoadLevel (int level) {
@@ -149,25 +174,8 @@ public class MainMenuInterface : MonoBehaviour {
 		GetComponent<BackgroundColorTransition> ().transition ("Editor From Main Menu");
 	}
 
-	public void openConfirmation () {
-		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
-		if (File.Exists(filePath)) {
-
-		}
-	}
-
 	public void cancelDeletion () {
-
-	}
-
-	public void deleteLevel () {
-		disableButtons();
-		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
-		if (File.Exists(filePath)) {
-			File.Delete(filePath);
-			userText.GetComponent<Text>().text = PlayerPrefs.GetInt("User Level") + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
-			destroyBlockChildren();
-		}
+		toUserCreatedLevels();
 	}
 
 	public void loadUserLevel () {

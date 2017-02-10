@@ -19,11 +19,13 @@ public class BackgroundColorTransition : MonoBehaviour {
 	Transform ui;
 	Transform cubes;
 	Vector3 positionOfCubes;
+	Vector3 endPosOfUi;
 
 	void Awake () {
 		ui = GameObject.Find ("Floor").transform;
 		cubes = GameObject.Find ("Cubes").transform;
 		positionOfCubes = cubes.position;
+		endPosOfUi = new Vector3(-Screen.width/2, ui.transform.position.y, ui.transform.position.z);
 	}
 
 	void Update () {
@@ -41,7 +43,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 			timer += Time.deltaTime;
 			if (timer < transitionLength - 0.1f) {
 				Camera.main.backgroundColor = Color32.Lerp (Camera.main.backgroundColor, newColor, timer * colorSpeed);
-				ui.localScale = Vector3.Lerp (ui.localScale, Vector3.zero, timer * uiSpeed);
+				ui.transform.position = Vector3.Lerp (ui.transform.position, endPosOfUi, timer * uiSpeed);
 				cubes.position = Vector3.Lerp (cubes.position, Vector3.right * 25, timer * cubesSpeed);
 			} else if (timer > transitionLength - 0.1f && timer < transitionLength) {
 				Camera.main.backgroundColor = newColor;
