@@ -166,7 +166,7 @@ public class EditorInterface : MonoBehaviour {
 	public void toMainMenu () {
 		PlayerPrefs.SetString("Last Menu", "User");
 		gameObject.AddComponent<BackgroundColorTransition>();
-		GetComponent<BackgroundColorTransition>().transition("To Main Menu From Editor");
+		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toMainFromEditor);
 	}
 
 	public void nextScene (int n) {
@@ -178,7 +178,7 @@ public class EditorInterface : MonoBehaviour {
 		saveLevel();
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		gameObject.AddComponent<BackgroundColorTransition>();
-		GetComponent<BackgroundColorTransition>().transition("To Level From Editor");
+		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toTestFromEditor);
 	}
 		
 	public bool isMenuOn () {

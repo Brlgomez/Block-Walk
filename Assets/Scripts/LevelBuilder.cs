@@ -51,15 +51,15 @@ public class LevelBuilder : MonoBehaviour {
 		TextAsset t = new TextAsset();
 		string[] level;
 		if (PlayerPrefs.GetString("Last Menu") == "Campaign" && GetComponent<CharacterMovement>() != null) {
-			if (PlayerPrefs.GetInt("Level", 0) >= 1 && PlayerPrefs.GetInt("Level", 0) <= 16) {
+			if (((GetComponent<VariableManagement>().getWorldLevel() - 1)/16) == 0) {
 				t = Resources.Load("World1") as TextAsset;
-			} else if (PlayerPrefs.GetInt("Level", 0) >= 17 && PlayerPrefs.GetInt("Level", 0) <= 32) {
+			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1)/16) == 1) {
 				t = Resources.Load("World2") as TextAsset;
-			} else if (PlayerPrefs.GetInt("Level", 0) >= 33 && PlayerPrefs.GetInt("Level", 0) <= 48) {
+			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1)/16) == 2) {
 				t = Resources.Load("World3") as TextAsset;
 			}
 			level = t.text.Split("*"[0]);
-			return level [(PlayerPrefs.GetInt("Level", 0) - 1) % 16].Split("\n"[0]);
+			return level [(GetComponent<VariableManagement>().getWorldLevel() - 1) % 16].Split("\n"[0]);
 		} else {
 			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 			StreamReader r;

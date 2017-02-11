@@ -34,7 +34,6 @@ public class GameplayInterface : MonoBehaviour {
 		nextLevel = GameObject.Find ("Next Level");
 		mainMenu = GameObject.Find ("Main Menu");
 		handle = GameObject.Find ("Floor");
-		turnOffButtons ();
 		if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
 			levelNum = PlayerPrefs.GetInt ("Level", 0);
 			gameStatus.GetComponent<Text>().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
@@ -48,7 +47,6 @@ public class GameplayInterface : MonoBehaviour {
 		bottomOfScreen = new Vector3 (middleWidth, handleHeight, 0);
 		topOfScreen = new Vector3 (middleWidth, height - handleHeight, 0);
 		GetComponent<BlurOptimized> ().downsample = blurDownsample;
-		handle.transform.position = new Vector3 (middleWidth, handleHeight, 0);
 		GetComponent<BackgroundColorTransition> ().levelStarting ();
 	}
 
@@ -73,7 +71,6 @@ public class GameplayInterface : MonoBehaviour {
 			holdingOnToSlider = true;
 			sliderMoving = false;
 			timer = 0;
-			turnOnButtons ();
 			GetComponent<BlurOptimized> ().enabled = true;
 		} else if (restartButton.GetComponent<BoxCollider2D> ().OverlapPoint (mousePos)) {
 			restartButtonClick ();
@@ -131,26 +128,26 @@ public class GameplayInterface : MonoBehaviour {
 	public void restartButtonClick () {
 		PlayerPrefs.SetInt ("Level", PlayerPrefs.GetInt ("Level", 0));
 		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition ("Restart");
+		GetComponent<BackgroundColorTransition> ().transition (VariableManagement.restartOrNextLevel);
 	}
 
 	public void nextLevelClick () {
 		PlayerPrefs.SetInt ("Shift Camera", 0);
 		PlayerPrefs.SetInt ("Level", (PlayerPrefs.GetInt ("Level", 0) + 1));
 		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition ("Restart");
+		GetComponent<BackgroundColorTransition> ().transition (VariableManagement.restartOrNextLevel);
 	}
 
 	public void mainMenuClick () {
 		if (PlayerPrefs.GetString("Last Menu") == "Campaign" || PlayerPrefs.GetString("Last Menu") == "User") {
 			gameObject.AddComponent<BackgroundColorTransition>();
-			GetComponent<BackgroundColorTransition>().transition("To Main Menu");
+			GetComponent<BackgroundColorTransition>().transition(VariableManagement.toMainFromLevel);
 		} else if (PlayerPrefs.GetString("Last Menu") == "Editor") {
 			gameObject.AddComponent<BackgroundColorTransition>();
-			GetComponent<BackgroundColorTransition>().transition("To Editor From Test");
+			GetComponent<BackgroundColorTransition>().transition(VariableManagement.toEditorFromTest);
 		} else {
 			gameObject.AddComponent<BackgroundColorTransition>();
-			GetComponent<BackgroundColorTransition>().transition("To Main Menu");
+			GetComponent<BackgroundColorTransition>().transition(VariableManagement.toMainFromLevel);
 		}
 	}
 
@@ -178,7 +175,6 @@ public class GameplayInterface : MonoBehaviour {
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;
-		turnOnButtons ();
 	}
 
 	public void loseText () {
@@ -187,33 +183,6 @@ public class GameplayInterface : MonoBehaviour {
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;
-		turnOnButtons ();
-	}
-
-	void turnOnButtons () {
-		if (!mainMenu.GetComponent<Button> ().enabled) {
-			mainMenu.GetComponent<Button> ().enabled = true;
-			mainMenu.GetComponent<Button>().image.color = Color.white;
-			mainMenu.GetComponentInChildren<Text> ().color = Color.black;
-			restartButton.GetComponent<Button> ().enabled = true;
-			restartButton.GetComponent<Button> ().image.color = Color.white;
-			restartButton.GetComponentInChildren<Text> ().color = Color.black;
-		}
-	}
-
-	void turnOffButtons () {
-		if (mainMenu.GetComponent<Button> ().enabled) {
-			mainMenu.GetComponent<Button> ().enabled = false;
-			mainMenu.GetComponent<Button> ().image.color = Color.clear;
-			mainMenu.GetComponentInChildren<Text> ().color = Color.clear;
-			restartButton.GetComponent<Button> ().enabled = false;
-			restartButton.GetComponent<Button> ().image.color = Color.clear;
-			restartButton.GetComponentInChildren<Text> ().color = Color.clear;
-			nextLevel.GetComponent<Button> ().enabled = false;
-			nextLevel.GetComponent<Button> ().image.color = Color.clear;
-			nextLevel.GetComponentInChildren<Text> ().color = Color.clear;
-			nextLevel.GetComponent<BoxCollider2D> ().size = Vector2.zero;
-		}
 	}
 
 	public bool isMenuOn () {

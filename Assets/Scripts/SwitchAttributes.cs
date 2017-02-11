@@ -56,7 +56,7 @@ public class SwitchAttributes : MonoBehaviour {
 				GetComponent<CharacterMovement> ().getPath () [i].GetComponent<BoxCollider> ().size = Vector3.one * 4;
 			}
 		}
-		if (gameObject.GetComponent<SwitchScaling>() == null) {
+		if (gameObject.GetComponent<SwitchScaling>() == null && (redBlocks.Count > 0 || blueBlocks.Count > 0)) {
 			gameObject.AddComponent<SwitchScaling>();
 		}
 	}

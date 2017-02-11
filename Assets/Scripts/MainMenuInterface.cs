@@ -165,13 +165,13 @@ public class MainMenuInterface : MonoBehaviour {
 		PlayerPrefs.SetString("Last Menu", "Campaign");
 		PlayerPrefs.SetInt ("Level", level + levelMultiplier);
 		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition ("Level From Main Menu");
+		GetComponent<BackgroundColorTransition> ().transition (VariableManagement.levelFromMain);
 	}
 		
 	public void openEditor () {
 		PlayerPrefs.SetString("Last Menu", "User");
 		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition ("Editor From Main Menu");
+		GetComponent<BackgroundColorTransition> ().transition (VariableManagement.toEditorFromMain);
 	}
 
 	public void cancelDeletion () {
@@ -183,7 +183,7 @@ public class MainMenuInterface : MonoBehaviour {
 		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
 		if (File.Exists(filePath)) {
 			gameObject.AddComponent<BackgroundColorTransition> ();
-			GetComponent<BackgroundColorTransition>().transition("Level From Main Menu");
+			GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);
 		}
 	}
 
