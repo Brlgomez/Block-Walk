@@ -12,6 +12,15 @@ public class VariableManagement : MonoBehaviour {
 	public static string toMainFromEditor = "To Main Menu From Editor";
 	public static string toTestFromEditor = "To Level From Editor";
 
+	// tags
+	public static string player = "Player";
+	public static string block = "Block";
+	public static string activeBlock = "RedBlock";
+	public static string inctiveBlock = "BlueBlock";
+	public static string switchBlock = "Switch";
+	public static string rotateR = "RotatorR";
+	public static string rotateL = "RotatorL";
+
 	// text files
 	public static string world1 = "World1";
 	public static string world2 = "World2";
@@ -26,6 +35,7 @@ public class VariableManagement : MonoBehaviour {
 	public static string worldLevel = "Level";
 	public static string userLevel = "User Level";
 	public static string lastMenu = "Last Menu";
+	public static string shiftCamera = "Shift Camera";
 
 	// last menus
 	public static string userLevelMenu = "User";

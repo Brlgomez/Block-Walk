@@ -132,7 +132,7 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public void nextLevelClick () {
-		PlayerPrefs.SetInt ("Shift Camera", 0);
+		PlayerPrefs.SetInt (VariableManagement.shiftCamera, 0);
 		PlayerPrefs.SetInt ("Level", (PlayerPrefs.GetInt ("Level", 0) + 1));
 		gameObject.AddComponent<BackgroundColorTransition> ();
 		GetComponent<BackgroundColorTransition> ().transition (VariableManagement.restartOrNextLevel);

@@ -3,7 +3,8 @@ using System.Collections;
 
 public class CrumbledBlock : MonoBehaviour {
 
-	private float colorDivide = 2;
+	static float colorDivide = 2;
+	static float alpha = 0.75f;
 
 	int numberOfSteps = 2;
 	float r, g, b;
@@ -15,7 +16,7 @@ public class CrumbledBlock : MonoBehaviour {
 		r = mat.color.r;
 		g = mat.color.g;
 		b = mat.color.b;
-		mat.color = new Color ((r + bg.r) / colorDivide, (g + bg.g) / colorDivide, (b + bg.b) / colorDivide, 0.75f);
+		mat.color = new Color ((r + bg.r) / colorDivide, (g + bg.g) / colorDivide, (b + bg.b) / colorDivide, alpha);
 	}
 
 	public void decreaseSteps () {

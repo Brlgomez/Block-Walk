@@ -5,6 +5,7 @@ public class FallingBlock : MonoBehaviour {
 
 	private int speed = 4;
 	float timer = 0;
+	float timerLimit = 0.75f;
 
 	void Start () {
 		gameObject.GetComponent<BoxCollider> ().enabled = false;
@@ -20,7 +21,7 @@ public class FallingBlock : MonoBehaviour {
 		float deltaTime = Time.deltaTime * 1.25f;
 		timer += deltaTime;
 		transform.localScale = Vector3.Lerp (transform.localScale, Vector3.zero, deltaTime * speed);
-		if (timer > 1) {
+		if (timer > timerLimit) {
 			Destroy (gameObject);
 		}
 	}

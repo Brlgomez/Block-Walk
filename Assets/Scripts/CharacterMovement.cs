@@ -31,27 +31,21 @@ public class CharacterMovement : MonoBehaviour {
 	bool canPlayerMove = false;
 	bool panUp = false;
 	float panTimer = 0;
-	float panLimit = 1;
 
 	void Start () {
-		player = GameObject.FindGameObjectWithTag ("Player");
+		player = GameObject.FindGameObjectWithTag (VariableManagement.player);
 		center = GetComponent<LevelBuilder> ().getCenter ();
 		path = new List<GameObject> ();
 		camRotateTarget = Quaternion.Euler (90, 0, 0);
 		initialOrthoSize = Camera.main.orthographicSize;
-		if (PlayerPrefs.GetInt ("Shift Camera", 0) == 1) {
+		if (PlayerPrefs.GetInt (VariableManagement.shiftCamera, 0) == 1) {
 			setCameraFinalPosition ();
 		}
 	}
 
 	void Update () {
-		if (panUp) {
-			panTimer += Time.deltaTime;
-			if (panTimer < panLimit) {
-				Camera.main.orthographicSize += Time.deltaTime * 1.5f;
-			} else {
-				panUp = false;
-			}
+		if (panUp && cameraFixed) {
+			panCamera();
 		}
 		if (!cameraFixed) {
 			moveCamera ();
@@ -76,6 +70,16 @@ public class CharacterMovement : MonoBehaviour {
 			if (timerForSolution > maxTimeForSolution) {
 				checkSolution ();
 			}
+		}
+	}
+
+	void panCamera () {
+		center = GetComponent<LevelBuilder> ().getCenter ();
+		panTimer += Time.deltaTime;
+		if (Camera.main.orthographicSize < center.y) {
+			Camera.main.orthographicSize += panTimer;
+		} else {
+			panUp = false;
 		}
 	}
 
@@ -104,7 +108,7 @@ public class CharacterMovement : MonoBehaviour {
 		transform.rotation = camRotateTarget;
 		Camera.main.orthographicSize = center.y;
 		cameraFixed = true;
-		PlayerPrefs.SetInt ("Shift Camera", 1);
+		PlayerPrefs.SetInt (VariableManagement.shiftCamera, 1);
 	}
 
 	public void setPan () {
@@ -182,7 +186,7 @@ public class CharacterMovement : MonoBehaviour {
 				}
 				if (secondToLast != null) {
 					bool smallBlockOnPath = (secondToLast == allBlocks [i] && secondToLast.transform.localScale.x < 1);
-					if (lastBlock.tag == "Switch" && smallBlockOnPath) {
+					if (lastBlock.tag == VariableManagement.switchBlock && smallBlockOnPath) {
 						nearbyBlocks.Add (allBlocks [i]);
 					}
 				}
@@ -202,7 +206,7 @@ public class CharacterMovement : MonoBehaviour {
 					returnedBlock = null;
 				}
 				if (secondToLast != null) {
-					if (lastBlock.tag == "Switch" && secondToLast == returnedBlock) {
+					if (lastBlock.tag == VariableManagement.switchBlock && secondToLast == returnedBlock) {
 						GetComponent<SwitchAttributes>().buttonPress();
 					}
 				}
@@ -268,11 +272,12 @@ public class CharacterMovement : MonoBehaviour {
 		if (path.Count == 0) {
 			path.Add(block);
 		} else {
-			if ((path[path.Count - 1].tag != "RotatorR" && path[path.Count - 1].tag != "RotatorL") || path.Count == 1) {
+			if ((path[path.Count - 1].tag != VariableManagement.rotateR && 
+				path[path.Count - 1].tag != VariableManagement.rotateL) || path.Count == 1) {
 				path.Add(block);
 			}
 		}
-		if (block.tag == "Switch" && playerOn != block) {
+		if (block.tag == VariableManagement.switchBlock && playerOn != block) {
 			GetComponent<SwitchAttributes>().buttonPress();
 			pointOnSwitch = true;
 		}
@@ -351,9 +356,12 @@ public class CharacterMovement : MonoBehaviour {
 
 	public void checkSolution () {
 		int numberOfBlocks = GetComponent<LevelBuilder> ().getNumberOfBlocks ();
+		bool playerOnUnbreakableBlock = (playerOn.tag != VariableManagement.switchBlock && 
+			playerOn.tag != VariableManagement.rotateR && 
+			playerOn.tag != VariableManagement.rotateL);
 		checkForSolution = false;
 		timerForSolution = 0;
-		if ((numberOfBlocks == 1 && (playerOn.tag != "Switch" && playerOn.tag != "RotatorR" && playerOn.tag != "RotatorL")) || numberOfBlocks < 1) {
+		if ((numberOfBlocks == 1 && playerOnUnbreakableBlock) || numberOfBlocks < 1) {
 			GetComponent<GameplayInterface> ().winText ();
 			Destroy (GetComponent<CharacterMovement> ());
 		} else if (cameraFixed) {
