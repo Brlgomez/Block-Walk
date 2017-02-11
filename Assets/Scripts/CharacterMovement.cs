@@ -19,8 +19,7 @@ public class CharacterMovement : MonoBehaviour {
 	Vector3 center;
 	bool pointOnSwitch = false;
 	bool cameraFixed = false;
-	Vector3 mousePosPrev;
-	Vector3 mousePosCurrent;
+	Vector3 mousePosPrev, mousePosCurrent;
 	Quaternion camRotateTarget;
 	bool checkForSolution = false;
 	float shiftTimer;
@@ -186,7 +185,7 @@ public class CharacterMovement : MonoBehaviour {
 				}
 				if (secondToLast != null) {
 					bool smallBlockOnPath = (secondToLast == allBlocks [i] && secondToLast.transform.localScale.x < 1);
-					if (lastBlock.tag == VariableManagement.switchBlock && smallBlockOnPath) {
+					if (lastBlock.tag == VariableManagement.switchTag && smallBlockOnPath) {
 						nearbyBlocks.Add (allBlocks [i]);
 					}
 				}
@@ -206,7 +205,7 @@ public class CharacterMovement : MonoBehaviour {
 					returnedBlock = null;
 				}
 				if (secondToLast != null) {
-					if (lastBlock.tag == VariableManagement.switchBlock && secondToLast == returnedBlock) {
+					if (lastBlock.tag == VariableManagement.switchTag && secondToLast == returnedBlock) {
 						GetComponent<SwitchAttributes>().buttonPress();
 					}
 				}
@@ -277,7 +276,7 @@ public class CharacterMovement : MonoBehaviour {
 				path.Add(block);
 			}
 		}
-		if (block.tag == VariableManagement.switchBlock && playerOn != block) {
+		if (block.tag == VariableManagement.switchTag && playerOn != block) {
 			GetComponent<SwitchAttributes>().buttonPress();
 			pointOnSwitch = true;
 		}
@@ -356,7 +355,7 @@ public class CharacterMovement : MonoBehaviour {
 
 	public void checkSolution () {
 		int numberOfBlocks = GetComponent<LevelBuilder> ().getNumberOfBlocks ();
-		bool playerOnUnbreakableBlock = (playerOn.tag != VariableManagement.switchBlock && 
+		bool playerOnUnbreakableBlock = (playerOn.tag != VariableManagement.switchTag && 
 			playerOn.tag != VariableManagement.rotateR && 
 			playerOn.tag != VariableManagement.rotateL);
 		checkForSolution = false;

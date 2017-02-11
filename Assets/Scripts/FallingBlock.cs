@@ -12,9 +12,9 @@ public class FallingBlock : MonoBehaviour {
 	void Start() {
 		gameObject.GetComponent<BoxCollider>().enabled = false;
 		Camera.main.GetComponent<LevelBuilder>().removeBlock(gameObject);
-		if (tag == VariableManagement.activeBlock) {
+		if (tag == VariableManagement.active) {
 			Camera.main.GetComponent<LevelBuilder>().removeRedBlock(gameObject);
-		} else if (tag == VariableManagement.inctiveBlock) {
+		} else if (tag == VariableManagement.inactive) {
 			Camera.main.GetComponent<LevelBuilder>().removeBlueBlock(gameObject);
 		}
 	}

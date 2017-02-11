@@ -15,13 +15,25 @@ public class VariableManagement : MonoBehaviour {
 	// tags
 	public static string player = "Player";
 	public static string block = "Block";
-	public static string activeBlock = "RedBlock";
-	public static string inctiveBlock = "BlueBlock";
-	public static string switchBlock = "Switch";
+	public static string active = "RedBlock";
+	public static string inactive = "BlueBlock";
+	public static string switchTag = "Switch";
 	public static string rotateR = "RotatorR";
 	public static string rotateL = "RotatorL";
 
+	// block names
+	public static string clone = "(Clone)";
+	public static string standardBlock = "Standard Block";
+	public static string multistepBlock = "Multistep Block";
+	public static string activeBlock = "Red Block";
+	public static string inactiveBlock = "Blue Block";
+	public static string switchBlock = "Switch Block";
+	public static string rotateRBlock = "Rotate Block R";
+	public static string rotateLBlock = "Rotate Block L";
+
 	// block tiles from text files
+	public static char levelDelimiter = '*';
+	public static char noBlockTile = '-';
 	public static char standardBlockTile = 'C';
 	public static char multistepBlockTile = 'M';
 	public static char switchBlockTile = 'S';
@@ -49,6 +61,7 @@ public class VariableManagement : MonoBehaviour {
 	// last menus
 	public static string userLevelMenu = "User";
 	public static string worldMenu = "Campaign";
+	public static string editorMenu = "Editor";
 
 	// current world level
 	public int getWorldLevel () {

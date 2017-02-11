@@ -21,6 +21,12 @@ public class MainMenuInterface : MonoBehaviour {
 	Vector3 levelIconStart, levelIconEnd;
 
 	void Start() {
+		worldText = GameObject.Find("World Text");
+		userText = GameObject.Find("Level");
+		blockHolder = GameObject.Find("Block Holder");
+		playButton = GameObject.Find("Play");
+		editButton = GameObject.Find("Edit");
+		deleteButton = GameObject.Find("Delete");
 		mainMenu = GameObject.Find("Menu");
 		mainMenu.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		worlds = GameObject.Find("Worlds");
@@ -31,19 +37,13 @@ public class MainMenuInterface : MonoBehaviour {
 		userCreated.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		confirmation = GameObject.Find("Confirmation");
 		confirmation.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
-		worldText = GameObject.Find("World Text");
-		userText = GameObject.Find("Level");
-		blockHolder = GameObject.Find("Block Holder");
-		standardBlock = GameObject.Find("Standard Block");
-		multistepBlock = GameObject.Find("Multistep Block");
-		switchBlock = GameObject.Find("Switch Block");
-		redBlock = GameObject.Find("Red Block");
-		blueBlock = GameObject.Find("Blue Block");
-		rotateRBlock = GameObject.Find("Rotate Right Block");
-		rotateLBlock = GameObject.Find("Rotate Left Block");
-		playButton = GameObject.Find("Play");
-		editButton = GameObject.Find("Edit");
-		deleteButton = GameObject.Find("Delete");
+		standardBlock = GameObject.Find(VariableManagement.standardBlock);
+		multistepBlock = GameObject.Find(VariableManagement.multistepBlock);
+		switchBlock = GameObject.Find(VariableManagement.switchBlock);
+		redBlock = GameObject.Find(VariableManagement.activeBlock);
+		blueBlock = GameObject.Find(VariableManagement.inactiveBlock);
+		rotateRBlock = GameObject.Find(VariableManagement.rotateRBlock);
+		rotateLBlock = GameObject.Find(VariableManagement.rotateRBlock);
 
 		if (GetComponent<VariableManagement>().getUserLevel() == minAmountOfUserLevels ||
 		    GetComponent<VariableManagement>().getUserLevel() > maxAmountOfUserLevels) {
@@ -253,7 +253,7 @@ public class MainMenuInterface : MonoBehaviour {
 			enableButtons();
 			StreamReader r;
 			r = File.OpenText(filePath);
-			userLevel = r.ReadToEnd().Split("*"[0]);
+			userLevel = r.ReadToEnd().Split(VariableManagement.levelDelimiter.ToString()[0]);
 			lines = userLevel[0].Split("\n"[0]);
 			for (int i = 4; i < lines.Length; i++) {
 				for (int j = 0; j < lines[i].Length; j++) {

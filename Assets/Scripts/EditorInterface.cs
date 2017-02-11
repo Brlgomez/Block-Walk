@@ -8,8 +8,10 @@ using UnityStandardAssets.ImageEffects;
 
 public class EditorInterface : MonoBehaviour {
 
-	private int maxBlurSize = 10;
-	private int blurDownsample = 2;
+	static int maxBlurSize = 10;
+	static int blurDownsample = 2;
+	static int minOrtho = 8;
+	static int maxOrtho = 17;
 
 	GameObject cubes;
 	GameObject menuHolder;
@@ -30,7 +32,7 @@ public class EditorInterface : MonoBehaviour {
 	Vector3 colorMenuCamPos;
 
 	void Start () {
-		filePath = Application.persistentDataPath + "/"+ (PlayerPrefs.GetInt ("User Level", 0)) + ".txt";
+		filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 		cubes = GameObject.Find ("Cubes");
 		menuHolder = GameObject.Find("Menu Holder");
 		colorHolder = GameObject.Find("Color Holder");
@@ -66,7 +68,7 @@ public class EditorInterface : MonoBehaviour {
 			transition = false;
 			deltaTime = 0;
 			if (transitionNum == 0) {
-				Camera.main.orthographicSize = 8;
+				Camera.main.orthographicSize = minOrtho;
 			}
 		}
 		if (transitionNum == 0) {
@@ -79,7 +81,7 @@ public class EditorInterface : MonoBehaviour {
 			transform.position = Vector3.Lerp(transform.position, initialCamPos, deltaTime);
 			GetComponent<BlurOptimized>().blurSize = colorHolder.transform.localScale.x * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
-			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 8, 17);
+			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
 		} else if (transitionNum == 1) {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
 			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
@@ -87,14 +89,14 @@ public class EditorInterface : MonoBehaviour {
 			transform.position = Vector3.Lerp(transform.position, initialCamPos, deltaTime);
 			GetComponent<BlurOptimized>().blurSize = optionHolder.transform.localScale.x * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
-			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 8, 17);
+			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
 		} else if (transitionNum == 2) {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
 			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.one, deltaTime);
 			optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
 			transform.position = Vector3.Lerp(transform.position, colorMenuCamPos, deltaTime);
 			Camera.main.orthographicSize += deltaTime;
-			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 8, 17);
+			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
 		}
 	}
 
@@ -164,7 +166,7 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void toMainMenu () {
-		PlayerPrefs.SetString("Last Menu", "User");
+		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
 		gameObject.AddComponent<BackgroundColorTransition>();
 		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toMainFromEditor);
 	}
@@ -174,9 +176,9 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void testLevel () {
-		PlayerPrefs.SetString("Last Menu", "Editor");
+		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.editorMenu);
 		saveLevel();
-		PlayerPrefs.SetInt ("Shift Camera", 0);
+		GetComponent<VariableManagement>().turnOffCameraShift();
 		gameObject.AddComponent<BackgroundColorTransition>();
 		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toTestFromEditor);
 	}
@@ -223,7 +225,7 @@ public class EditorInterface : MonoBehaviour {
 		tempR = rB.GetComponent<Slider>().value + ((rIncX.GetComponent<Slider>().value * blockX) + (rIncZ.GetComponent<Slider>().value * blockZ));
 		tempG = gB.GetComponent<Slider>().value + ((gIncX.GetComponent<Slider>().value * blockX) + (gIncZ.GetComponent<Slider>().value * blockZ));
 		tempB = bB.GetComponent<Slider>().value + ((bIncX.GetComponent<Slider>().value * blockX) + (bIncZ.GetComponent<Slider>().value * blockZ));
-		if (block.name == "Multistep Block(Clone)") {
+		if (block.name == VariableManagement.multistepBlockTile.ToString()) {
 			tempR = ((tempR + Camera.main.backgroundColor.r) / 2);
 			tempG = ((tempG + Camera.main.backgroundColor.g) / 2);
 			tempB = ((tempB + Camera.main.backgroundColor.b) / 2);
@@ -247,26 +249,26 @@ public class EditorInterface : MonoBehaviour {
 		for (int i = 13; i >= 0; i--) {
 			for (int j = 0; j < 8; j++) { 
 				if (blocks[i][j] == null) {
-					File.AppendAllText(filePath, "-");
-				} else if (blocks[i][j].name == "Standard Block(Clone)") {
-					File.AppendAllText(filePath, "C");
-				} else if (blocks[i][j].name == "Multistep Block(Clone)") {
-					File.AppendAllText(filePath, "M");
-				} else if (blocks[i][j].name == "Switch Block(Clone)") {
-					File.AppendAllText(filePath, "S");
-				} else if (blocks[i][j].name == "Red Block(Clone)") {
-					File.AppendAllText(filePath, "R");
-				} else if (blocks[i][j].name == "Blue Block(Clone)") {
-					File.AppendAllText(filePath, "B");
-				} else if (blocks[i][j].name == "Rotate Block R(Clone)") {
-					File.AppendAllText(filePath, "E");
-				} else if (blocks[i][j].name == "Rotate Block L(Clone)") {
-					File.AppendAllText(filePath, "W");
+					File.AppendAllText(filePath, VariableManagement.noBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.standardBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.standardBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.multistepBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.multistepBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.switchBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.switchBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.activeBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.activeBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.inactiveBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.inactiveBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.rotateRBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.rotateRBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.rotateLBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.rotateLBlockTile.ToString());
 				}
 			}
 			File.AppendAllText(filePath, "\n");
 		}
-		File.AppendAllText(filePath, "*");
+		File.AppendAllText(filePath, VariableManagement.levelDelimiter.ToString());
 	}
 
 	public void randomColor () {
