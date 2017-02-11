@@ -21,6 +21,15 @@ public class VariableManagement : MonoBehaviour {
 	public static string rotateR = "RotatorR";
 	public static string rotateL = "RotatorL";
 
+	// block tiles from text files
+	public static char standardBlockTile = 'C';
+	public static char multistepBlockTile = 'M';
+	public static char switchBlockTile = 'S';
+	public static char activeBlockTile = 'R';
+	public static char inactiveBlockTile = 'B';
+	public static char rotateRBlockTile = 'E';
+	public static char rotateLBlockTile = 'W';
+
 	// text files
 	public static string world1 = "World1";
 	public static string world2 = "World2";
@@ -52,5 +61,17 @@ public class VariableManagement : MonoBehaviour {
 
 	public string getLastMenu () {
 		return PlayerPrefs.GetString(VariableManagement.lastMenu);
+	}
+
+	public int getCameraShift () {
+		return PlayerPrefs.GetInt(VariableManagement.shiftCamera, 0);
+	}
+
+	public void turnOnCameraShift () {
+		PlayerPrefs.SetInt(VariableManagement.shiftCamera, 1);
+	}
+
+	public void turnOffCameraShift () {
+		PlayerPrefs.SetInt(VariableManagement.shiftCamera, 0);
 	}
 }

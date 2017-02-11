@@ -38,7 +38,7 @@ public class CharacterMovement : MonoBehaviour {
 		path = new List<GameObject> ();
 		camRotateTarget = Quaternion.Euler (90, 0, 0);
 		initialOrthoSize = Camera.main.orthographicSize;
-		if (PlayerPrefs.GetInt (VariableManagement.shiftCamera, 0) == 1) {
+		if (GetComponent<VariableManagement>().getCameraShift() == 1) {
 			setCameraFinalPosition ();
 		}
 	}
@@ -108,7 +108,7 @@ public class CharacterMovement : MonoBehaviour {
 		transform.rotation = camRotateTarget;
 		Camera.main.orthographicSize = center.y;
 		cameraFixed = true;
-		PlayerPrefs.SetInt (VariableManagement.shiftCamera, 1);
+		GetComponent<VariableManagement>().turnOnCameraShift();
 	}
 
 	public void setPan () {

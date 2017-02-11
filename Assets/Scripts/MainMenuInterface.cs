@@ -8,6 +8,9 @@ using System.IO;
 
 public class MainMenuInterface : MonoBehaviour {
 
+	private int maxAmountOfUserLevels = 100;
+	private int minAmountOfUserLevels = 1;
+
 	bool loading = false;
 	GameObject mainMenu, worlds, levels, userCreated, confirmation;
 	GameObject worldText, userText, blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock;
@@ -17,18 +20,18 @@ public class MainMenuInterface : MonoBehaviour {
 	bool canTransition = true;
 	Vector3 levelIconStart, levelIconEnd;
 
-	void Start () {
-		mainMenu = GameObject.Find ("Menu");
-		mainMenu.transform.position = new Vector3(-Screen.width/2, Screen.height/2, 0);
-		worlds = GameObject.Find ("Worlds");
-		worlds.transform.position = new Vector3(-Screen.width/2, Screen.height/2, 0);
-		levels = GameObject.Find ("Levels");
-		levels.transform.position = new Vector3(-Screen.width/2, Screen.height/2, 0);
+	void Start() {
+		mainMenu = GameObject.Find("Menu");
+		mainMenu.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
+		worlds = GameObject.Find("Worlds");
+		worlds.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
+		levels = GameObject.Find("Levels");
+		levels.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		userCreated = GameObject.Find("User Created");
-		userCreated.transform.position = new Vector3(-Screen.width/2, Screen.height/2, 0);
+		userCreated.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		confirmation = GameObject.Find("Confirmation");
-		confirmation.transform.position = new Vector3(-Screen.width/2, Screen.height/2, 0);
-		worldText = GameObject.Find ("World Text");
+		confirmation.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
+		worldText = GameObject.Find("World Text");
 		userText = GameObject.Find("Level");
 		blockHolder = GameObject.Find("Block Holder");
 		standardBlock = GameObject.Find("Standard Block");
@@ -41,20 +44,22 @@ public class MainMenuInterface : MonoBehaviour {
 		playButton = GameObject.Find("Play");
 		editButton = GameObject.Find("Edit");
 		deleteButton = GameObject.Find("Delete");
-		if (PlayerPrefs.GetInt("User Level") == 0 || PlayerPrefs.GetInt("User Level") > 100) {
-			PlayerPrefs.SetInt("User Level", 1);
+
+		if (GetComponent<VariableManagement>().getUserLevel() == minAmountOfUserLevels ||
+		    GetComponent<VariableManagement>().getUserLevel() > maxAmountOfUserLevels) {
+			PlayerPrefs.SetInt(VariableManagement.userLevel, minAmountOfUserLevels);
 		}
-		if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
+		if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
 			interfaceMenu = 2;
-			toLevelSelect(((PlayerPrefs.GetInt("Level", 0) - 1)/16));
-			if (((PlayerPrefs.GetInt("Level", 0) - 1)/16) == 0) {
+			toLevelSelect((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16);
+			if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 0) {
 				Camera.main.backgroundColor = MenuColors.world1Color;
-			} else if (((PlayerPrefs.GetInt("Level", 0) - 1)/16) == 1) {
+			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 1) {
 				Camera.main.backgroundColor = MenuColors.world2Color;
-			} else if (((PlayerPrefs.GetInt("Level", 0) - 1)/16) == 2) {
+			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 2) {
 				Camera.main.backgroundColor = MenuColors.world3Color;
 			}
-		} else if (PlayerPrefs.GetString("Last Menu") == "User") {
+		} else if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.userLevelMenu) {
 			interfaceMenu = 3;
 			toUserCreatedLevels();
 			Camera.main.backgroundColor = MenuColors.editorColor;
@@ -63,15 +68,15 @@ public class MainMenuInterface : MonoBehaviour {
 			toMainMenu();
 			Camera.main.backgroundColor = MenuColors.menuColor;
 		}
-		PlayerPrefs.SetString("Last Menu", "");
-		PlayerPrefs.SetInt("Shift Camera", 0);
+		PlayerPrefs.SetString(VariableManagement.lastMenu, "");
+		GetComponent<VariableManagement>().turnOffCameraShift();
 	}
 
-	public void menuCanTransition () {
+	public void menuCanTransition() {
 		canTransition = true;
 	}
 
-	public void toMainMenu () {
+	public void toMainMenu() {
 		if (canTransition) {
 			canTransition = false;
 			destroyBlockChildren();
@@ -86,7 +91,7 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 	}
 
-	public void toWorldSelect () {
+	public void toWorldSelect() {
 		if (canTransition) {
 			canTransition = false;
 			worlds.AddComponent<MenuTransitions>();
@@ -100,7 +105,7 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 	}
 
-	public void toLevelSelect (int world) {
+	public void toLevelSelect(int world) {
 		if (canTransition) {
 			canTransition = false;
 			if (interfaceMenu == 1) {
@@ -118,12 +123,13 @@ public class MainMenuInterface : MonoBehaviour {
 			worldText.GetComponent<Text>().text = "World " + (world + 1);
 			levelMultiplier = world * 16;
 			for (int i = 0; i < 16; i++) {
-				levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = Resources.Load<Sprite>("Levels/" + ((world + 1) + "-" + (i + 1)));
+				levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = 
+					Resources.Load<Sprite>("Levels/" + ((world + 1) + "-" + (i + 1)));
 			}
 		}
 	}
 
-	public void toUserCreatedLevels () {
+	public void toUserCreatedLevels() {
 		if (canTransition) {
 			disableButtons();
 			showLevel();
@@ -138,89 +144,89 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 	}
 
-	public void openConfirmation () {
+	public void openConfirmation() {
 		if (interfaceMenu == 3) {
 			confirmation.AddComponent<MenuTransitions>();
 			confirmation.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
 			userCreated.AddComponent<MenuTransitions>();
 			interfaceMenu = 4;
-			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
+			string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 			if (File.Exists(filePath)) {
 			}
 		}
 	}
 
-	public void deleteLevel () {
+	public void deleteLevel() {
 		disableButtons();
-		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
+		string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 		if (File.Exists(filePath)) {
 			File.Delete(filePath);
-			userText.GetComponent<Text>().text = PlayerPrefs.GetInt("User Level") + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
+			userText.GetComponent<Text>().text = GetComponent<VariableManagement>().getUserLevel() + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
 			destroyBlockChildren();
 		}
 		toUserCreatedLevels();
 	}
 
-	public void LoadLevel (int level) {
-		PlayerPrefs.SetString("Last Menu", "Campaign");
-		PlayerPrefs.SetInt ("Level", level + levelMultiplier);
-		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition (VariableManagement.levelFromMain);
-	}
-		
-	public void openEditor () {
-		PlayerPrefs.SetString("Last Menu", "User");
-		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition (VariableManagement.toEditorFromMain);
+	public void LoadLevel(int level) {
+		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.worldMenu);
+		PlayerPrefs.SetInt(VariableManagement.worldLevel, level + levelMultiplier);
+		gameObject.AddComponent<BackgroundColorTransition>();
+		GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);
 	}
 
-	public void cancelDeletion () {
+	public void openEditor() {
+		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
+		gameObject.AddComponent<BackgroundColorTransition>();
+		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toEditorFromMain);
+	}
+
+	public void cancelDeletion() {
 		toUserCreatedLevels();
 	}
 
-	public void loadUserLevel () {
-		PlayerPrefs.SetString("Last Menu", "User");
-		string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
+	public void loadUserLevel() {
+		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
+		string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 		if (File.Exists(filePath)) {
-			gameObject.AddComponent<BackgroundColorTransition> ();
+			gameObject.AddComponent<BackgroundColorTransition>();
 			GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);
 		}
 	}
 
-	public void nextScene (int n) {
+	public void nextScene(int n) {
 		if (loading == false) {
-			SceneManager.LoadScene (n);
+			SceneManager.LoadScene(n);
 		}
 		loading = true;
 	}
 
-	public void left () {
+	public void left() {
 		disableButtons();
-		if (PlayerPrefs.GetInt("User Level") > 1) {
+		if (GetComponent<VariableManagement>().getUserLevel() > minAmountOfUserLevels) {
 			destroyBlockChildren();
-			PlayerPrefs.SetInt("User Level", PlayerPrefs.GetInt("User Level") - 1);
+			PlayerPrefs.SetInt(VariableManagement.userLevel, GetComponent<VariableManagement>().getUserLevel() - 1);
 			showLevel();
 		} else {
 			destroyBlockChildren();
-			PlayerPrefs.SetInt("User Level", 100);
+			PlayerPrefs.SetInt(VariableManagement.userLevel, maxAmountOfUserLevels);
 			showLevel();
 		}
 	}
 
-	public void right () {
+	public void right() {
 		disableButtons();
-		if (PlayerPrefs.GetInt("User Level") < 100) {
+		if (GetComponent<VariableManagement>().getUserLevel() < maxAmountOfUserLevels) {
 			destroyBlockChildren();
-			PlayerPrefs.SetInt("User Level", PlayerPrefs.GetInt("User Level") + 1);
+			PlayerPrefs.SetInt(VariableManagement.userLevel, GetComponent<VariableManagement>().getUserLevel() + 1);
 			showLevel();
 		} else {
 			destroyBlockChildren();
-			PlayerPrefs.SetInt("User Level", 1);
+			PlayerPrefs.SetInt(VariableManagement.userLevel, minAmountOfUserLevels);
 			showLevel();
 		}
 	}
 
-	void disableButtons () {
+	void disableButtons() {
 		playButton.GetComponent<Image>().color = Color.clear;
 		deleteButton.GetComponent<Image>().color = Color.clear;
 		playButton.GetComponentInChildren<Text>().color = Color.clear;
@@ -228,7 +234,7 @@ public class MainMenuInterface : MonoBehaviour {
 		editButton.GetComponentInChildren<Text>().text = "Create";
 	}
 
-	void enableButtons () {
+	void enableButtons() {
 		playButton.GetComponent<Image>().color = Color.white;
 		deleteButton.GetComponent<Image>().color = Color.white;
 		playButton.GetComponentInChildren<Text>().color = Color.black;
@@ -237,7 +243,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void showLevel() {
-		int n = (PlayerPrefs.GetInt("User Level", 0));
+		int n = GetComponent<VariableManagement>().getUserLevel();
 		string level = "";
 		string[] userLevel;
 		string[] lines;
@@ -251,19 +257,19 @@ public class MainMenuInterface : MonoBehaviour {
 			lines = userLevel[0].Split("\n"[0]);
 			for (int i = 4; i < lines.Length; i++) {
 				for (int j = 0; j < lines[i].Length; j++) {
-					if (lines[i][j] == 'C') {
+					if (lines[i][j] == VariableManagement.standardBlockTile) {
 						displayBlockImage(i, j, standardBlock);
-					} else if (lines[i][j] == 'M') {
+					} else if (lines[i][j] == VariableManagement.multistepBlockTile) {
 						displayBlockImage(i, j, multistepBlock);
-					} else if (lines[i][j] == 'S') {
+					} else if (lines[i][j] == VariableManagement.switchBlockTile) {
 						displayBlockImage(i, j, switchBlock);
-					} else if (lines[i][j] == 'R') {
+					} else if (lines[i][j] == VariableManagement.activeBlockTile) {
 						displayBlockImage(i, j, redBlock);
-					} else if (lines[i][j] == 'B') {
+					} else if (lines[i][j] == VariableManagement.inactiveBlockTile) {
 						displayBlockImage(i, j, blueBlock);
-					} else if (lines[i][j] == 'E') {
+					} else if (lines[i][j] == VariableManagement.rotateRBlockTile) {
 						displayBlockImage(i, j, rotateRBlock);
-					} else if (lines[i][j] == 'W') {
+					} else if (lines[i][j] == VariableManagement.rotateLBlockTile) {
 						displayBlockImage(i, j, rotateLBlock);
 					}
 				}
@@ -275,14 +281,14 @@ public class MainMenuInterface : MonoBehaviour {
 		userText.GetComponent<Text>().text = level;
 	}
 
-	void displayBlockImage (int i, int j, GameObject b) {
+	void displayBlockImage(int i, int j, GameObject b) {
 		GameObject block = b;
 		GameObject temp = Instantiate(block);
 		temp.transform.SetParent(blockHolder.transform);
 		temp.transform.position = new Vector3(j - 3.5f, 0, -i + 10.5f);
 	}
 
-	void destroyBlockChildren () {
+	void destroyBlockChildren() {
 		foreach (Transform child in blockHolder.transform) {
 			GameObject.Destroy(child.gameObject);
 		}
