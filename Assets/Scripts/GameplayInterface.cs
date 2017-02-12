@@ -12,7 +12,6 @@ public class GameplayInterface : MonoBehaviour {
 	static float lengthOfTap = 0.2f;
 	static int blurDownsample = 2;
 	static int maxBlur = 10;
-	static int buttonSize = 96;
 	static int lastLevel = 48;
 
 	GameObject restartButton;
@@ -181,6 +180,7 @@ public class GameplayInterface : MonoBehaviour {
 			}
 			if (beatWorld) {
 				PlayerPrefs.SetInt("World" + world.ToString(), 1);
+				PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, world + 1);
 			}
 			PlayerPrefs.Save();
 		}
@@ -190,7 +190,7 @@ public class GameplayInterface : MonoBehaviour {
 			nextLevel.GetComponent<Button>().enabled = true;
 			nextLevel.GetComponent<Button>().image.color = Color.white;
 			nextLevel.GetComponentInChildren<Text>().color = Color.black;
-			nextLevel.GetComponent<BoxCollider2D>().size = Vector2.one * buttonSize;
+			nextLevel.GetComponent<BoxCollider2D>().enabled = true;
 		}
 		gameStatus.GetComponent<Text>().text = "Success";
 		timer = 0;

@@ -18,6 +18,9 @@ public class MenuTransitions : MonoBehaviour {
 		foreach (Transform child in children) {
 			if (child.parent == transform) {
 				items.Add(child);
+				if (items[items.Count - 1].GetComponent<Button>() != null) {
+					items[items.Count - 1].GetComponent<Button>().enabled = false;
+				}
 			}
 		}
 		newPos = new Vector3[items.Count];
@@ -44,7 +47,6 @@ public class MenuTransitions : MonoBehaviour {
 				}
 				items[i].transform.position = newPos[i];
 			}
-			Camera.main.GetComponent<MainMenuInterface>().menuCanTransition();
 			Destroy(GetComponent<MenuTransitions>());
 		} else {
 			if (direction > 0) {

@@ -12,12 +12,11 @@ public class MainMenuInterface : MonoBehaviour {
 	static int minAmountOfUserLevels = 1;
 
 	bool loading = false;
-	GameObject mainMenu, worlds, levels, userCreated, confirmation;
+	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp;
 	GameObject worldText, userText, blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock;
 	GameObject rotateRBlock, rotateLBlock, playButton, editButton, deleteButton;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
-	bool canTransition = true;
 	Vector3 levelIconStart, levelIconEnd;
 
 	void Start() {
@@ -37,6 +36,8 @@ public class MainMenuInterface : MonoBehaviour {
 		userCreated.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		confirmation = GameObject.Find("Confirmation");
 		confirmation.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
+		popUp = GameObject.Find("Pop Up");
+		popUp.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		standardBlock = GameObject.Find(VariableManagement.standardBlock);
 		multistepBlock = GameObject.Find(VariableManagement.multistepBlock);
 		switchBlock = GameObject.Find(VariableManagement.switchBlock);
@@ -45,7 +46,7 @@ public class MainMenuInterface : MonoBehaviour {
 		rotateRBlock = GameObject.Find(VariableManagement.rotateRBlock);
 		rotateLBlock = GameObject.Find(VariableManagement.rotateRBlock);
 
-		if (GetComponent<VariableManagement>().getUserLevel() == minAmountOfUserLevels ||
+		if (GetComponent<VariableManagement>().getUserLevel() < minAmountOfUserLevels ||
 		    GetComponent<VariableManagement>().getUserLevel() > maxAmountOfUserLevels) {
 			PlayerPrefs.SetInt(VariableManagement.userLevel, minAmountOfUserLevels);
 		}
@@ -71,29 +72,32 @@ public class MainMenuInterface : MonoBehaviour {
 		PlayerPrefs.SetString(VariableManagement.lastMenu, "");
 		GetComponent<VariableManagement>().turnOffCameraShift();
 	}
-
-	public void menuCanTransition() {
-		canTransition = true;
-	}
-
+		
 	public void toMainMenu() {
-		if (canTransition) {
-			canTransition = false;
-			destroyBlockChildren();
-			mainMenu.AddComponent<MenuTransitions>();
-			mainMenu.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.menuColor);
-			if (interfaceMenu == 1) {
-				worlds.AddComponent<MenuTransitions>();
-			} else if (interfaceMenu == 3) {
-				userCreated.AddComponent<MenuTransitions>();
-			}
-			interfaceMenu = 0;
+		destroyBlockChildren();
+		mainMenu.AddComponent<MenuTransitions>();
+		mainMenu.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.menuColor);
+		if (interfaceMenu == 1) {
+			worlds.AddComponent<MenuTransitions>();
+		} else if (interfaceMenu == 3) {
+			userCreated.AddComponent<MenuTransitions>();
 		}
+		interfaceMenu = 0;
 	}
 
 	public void toWorldSelect() {
-		if (canTransition) {
-			canTransition = false;
+		if (PlayerPrefs.GetInt(VariableManagement.newWorldUnlocked, 0) > 0) {
+			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 0);
+			if (interfaceMenu == 0) {
+				mainMenu.AddComponent<MenuTransitions>();
+			} else if (interfaceMenu == 2) {
+				levels.AddComponent<MenuTransitions>();
+			}
+			interfaceMenu = 5;
+			popUp.AddComponent<MenuTransitions>();
+			popUp.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
+			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats! You just unlocked a new world and you unlocked a new piece for the editor!";
+		} else {
 			worlds.AddComponent<MenuTransitions>();
 			worlds.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
 			if (interfaceMenu == 0) {
@@ -116,11 +120,15 @@ public class MainMenuInterface : MonoBehaviour {
 			if (PlayerPrefs.GetInt("World" + (world - 1).ToString(), 0) == 0) {
 				beatAllLevels = false;
 			}
-		} else {
-			// message
+		} 
+		if (!beatAllLevels) {
+			interfaceMenu = 5;
+			worlds.AddComponent<MenuTransitions>();
+			popUp.AddComponent<MenuTransitions>();
+			popUp.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
+			popUp.GetComponentsInChildren<Text>()[0].text = "World " + (world + 1) + " locked. Must beat all levels from World " + world + " .";
 		}
-		if (canTransition && beatAllLevels) {
-			canTransition = false;
+		else {
 			if (interfaceMenu == 1) {
 				worlds.AddComponent<MenuTransitions>();
 			}
@@ -141,25 +149,31 @@ public class MainMenuInterface : MonoBehaviour {
 					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = 
 						Resources.Load<Sprite>("Levels/" + ((world + 1) + "-" + (i + 1)));
 				} else {
-					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = Resources.Load<Sprite>("Question");
+					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].color = Color.clear;
+					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Text>()[0].text = (i + 1).ToString();
 				}
 			}
 		} 
 	}
 
 	public void toUserCreatedLevels() {
-		if (canTransition) {
-			disableButtons();
-			showLevel();
-			if (interfaceMenu == 0) {
-				mainMenu.AddComponent<MenuTransitions>();
-			} else if (interfaceMenu == 4) {
-				confirmation.AddComponent<MenuTransitions>();
-			}
-			userCreated.AddComponent<MenuTransitions>();
-			userCreated.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
-			interfaceMenu = 3;
+		disableButtons();
+		showLevel();
+		if (interfaceMenu == 0) {
+			mainMenu.AddComponent<MenuTransitions>();
+		} else if (interfaceMenu == 4) {
+			confirmation.AddComponent<MenuTransitions>();
 		}
+		userCreated.AddComponent<MenuTransitions>();
+		userCreated.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
+		interfaceMenu = 3;
+	}
+
+	public void exitPopUp () {
+		interfaceMenu = 1;
+		popUp.AddComponent<MenuTransitions>();
+		worlds.AddComponent<MenuTransitions>();
+		worlds.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
 	}
 
 	public void openConfirmation() {
