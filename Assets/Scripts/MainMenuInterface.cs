@@ -103,10 +103,23 @@ public class MainMenuInterface : MonoBehaviour {
 			}
 			interfaceMenu = 1;
 		}
+		for (int i = 0; i < 3; i++) {
+			if (PlayerPrefs.GetInt(("World" + i).ToString(), 0) == 0) {
+				worlds.GetComponentsInChildren<Image>()[i + 1].color = new Color(0.75f, 0.75f, 0.75f, 1);
+			}
+		}
 	}
 
 	public void toLevelSelect(int world) {
-		if (canTransition) {
+		bool beatAllLevels = true;
+		if (world > 0) {
+			if (PlayerPrefs.GetInt("World" + (world - 1).ToString(), 0) == 0) {
+				beatAllLevels = false;
+			}
+		} else {
+			// message
+		}
+		if (canTransition && beatAllLevels) {
 			canTransition = false;
 			if (interfaceMenu == 1) {
 				worlds.AddComponent<MenuTransitions>();
@@ -123,10 +136,15 @@ public class MainMenuInterface : MonoBehaviour {
 			worldText.GetComponent<Text>().text = "World " + (world + 1);
 			levelMultiplier = world * 16;
 			for (int i = 0; i < 16; i++) {
-				levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = 
-					Resources.Load<Sprite>("Levels/" + ((world + 1) + "-" + (i + 1)));
+				int levelNumber = (world * 16) + i;
+				if (PlayerPrefs.GetInt(levelNumber.ToString(), 0) == 1) {
+					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = 
+						Resources.Load<Sprite>("Levels/" + ((world + 1) + "-" + (i + 1)));
+				} else {
+					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = Resources.Load<Sprite>("Question");
+				}
 			}
-		}
+		} 
 	}
 
 	public void toUserCreatedLevels() {
