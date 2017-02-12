@@ -5,14 +5,15 @@ using System.IO;
 
 public class LevelBuilder : MonoBehaviour {
 
-	private int startOrthoMin = 5;
-	private int startOrthoMax = 14;
-	private int endOrthoMin = 4;
-	private int endOrthoMax = 8;
+	static float blockAlpha = 0.75f;
+	static int startOrthoMin = 5;
+	static int startOrthoMax = 14;
+	static int endOrthoMin = 4;
+	static int endOrthoMax = 8;
 
-	List<GameObject> blocks = new List<GameObject> ();
-	List<GameObject> redBlocks = new List<GameObject> ();
-	List<GameObject> blueBlocks = new List<GameObject> ();
+	List<GameObject> blocks = new List<GameObject>();
+	List<GameObject> redBlocks = new List<GameObject>();
+	List<GameObject> blueBlocks = new List<GameObject>();
 	float r, g, b;
 	float rIncX, gIncX, bIncX;
 	float rIncZ, gIncZ, bIncZ;
@@ -26,42 +27,35 @@ public class LevelBuilder : MonoBehaviour {
 	float leftMost = 100;
 	float topMost = -100;
 	float bottomMost = 100;
-	GameObject cubes;
-	GameObject standardBlock;
-	GameObject multistepBlock;
-	GameObject switchBlock;
-	GameObject redBlock;
-	GameObject blueBlock;
-	GameObject rotatorR;
-	GameObject rotatorL;
+	GameObject cubes, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotatorR, rotatorL;
 
-	void Awake () {
-		cubes = GameObject.Find ("Cubes");
-		standardBlock = GameObject.Find ("Standard Block");
-		multistepBlock = GameObject.Find ("Multistep Block");
-		switchBlock = GameObject.Find ("Switch Block");
-		rotatorR = GameObject.Find ("Rotate Block R");
-		rotatorL = GameObject.Find ("Rotate Block L");
-		redBlock = GameObject.Find("Red Block");
-		blueBlock = GameObject.Find("Blue Block");
-		builder (parseFile());
+	void Awake() {
+		cubes = GameObject.Find("Cubes");
+		standardBlock = GameObject.Find(VariableManagement.standardBlock);
+		multistepBlock = GameObject.Find(VariableManagement.multistepBlock);
+		switchBlock = GameObject.Find(VariableManagement.switchBlock);
+		rotatorR = GameObject.Find(VariableManagement.rotateRBlock);
+		rotatorL = GameObject.Find(VariableManagement.rotateLBlock);
+		redBlock = GameObject.Find(VariableManagement.activeBlock);
+		blueBlock = GameObject.Find(VariableManagement.inactiveBlock);
+		builder(parseFile());
 	}
 
-	string [] parseFile () {
+	string [] parseFile() {
 		TextAsset t = new TextAsset();
 		string[] level;
-		if (PlayerPrefs.GetString("Last Menu") == "Campaign" && GetComponent<CharacterMovement>() != null) {
-			if (((GetComponent<VariableManagement>().getWorldLevel() - 1)/16) == 0) {
-				t = Resources.Load("World1") as TextAsset;
-			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1)/16) == 1) {
-				t = Resources.Load("World2") as TextAsset;
-			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1)/16) == 2) {
-				t = Resources.Load("World3") as TextAsset;
+		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu && GetComponent<CharacterMovement>() != null) {
+			if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 0) {
+				t = Resources.Load(VariableManagement.world1) as TextAsset;
+			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 1) {
+				t = Resources.Load(VariableManagement.world2) as TextAsset;
+			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 2) {
+				t = Resources.Load(VariableManagement.world3) as TextAsset;
 			}
-			level = t.text.Split("*"[0]);
-			return level [(GetComponent<VariableManagement>().getWorldLevel() - 1) % 16].Split("\n"[0]);
+			level = t.text.Split(VariableManagement.levelDelimiter.ToString()[0]);
+			return level[(GetComponent<VariableManagement>().getWorldLevel() - 1) % 16].Split("\n"[0]);
 		} else {
-			string filePath = Application.persistentDataPath + "/" + (PlayerPrefs.GetInt("User Level", 0)) + ".txt";
+			string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 			StreamReader r;
 			if (File.Exists(filePath)) {
 				r = File.OpenText(filePath);
@@ -70,15 +64,15 @@ public class LevelBuilder : MonoBehaviour {
 				for (int i = 0; i < 14; i++) {
 					File.AppendAllText(filePath, "--------\n");
 				}
-				File.AppendAllText(filePath, "*");
+				File.AppendAllText(filePath, VariableManagement.levelDelimiter.ToString());
 				r = File.OpenText(filePath);
 			}
-			level = r.ReadToEnd().Split("*"[0]);
+			level = r.ReadToEnd().Split(VariableManagement.levelDelimiter.ToString()[0]);
 			return level[0].Split("\n"[0]);
 		}
 	}
 
-	public void builder (string[] lines) {
+	public void builder(string[] lines) {
 		setVariables(lines);
 		setBlocks(lines);
 		if (GetComponent<CharacterMovement>() != null) {
@@ -86,53 +80,53 @@ public class LevelBuilder : MonoBehaviour {
 		}
 	}
 
-	void setVariables (string[] lines) {
-		string[] bg = lines [0].Split (","[0]);
-		string[] blockRGB = lines [1].Split (","[0]);
-		string[] rgbIncX = lines [2].Split (","[0]);
-		string[] rgbIncZ = lines [3].Split (","[0]);
-		Camera.main.backgroundColor = new Color32 (byte.Parse (bg [0]), byte.Parse (bg [1]), byte.Parse (bg [2]), 255);
-		r = float.Parse (blockRGB [0]);
-		g = float.Parse (blockRGB [1]);
-		b = float.Parse (blockRGB [2]);
-		rIncX = float.Parse (rgbIncX [0]);
-		gIncX = float.Parse (rgbIncX [1]);
-		bIncX = float.Parse (rgbIncX [2]);
-		rIncZ = float.Parse (rgbIncZ [0]);
-		gIncZ = float.Parse (rgbIncZ [1]);
-		bIncZ = float.Parse (rgbIncZ [2]);
+	void setVariables(string[] lines) {
+		string[] bg = lines[0].Split(","[0]);
+		string[] blockRGB = lines[1].Split(","[0]);
+		string[] rgbIncX = lines[2].Split(","[0]);
+		string[] rgbIncZ = lines[3].Split(","[0]);
+		Camera.main.backgroundColor = new Color32(byte.Parse(bg[0]), byte.Parse(bg[1]), byte.Parse(bg[2]), 255);
+		r = float.Parse(blockRGB[0]);
+		g = float.Parse(blockRGB[1]);
+		b = float.Parse(blockRGB[2]);
+		rIncX = float.Parse(rgbIncX[0]);
+		gIncX = float.Parse(rgbIncX[1]);
+		bIncX = float.Parse(rgbIncX[2]);
+		rIncZ = float.Parse(rgbIncZ[0]);
+		gIncZ = float.Parse(rgbIncZ[1]);
+		bIncZ = float.Parse(rgbIncZ[2]);
 		if (GetComponent<CharacterMovement>() == null) {
 			GetComponent<EditorInterface>().setVariables(r, g, b, rIncX, gIncX, bIncX, rIncZ, gIncZ, bIncZ);
 		}
 	}
 
-	void setBlocks (string[] lines) {
+	void setBlocks(string[] lines) {
 		for (int i = 4; i < lines.Length; i++) {
 			for (int j = 0; j < lines[i].Length; j++) {
-				if (lines [i] [j] == 'C') {
+				if (lines[i][j] == VariableManagement.standardBlockTile) {
 					numberOfBlocks++;
-					createBlock (standardBlock, j, i).tag = "Block";
-				} else if (lines [i] [j] == 'M') {
+					createBlock(standardBlock, j, i).tag = VariableManagement.block;
+				} else if (lines[i][j] == VariableManagement.multistepBlockTile) {
 					numberOfBlocks++;
-					createBlock (multistepBlock, j, i).tag = "Block";
-				} else if (lines [i] [j] == 'S') {
-					createBlock (switchBlock, j, i).tag = "Switch";
-				} else if (lines [i] [j] == 'R') {
+					createBlock(multistepBlock, j, i).tag = VariableManagement.block;
+				} else if (lines[i][j] == VariableManagement.switchBlockTile) {
+					createBlock(switchBlock, j, i).tag = VariableManagement.switchTag;
+				} else if (lines[i][j] == VariableManagement.activeBlockTile) {
 					numberOfBlocks++;
-					createBlock(redBlock, j, i).tag = "RedBlock";
-				} else if (lines [i] [j] == 'B') {
+					createBlock(redBlock, j, i).tag = VariableManagement.active;
+				} else if (lines[i][j] == VariableManagement.inactiveBlockTile) {
 					numberOfBlocks++;
-					createBlock(blueBlock, j, i).tag = "BlueBlock";
-				} else if (lines [i] [j] == 'E') {
-					createBlock (rotatorR, j, i).tag = "RotatorR";
-				} else if (lines [i] [j] == 'W') {
-					createBlock (rotatorL, j, i).tag = "RotatorL";
+					createBlock(blueBlock, j, i).tag = VariableManagement.inactive;
+				} else if (lines[i][j] == VariableManagement.rotateRBlockTile) {
+					createBlock(rotatorR, j, i).tag = VariableManagement.rotateR;
+				} else if (lines[i][j] == VariableManagement.rotateLBlockTile) {
+					createBlock(rotatorL, j, i).tag = VariableManagement.rotateL;
 				} 
 			}
 		}
 	}
 
-	GameObject createBlock (GameObject block, int x, int z) {
+	GameObject createBlock(GameObject block, int x, int z) {
 		GameObject temp = Instantiate(block);
 		temp.layer = 8;
 		if (GetComponent<CharacterMovement>() != null) {
@@ -141,8 +135,8 @@ public class LevelBuilder : MonoBehaviour {
 			temp.transform.position = new Vector3(x, 0, -z + 17);
 			GetComponent<LevelEditor>().addToBlockList(x, -z + 17, temp);
 		}
-		addBlock (temp);
-		changeBlockColor (temp);
+		addBlock(temp);
+		changeBlockColor(temp);
 		if ((temp.transform.position.x + temp.transform.position.z) > rightMost) {
 			rightMost = (temp.transform.position.x + temp.transform.position.z);
 		} 
@@ -167,39 +161,39 @@ public class LevelBuilder : MonoBehaviour {
 		if (temp.transform.localPosition.z > zMax) {
 			zMax = temp.transform.localPosition.z;
 		}
-		temp.transform.SetParent (cubes.transform);
+		temp.transform.SetParent(cubes.transform);
 		return temp;
 	}
 
-	void setCamera () {
-		float yHeight1 = Mathf.Abs (xMin - xMax);
-		float yHeight2 = Mathf.Abs (zMin - zMax);
+	void setCamera() {
+		float yHeight1 = Mathf.Abs(xMin - xMax);
+		float yHeight2 = Mathf.Abs(zMin - zMax);
 		Camera.main.orthographicSize = ((rightMost - leftMost) - (rightMost - leftMost) / 4.5f);
 		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, startOrthoMin, startOrthoMax);
 		if ((yHeight2 / yHeight1) < 1.625f) {
-			center = new Vector3 ((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
+			center = new Vector3((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
 		} else {
-			center = new Vector3 ((xMin + xMax) / 2, Mathf.Clamp((yHeight2 / 2) + 1.25f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
+			center = new Vector3((xMin + xMax) / 2, Mathf.Clamp((yHeight2 / 2) + 1.25f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
 		}
 		if (rightMost != Mathf.Abs(leftMost)) {
-			Camera.main.transform.position = new Vector3 (
+			Camera.main.transform.position = new Vector3(
 				Camera.main.transform.position.x + ((rightMost + leftMost) / 4), 
 				Camera.main.transform.position.y, 
 				Camera.main.transform.position.z + ((rightMost + leftMost) / 4)
 			);
 		}
-		Camera.main.transform.position = new Vector3 (
+		Camera.main.transform.position = new Vector3(
 			Camera.main.transform.position.x, 
 			Camera.main.transform.position.y + ((topMost + bottomMost) * 0.6f), 
 			Camera.main.transform.position.z
 		);
 	}
 
-	public Vector4 getMinAndMax(){
+	public Vector4 getMinAndMax() {
 		return new Vector4(xMin, xMax, zMin, zMax);
 	}
 
-	public void setMinAndMax(){
+	public void setMinAndMax() {
 		xMin -= 1;
 		xMax += 1;
 		zMin -= 1;
@@ -208,7 +202,7 @@ public class LevelBuilder : MonoBehaviour {
 		center = new Vector3(center.x, center.y + 2, center.z);
 	}
 
-	public void changeBlockColor (GameObject block) {
+	public void changeBlockColor(GameObject block) {
 		float tempR, tempG, tempB;
 		float xDeduct = block.transform.localPosition.x;
 		float zDeduct = block.transform.localPosition.z;
@@ -219,59 +213,59 @@ public class LevelBuilder : MonoBehaviour {
 		tempR = r + ((rIncX * xDeduct) + (rIncZ * zDeduct));
 		tempG = g + ((gIncX * xDeduct) + (gIncZ * zDeduct));
 		tempB = b + ((bIncX * xDeduct) + (bIncZ * zDeduct));
-		if (block.name == "Multistep Block(Clone)" && GetComponent<CharacterMovement>() == null) {
+		if (block.name == (VariableManagement.multistepBlock + VariableManagement.clone) && GetComponent<CharacterMovement>() == null) {
 			tempR = ((tempR + Camera.main.backgroundColor.r) / 2);
 			tempG = ((tempG + Camera.main.backgroundColor.g) / 2);
 			tempB = ((tempB + Camera.main.backgroundColor.b) / 2);
-			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB, 0.75f);
+			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB, blockAlpha);
 		} else {
 			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB);
 		}
 	}
 
-	public List<GameObject> getBlocks () {
+	public List<GameObject> getBlocks() {
 		return blocks;
 	}
 
-	void addBlock (GameObject b) {
-		blocks.Add (b);
-		if (b.name == "Red Block(Clone)") {
+	void addBlock(GameObject b) {
+		blocks.Add(b);
+		if (b.name == VariableManagement.activeBlock + VariableManagement.clone) {
 			addSpecialBlock(redBlocks, b);
-		} else if (b.name == "Blue Block(Clone)") {
+		} else if (b.name == VariableManagement.inactiveBlock + VariableManagement.clone) {
 			addSpecialBlock(blueBlocks, b);
 		}
 	}
 
-	void addSpecialBlock (List<GameObject> list, GameObject b) {
+	void addSpecialBlock(List<GameObject> list, GameObject b) {
 		list.Add(b);
 	}
 
-	public void removeBlock (GameObject b) {
-		blocks.Remove (b);
+	public void removeBlock(GameObject b) {
+		blocks.Remove(b);
 		numberOfBlocks--;
 	}
 
-	public void removeRedBlock (GameObject b) {
-		redBlocks.Remove (b);
+	public void removeRedBlock(GameObject b) {
+		redBlocks.Remove(b);
 	}
 
-	public void removeBlueBlock (GameObject b) {
-		blueBlocks.Remove (b);
+	public void removeBlueBlock(GameObject b) {
+		blueBlocks.Remove(b);
 	}
 
-	public List<GameObject> getRedBlocks () {
+	public List<GameObject> getRedBlocks() {
 		return redBlocks;
 	}
 
-	public List<GameObject> getBlueBlocks () {
+	public List<GameObject> getBlueBlocks() {
 		return blueBlocks;
 	}
 
-	public int getNumberOfBlocks () {
+	public int getNumberOfBlocks() {
 		return numberOfBlocks;
 	}
 
-	public Vector3 getCenter () {
+	public Vector3 getCenter() {
 		return center;
 	}
 }

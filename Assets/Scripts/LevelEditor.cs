@@ -7,39 +7,39 @@ public class LevelEditor : MonoBehaviour {
 
 	GameObject cubes;
 	bool isMouseDrag = false;
-    GameObject standardBlock;
+	GameObject standardBlock;
 	GameObject currentObject;
 	List<List<GameObject>> blockPos;
 	float rayCastCount = 0.05f;
 	float rayCastLimit = 0.05f;
 
-	void Awake () {
-		cubes = GameObject.Find ("Cubes");
-        standardBlock = GameObject.Find ("Standard Block");
+	void Awake() {
+		cubes = GameObject.Find("Cubes");
+		standardBlock = GameObject.Find(VariableManagement.standardBlock);
 		currentObject = standardBlock;
 		if (blockPos == null) {
 			fillEmptyBlockList();
 		}
 	}
-		
-	public void mouseDown () {
+
+	public void mouseDown() {
 		isMouseDrag = true;
 	}
 
-	public void mouseUp () {
+	public void mouseUp() {
 		isMouseDrag = false;
 		rayCastCount = rayCastLimit;
 	}
 
-	public void mouseDrag () {
+	public void mouseDrag() {
 		clickedObject();
 	}
 
-	public bool getMouseDrag () {
+	public bool getMouseDrag() {
 		return isMouseDrag;
 	}
 
-	void clickedObject () {
+	void clickedObject() {
 		rayCastCount += Time.deltaTime;
 		if (rayCastCount > rayCastLimit) {
 			rayCastCount = 0;
@@ -54,43 +54,43 @@ public class LevelEditor : MonoBehaviour {
 		}
 	}
 
-	void spawnObject (int x, int z) {
-		if (blockPos[z][x] == null && currentObject.name != "Player") {
+	void spawnObject(int x, int z) {
+		if (blockPos[z][x] == null && currentObject.name != VariableManagement.player) {
 			createBlock(x, z);
 		} else {
-			if (currentObject.name == "Player") {
+			if (currentObject.name == VariableManagement.player) {
 				Destroy(blockPos[z][x]);
-			} else if (blockPos[z][x].name != currentObject.name + "(Clone)") {
+			} else if (blockPos[z][x].name != currentObject.name + VariableManagement.clone) {
 				Destroy(blockPos[z][x]);
 				createBlock(x, z);
 			}
 		}
 	}
 
-	void createBlock (int x, int z) {
+	void createBlock(int x, int z) {
 		GameObject temp = Instantiate(currentObject);
-		temp.transform.position = new Vector3 (x, 0, z);
+		temp.transform.position = new Vector3(x, 0, z);
 		GetComponent<EditorInterface>().changeBlockColor(temp);
 		temp.transform.SetParent(cubes.transform);
 		blockPos[z][x] = temp;
 	}
 
-	public void changeBlock (GameObject block){
+	public void changeBlock(GameObject block) {
 		currentObject = block;
 	}
 
-	public List<List<GameObject>> getBlocks () {
+	public List<List<GameObject>> getBlocks() {
 		return blockPos;
 	}
 
-	public void addToBlockList (int x, int z, GameObject obj) {
+	public void addToBlockList(int x, int z, GameObject obj) {
 		if (blockPos == null) {
 			fillEmptyBlockList();
 		}
 		blockPos[z][x] = obj;
 	}
 
-	void fillEmptyBlockList () {
+	void fillEmptyBlockList() {
 		blockPos = new List<List<GameObject>>();
 		for (int i = 0; i < 14; i++) {
 			blockPos.Add(new List<GameObject>());

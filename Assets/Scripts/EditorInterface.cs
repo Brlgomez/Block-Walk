@@ -12,6 +12,9 @@ public class EditorInterface : MonoBehaviour {
 	static int blurDownsample = 2;
 	static int minOrtho = 8;
 	static int maxOrtho = 17;
+	static int transitionLength = 1;
+	static float timeSpeed = 1.5f;
+	static float blockAlpha = 0.75f;
 
 	GameObject cubes;
 	GameObject menuHolder;
@@ -31,28 +34,28 @@ public class EditorInterface : MonoBehaviour {
 	Vector3 initialCamPos;
 	Vector3 colorMenuCamPos;
 
-	void Start () {
+	void Start() {
 		filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
-		cubes = GameObject.Find ("Cubes");
+		cubes = GameObject.Find("Cubes");
 		menuHolder = GameObject.Find("Menu Holder");
 		colorHolder = GameObject.Find("Color Holder");
 		optionHolder = GameObject.Find("Option Holder");
 		highlight = GameObject.Find("Block Highlight");
-		GetComponent<BlurOptimized> ().downsample = blurDownsample;
-		GetComponent<BackgroundColorTransition> ().levelStarting ();
+		GetComponent<BlurOptimized>().downsample = blurDownsample;
+		GetComponent<BackgroundColorTransition>().levelStarting();
 		initialCamPos = transform.position;
 		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 4.75f);
 		showMain();
 	}
 
-	void Update () {
+	void Update() {
 		if (transition) { 
 			transitionInterface();
 		} else {
-			if (Input.GetMouseButtonDown (0) && cubes.transform.position == Vector3.zero && transitionNum == 0) {
+			if (Input.GetMouseButtonDown(0) && cubes.transform.position == Vector3.zero && transitionNum == 0) {
 				GetComponent<LevelEditor>().mouseDown();
 			}
-			if (Input.GetMouseButtonUp (0)) {
+			if (Input.GetMouseButtonUp(0)) {
 				GetComponent<LevelEditor>().mouseUp();
 			}
 			if (GetComponent<LevelEditor>().getMouseDrag()) {
@@ -61,9 +64,9 @@ public class EditorInterface : MonoBehaviour {
 		}
 	}
 
-	void transitionInterface () {
-		deltaTime += Time.deltaTime * 1.5f;
-		if (deltaTime > 1) {
+	void transitionInterface() {
+		deltaTime += Time.deltaTime * timeSpeed;
+		if (deltaTime > transitionLength) {
 			GetComponent<LevelEditor>().mouseUp();
 			transition = false;
 			deltaTime = 0;
@@ -72,7 +75,7 @@ public class EditorInterface : MonoBehaviour {
 			}
 		}
 		if (transitionNum == 0) {
-			if (deltaTime > 0.25f) {
+			if (deltaTime > transitionLength / 4) {
 				GetComponent<BlurOptimized>().enabled = false;
 			}
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.one, deltaTime);
@@ -100,7 +103,7 @@ public class EditorInterface : MonoBehaviour {
 		}
 	}
 
-	public void setVariables (float sR, float sG, float sB, float sRInc, float sGInc, float sBInc, float sRInc2, float sGInc2, float sBInc2) {
+	public void setVariables(float sR, float sG, float sB, float sRInc, float sGInc, float sBInc, float sRInc2, float sGInc2, float sBInc2) {
 		r = GameObject.Find("R");
 		g = GameObject.Find("G");
 		b = GameObject.Find("B");
@@ -127,37 +130,37 @@ public class EditorInterface : MonoBehaviour {
 		gIncZ.GetComponent<Slider>().value = sGInc2;
 		bIncZ.GetComponent<Slider>().value = sBInc2;
 
-		r.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBackgroundColor ();});
-		g.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBackgroundColor ();});
-		b.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBackgroundColor ();});
-		rB.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		gB.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		bB.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		rIncX.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		gIncX.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		bIncX.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		rIncZ.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		gIncZ.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
-		bIncZ.GetComponent<Slider>().onValueChanged.AddListener (delegate { changeBlockColors ();});
+		r.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
+		g.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor();	});
+		b.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
+		rB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
+		gB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
+		bB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
+		rIncX.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
+		gIncX.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
+		bIncX.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
+		rIncZ.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
+		gIncZ.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
+		bIncZ.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
 
 		changeBackgroundColor();
 	}
 
-	public void showMain () {
+	public void showMain() {
 		menuOn = true;
 		transition = true;
 		transitionNum = 0;
 		deltaTime = 0;
 	}
 
-	public void showColorMenu () {
+	public void showColorMenu() {
 		menuOn = false;
 		transition = true;
 		transitionNum = 2;
 		deltaTime = 0;
 	}
 
-	public void showOptionMenu () {
+	public void showOptionMenu() {
 		menuOn = false;
 		transition = true;
 		transitionNum = 1;
@@ -165,48 +168,48 @@ public class EditorInterface : MonoBehaviour {
 		GetComponent<BlurOptimized>().enabled = true;
 	}
 
-	public void toMainMenu () {
+	public void toMainMenu() {
 		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
 		gameObject.AddComponent<BackgroundColorTransition>();
 		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toMainFromEditor);
 	}
 
-	public void nextScene (int n) {
-		SceneManager.LoadScene (n);
+	public void nextScene(int n) {
+		SceneManager.LoadScene(n);
 	}
 
-	public void testLevel () {
+	public void testLevel() {
 		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.editorMenu);
 		saveLevel();
 		GetComponent<VariableManagement>().turnOffCameraShift();
 		gameObject.AddComponent<BackgroundColorTransition>();
 		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toTestFromEditor);
 	}
-		
-	public bool isMenuOn () {
+
+	public bool isMenuOn() {
 		return menuOn;
 	}
 
-	public void shiftHighlight (GameObject button) {
+	public void shiftHighlight(GameObject button) {
 		highlight.transform.position = button.transform.position;
 	}
 
-	public void changeBackgroundColor () {
+	public void changeBackgroundColor() {
 		byte backR = byte.Parse(r.GetComponent<Slider>().value.ToString());
 		byte backG = byte.Parse(g.GetComponent<Slider>().value.ToString());
 		byte backB = byte.Parse(b.GetComponent<Slider>().value.ToString());
-		r.GetComponentsInChildren<Image>()[2].color = new Color32 (backR, 0, 0, 255);
-		g.GetComponentsInChildren<Image>()[2].color = new Color32 (0, backG, 0, 255);
-		b.GetComponentsInChildren<Image>()[2].color = new Color32 (0, 0, backB, 255);
+		r.GetComponentsInChildren<Image>()[2].color = new Color32(backR, 0, 0, 255);
+		g.GetComponentsInChildren<Image>()[2].color = new Color32(0, backG, 0, 255);
+		b.GetComponentsInChildren<Image>()[2].color = new Color32(0, 0, backB, 255);
 		Camera.main.backgroundColor = new Color32(backR, backG, backB, 255);
 		changeBlockColors();
 	}
 
-	public void changeBlockColors () {
+	public void changeBlockColors() {
 		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
-		rB.GetComponentsInChildren<Image>()[2].color = new Color (rB.GetComponent<Slider>().value * 2, 0, 0);
-		gB.GetComponentsInChildren<Image>()[2].color = new Color (0, gB.GetComponent<Slider>().value * 2, 0);
-		bB.GetComponentsInChildren<Image>()[2].color = new Color (0, 0, bB.GetComponent<Slider>().value * 2);
+		rB.GetComponentsInChildren<Image>()[2].color = new Color(rB.GetComponent<Slider>().value * 2, 0, 0);
+		gB.GetComponentsInChildren<Image>()[2].color = new Color(0, gB.GetComponent<Slider>().value * 2, 0);
+		bB.GetComponentsInChildren<Image>()[2].color = new Color(0, 0, bB.GetComponent<Slider>().value * 2);
 		if (blocks != null) {
 			for (int i = 0; i < 14; i++) {
 				for (int j = 0; j < 8; j++) { 
@@ -218,7 +221,7 @@ public class EditorInterface : MonoBehaviour {
 		}
 	}
 
-	public void changeBlockColor (GameObject block) {
+	public void changeBlockColor(GameObject block) {
 		float tempR, tempG, tempB;
 		float blockX = block.transform.position.x - 3.5f;
 		float blockZ = block.transform.position.z - 6.5f;
@@ -229,13 +232,13 @@ public class EditorInterface : MonoBehaviour {
 			tempR = ((tempR + Camera.main.backgroundColor.r) / 2);
 			tempG = ((tempG + Camera.main.backgroundColor.g) / 2);
 			tempB = ((tempB + Camera.main.backgroundColor.b) / 2);
-			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB, 0.75f);
+			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB, blockAlpha);
 		} else {
 			block.GetComponent<Renderer>().material.color = new Color(tempR, tempG, tempB);
 		}
 	}
 
-	public void saveLevel () {
+	public void saveLevel() {
 		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
 		File.Delete(filePath);
 		File.AppendAllText(filePath, r.GetComponent<Slider>().value + "," + g.GetComponent<Slider>().value + "," + b.GetComponent<Slider>().value);
@@ -271,18 +274,18 @@ public class EditorInterface : MonoBehaviour {
 		File.AppendAllText(filePath, VariableManagement.levelDelimiter.ToString());
 	}
 
-	public void randomColor () {
-		r.GetComponent<Slider>().value = Random.Range (r.GetComponent<Slider>().minValue, r.GetComponent<Slider>().maxValue);
-		g.GetComponent<Slider>().value = Random.Range (g.GetComponent<Slider>().minValue, g.GetComponent<Slider>().maxValue);
-		b.GetComponent<Slider>().value = Random.Range (b.GetComponent<Slider>().minValue, b.GetComponent<Slider>().maxValue);
-		rB.GetComponent<Slider>().value = Random.Range (rB.GetComponent<Slider>().minValue, rB.GetComponent<Slider>().maxValue);
-		gB.GetComponent<Slider>().value = Random.Range (gB.GetComponent<Slider>().minValue, gB.GetComponent<Slider>().maxValue);
-		bB.GetComponent<Slider>().value = Random.Range (bB.GetComponent<Slider>().minValue, bB.GetComponent<Slider>().maxValue);
-		rIncX.GetComponent<Slider>().value = Random.Range (rIncX.GetComponent<Slider>().minValue, rIncX.GetComponent<Slider>().maxValue);
-		gIncX.GetComponent<Slider>().value = Random.Range (gIncX.GetComponent<Slider>().minValue, gIncX.GetComponent<Slider>().maxValue);
-		bIncX.GetComponent<Slider>().value = Random.Range (bIncX.GetComponent<Slider>().minValue, bIncX.GetComponent<Slider>().maxValue);
-		rIncZ.GetComponent<Slider>().value = Random.Range (rIncZ.GetComponent<Slider>().minValue, rIncZ.GetComponent<Slider>().maxValue);
-		gIncZ.GetComponent<Slider>().value = Random.Range (gIncZ.GetComponent<Slider>().minValue, gIncZ.GetComponent<Slider>().maxValue);
-		bIncZ.GetComponent<Slider>().value = Random.Range (bIncZ.GetComponent<Slider>().minValue, bIncZ.GetComponent<Slider>().maxValue);
+	public void randomColor() {
+		r.GetComponent<Slider>().value = Random.Range(r.GetComponent<Slider>().minValue, r.GetComponent<Slider>().maxValue);
+		g.GetComponent<Slider>().value = Random.Range(g.GetComponent<Slider>().minValue, g.GetComponent<Slider>().maxValue);
+		b.GetComponent<Slider>().value = Random.Range(b.GetComponent<Slider>().minValue, b.GetComponent<Slider>().maxValue);
+		rB.GetComponent<Slider>().value = Random.Range(rB.GetComponent<Slider>().minValue, rB.GetComponent<Slider>().maxValue);
+		gB.GetComponent<Slider>().value = Random.Range(gB.GetComponent<Slider>().minValue, gB.GetComponent<Slider>().maxValue);
+		bB.GetComponent<Slider>().value = Random.Range(bB.GetComponent<Slider>().minValue, bB.GetComponent<Slider>().maxValue);
+		rIncX.GetComponent<Slider>().value = Random.Range(rIncX.GetComponent<Slider>().minValue, rIncX.GetComponent<Slider>().maxValue);
+		gIncX.GetComponent<Slider>().value = Random.Range(gIncX.GetComponent<Slider>().minValue, gIncX.GetComponent<Slider>().maxValue);
+		bIncX.GetComponent<Slider>().value = Random.Range(bIncX.GetComponent<Slider>().minValue, bIncX.GetComponent<Slider>().maxValue);
+		rIncZ.GetComponent<Slider>().value = Random.Range(rIncZ.GetComponent<Slider>().minValue, rIncZ.GetComponent<Slider>().maxValue);
+		gIncZ.GetComponent<Slider>().value = Random.Range(gIncZ.GetComponent<Slider>().minValue, gIncZ.GetComponent<Slider>().maxValue);
+		bIncZ.GetComponent<Slider>().value = Random.Range(bIncZ.GetComponent<Slider>().minValue, bIncZ.GetComponent<Slider>().maxValue);
 	}
 }

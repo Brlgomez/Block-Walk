@@ -8,10 +8,12 @@ using UnityStandardAssets.ImageEffects;
 
 public class GameplayInterface : MonoBehaviour {
 
-	private int speedOfSlider = 2;
-	private float lengthOfTap = 0.2f;
-	private int blurDownsample = 2;
-	private int maxBlur = 10;
+	static int speedOfSlider = 2;
+	static float lengthOfTap = 0.2f;
+	static int blurDownsample = 2;
+	static int maxBlur = 10;
+	static int buttonSize = 96;
+	static int lastLevel = 48;
 
 	GameObject restartButton;
 	GameObject gameStatus;
@@ -28,71 +30,71 @@ public class GameplayInterface : MonoBehaviour {
 	float handleHeight;
 	Vector3 towards;
 
-	void Start () {
-		restartButton = GameObject.Find ("Restart Button");
-		gameStatus = GameObject.Find ("Game Status");
-		nextLevel = GameObject.Find ("Next Level");
-		mainMenu = GameObject.Find ("Main Menu");
-		handle = GameObject.Find ("Floor");
-		if (PlayerPrefs.GetString("Last Menu") == "Campaign") {
-			levelNum = PlayerPrefs.GetInt ("Level", 0);
+	void Start() {
+		restartButton = GameObject.Find("Restart Button");
+		gameStatus = GameObject.Find("Game Status");
+		nextLevel = GameObject.Find("Next Level");
+		mainMenu = GameObject.Find("Main Menu");
+		handle = GameObject.Find("Floor");
+		if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
+			levelNum = GetComponent<VariableManagement>().getWorldLevel();
 			gameStatus.GetComponent<Text>().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
 		} else {
-			levelNum = PlayerPrefs.GetInt("User Level", 0);
+			levelNum = GetComponent<VariableManagement>().getUserLevel();
 			gameStatus.GetComponent<Text>().text = levelNum.ToString();
 		}
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
 		handleHeight = handle.transform.position.y;
-		bottomOfScreen = new Vector3 (middleWidth, handleHeight, 0);
-		topOfScreen = new Vector3 (middleWidth, height - handleHeight, 0);
-		GetComponent<BlurOptimized> ().downsample = blurDownsample;
-		GetComponent<BackgroundColorTransition> ().levelStarting ();
+		bottomOfScreen = new Vector3(middleWidth, handleHeight, 0);
+		topOfScreen = new Vector3(middleWidth, height - handleHeight, 0);
+		GetComponent<BlurOptimized>().downsample = blurDownsample;
+		GetComponent<BackgroundColorTransition>().levelStarting();
 	}
 
-	void Update () {
-		if (Input.GetMouseButtonDown (0)) {
-			checkOnButtons ();
+	void Update() {
+		if (Input.GetMouseButtonDown(0)) {
+			checkOnButtons();
 		}
 		if (holdingOnToSlider) {
-			sliderMovingWithMouse ();
+			sliderMovingWithMouse();
 		}
-		if (Input.GetMouseButtonUp (0) && holdingOnToSlider) {
-			letGoOfSlider ();
+		if (Input.GetMouseButtonUp(0) && holdingOnToSlider) {
+			letGoOfSlider();
 		}
 		if (sliderMoving) {
-			sliderAutomaticallyMoving ();
+			sliderAutomaticallyMoving();
 		}
 	}
 
-	void checkOnButtons () {
-		Vector2 mousePos = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
-		if (handle.GetComponent<BoxCollider2D> ().OverlapPoint (mousePos)) {
+	void checkOnButtons() {
+		Vector2 mousePos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+		if (handle.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
 			holdingOnToSlider = true;
 			sliderMoving = false;
 			timer = 0;
-			GetComponent<BlurOptimized> ().enabled = true;
-		} else if (restartButton.GetComponent<BoxCollider2D> ().OverlapPoint (mousePos)) {
-			restartButtonClick ();
-		} else if (mainMenu.GetComponent<BoxCollider2D> ().OverlapPoint (mousePos)) {
-			mainMenuClick ();
-		} else if (nextLevel.GetComponent<BoxCollider2D> ().OverlapPoint (mousePos)) {
-			nextLevelClick ();
+			GetComponent<BlurOptimized>().enabled = true;
+		} else if (restartButton.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+			restartButtonClick();
+		} else if (mainMenu.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+			mainMenuClick();
+		} else if (nextLevel.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+			nextLevelClick();
 		}
 	}
 
-	void sliderMovingWithMouse () {
+	void sliderMovingWithMouse() {
 		timer += Time.deltaTime;
-		handle.transform.position = new Vector3 (
+		handle.transform.position = new Vector3(
 			middleWidth,
-			Mathf.Clamp (Input.mousePosition.y, handleHeight, height - handleHeight), 
+			Mathf.Clamp(Input.mousePosition.y, handleHeight, height - handleHeight), 
 			handle.transform.position.z
 		);
 		float blurSize = ((handle.transform.position.y - handleHeight) * maxBlur) / (height - handleHeight);
-		GetComponent<BlurOptimized> ().blurSize = (blurSize);
+		GetComponent<BlurOptimized>().blurSize = (blurSize);
 	}
 
-	void letGoOfSlider () {
+	void letGoOfSlider() {
 		holdingOnToSlider = false;
 		sliderMoving = true;
 		if (handle.transform.position.y > Screen.height / 2) {
@@ -110,39 +112,40 @@ public class GameplayInterface : MonoBehaviour {
 		timer = 0;
 	}
 
-	void sliderAutomaticallyMoving () {
+	void sliderAutomaticallyMoving() {
 		timer += Time.deltaTime * speedOfSlider;
 		Vector3 handlePos = handle.transform.position;
-		handle.transform.position = Vector3.Lerp (handlePos, towards, timer);
-		GetComponent<BlurOptimized> ().blurSize = (((handlePos.y - handleHeight) * maxBlur) / (height - handleHeight));
+		handle.transform.position = Vector3.Lerp(handlePos, towards, timer);
+		GetComponent<BlurOptimized>().blurSize = (((handlePos.y - handleHeight) * maxBlur) / (height - handleHeight));
 		if (handlePos.y < towards.y + handleHeight / 2 && handlePos.y > towards.y - handleHeight / 2) {
 			handle.transform.position = towards;
 			sliderMoving = false;
 			timer = 0;
 			if (towards == bottomOfScreen) {
-				GetComponent<BlurOptimized> ().enabled = false;
+				GetComponent<BlurOptimized>().enabled = false;
 			}
 		}
 	}
 
-	public void restartButtonClick () {
-		PlayerPrefs.SetInt ("Level", PlayerPrefs.GetInt ("Level", 0));
-		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition (VariableManagement.restartOrNextLevel);
+	public void restartButtonClick() {
+		PlayerPrefs.SetInt(VariableManagement.worldLevel, GetComponent<VariableManagement>().getWorldLevel());
+		gameObject.AddComponent<BackgroundColorTransition>();
+		GetComponent<BackgroundColorTransition>().transition(VariableManagement.restartOrNextLevel);
 	}
 
-	public void nextLevelClick () {
+	public void nextLevelClick() {
 		GetComponent<VariableManagement>().turnOffCameraShift();
-		PlayerPrefs.SetInt ("Level", (PlayerPrefs.GetInt ("Level", 0) + 1));
-		gameObject.AddComponent<BackgroundColorTransition> ();
-		GetComponent<BackgroundColorTransition> ().transition (VariableManagement.restartOrNextLevel);
+		PlayerPrefs.SetInt(VariableManagement.worldLevel, GetComponent<VariableManagement>().getWorldLevel() + 1);
+		gameObject.AddComponent<BackgroundColorTransition>();
+		GetComponent<BackgroundColorTransition>().transition(VariableManagement.restartOrNextLevel);
 	}
 
-	public void mainMenuClick () {
-		if (PlayerPrefs.GetString("Last Menu") == "Campaign" || PlayerPrefs.GetString("Last Menu") == "User") {
+	public void mainMenuClick() {
+		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu ||
+		    GetComponent<VariableManagement>().getLastMenu() == VariableManagement.userLevelMenu) {
 			gameObject.AddComponent<BackgroundColorTransition>();
 			GetComponent<BackgroundColorTransition>().transition(VariableManagement.toMainFromLevel);
-		} else if (PlayerPrefs.GetString("Last Menu") == "Editor") {
+		} else if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.editorMenu) {
 			gameObject.AddComponent<BackgroundColorTransition>();
 			GetComponent<BackgroundColorTransition>().transition(VariableManagement.toEditorFromTest);
 		} else {
@@ -151,41 +154,42 @@ public class GameplayInterface : MonoBehaviour {
 		}
 	}
 
-	public void nextScene (int n) {
+	public void nextScene(int n) {
 		if (loading == false) {
-			SceneManager.LoadScene (n);
+			SceneManager.LoadScene(n);
 		}
 		loading = true;
 	}
 
-	IEnumerator loadNewScene (int level) {
+	IEnumerator loadNewScene(int level) {
 		yield return null;
-		SceneManager.LoadScene (level);
+		SceneManager.LoadScene(level);
 	}
 
-	public void winText () {
-		GetComponent<BlurOptimized> ().enabled = true;
-		if (PlayerPrefs.GetInt("Level", 0) + 1 <= 48 && PlayerPrefs.GetString("Last Menu") == "Campaign") {
-			nextLevel.GetComponent<Button> ().enabled = true;
-			nextLevel.GetComponent<Button> ().image.color = Color.white;
-			nextLevel.GetComponentInChildren<Text> ().color = Color.black;
-			nextLevel.GetComponent<BoxCollider2D> ().size = Vector2.one * 96;
+	public void winText() {
+		GetComponent<BlurOptimized>().enabled = true;
+		if (GetComponent<VariableManagement>().getWorldLevel() + 1 <= lastLevel &&
+		    GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
+			nextLevel.GetComponent<Button>().enabled = true;
+			nextLevel.GetComponent<Button>().image.color = Color.white;
+			nextLevel.GetComponentInChildren<Text>().color = Color.black;
+			nextLevel.GetComponent<BoxCollider2D>().size = Vector2.one * buttonSize;
 		}
-		gameStatus.GetComponent<Text> ().text = "Success";
+		gameStatus.GetComponent<Text>().text = "Success";
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;
 	}
 
-	public void loseText () {
-		GetComponent<BlurOptimized> ().enabled = true;
-		gameStatus.GetComponent<Text> ().text = "Stuck!";
+	public void loseText() {
+		GetComponent<BlurOptimized>().enabled = true;
+		gameStatus.GetComponent<Text>().text = "Stuck!";
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;
 	}
 
-	public bool isMenuOn () {
+	public bool isMenuOn() {
 		if (holdingOnToSlider || towards == topOfScreen || sliderMoving) {
 			return true;
 		} else {

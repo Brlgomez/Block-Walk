@@ -113,14 +113,14 @@ public class BackgroundColorTransition : MonoBehaviour {
 			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 2) {
 				t = Resources.Load(VariableManagement.world3) as TextAsset;
 			} 
-			level = t.text.Split("*"[0]);
+			level = t.text.Split(VariableManagement.levelDelimiter.ToString()[0]);
 			lines = level[(GetComponent<VariableManagement>().getWorldLevel() - 1) % 16].Split("\n"[0]);
 		} else {
 			string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 			StreamReader r;
 			if (File.Exists(filePath)) {
 				r = File.OpenText(filePath);
-				level = r.ReadToEnd().Split("*"[0]);
+				level = r.ReadToEnd().Split(VariableManagement.levelDelimiter.ToString()[0]);
 				lines = level[0].Split("\n"[0]);
 			} else {
 				return MenuColors.editorInterface;
