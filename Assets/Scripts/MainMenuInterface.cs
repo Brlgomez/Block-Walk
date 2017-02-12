@@ -8,8 +8,8 @@ using System.IO;
 
 public class MainMenuInterface : MonoBehaviour {
 
-	private int maxAmountOfUserLevels = 100;
-	private int minAmountOfUserLevels = 1;
+	static int maxAmountOfUserLevels = 100;
+	static int minAmountOfUserLevels = 1;
 
 	bool loading = false;
 	GameObject mainMenu, worlds, levels, userCreated, confirmation;
