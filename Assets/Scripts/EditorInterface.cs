@@ -16,10 +16,7 @@ public class EditorInterface : MonoBehaviour {
 	static float timeSpeed = 1.5f;
 	static float blockAlpha = 0.75f;
 
-	GameObject cubes;
-	GameObject menuHolder;
-	GameObject colorHolder;
-	GameObject optionHolder;
+	GameObject cubes, menuHolder, colorHolder, optionHolder, content;
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
 	GameObject rIncX, gIncX, bIncX;
@@ -41,10 +38,23 @@ public class EditorInterface : MonoBehaviour {
 		colorHolder = GameObject.Find("Color Holder");
 		optionHolder = GameObject.Find("Option Holder");
 		highlight = GameObject.Find("Block Highlight");
+		content = GameObject.Find("Content");
 		GetComponent<BlurOptimized>().downsample = blurDownsample;
 		GetComponent<BackgroundColorTransition>().levelStarting();
 		initialCamPos = transform.position;
 		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 4.75f);
+		if (PlayerPrefs.GetInt(VariableManagement.world0, 0) == 1) {
+			turnOnButton(content.GetComponentsInChildren<Button>()[2]);
+		}
+		if (PlayerPrefs.GetInt(VariableManagement.world1, 0) == 1) {
+			turnOnButton(content.GetComponentsInChildren<Button>()[3]);
+			turnOnButton(content.GetComponentsInChildren<Button>()[4]);
+			turnOnButton(content.GetComponentsInChildren<Button>()[5]);
+		}
+		if (PlayerPrefs.GetInt(VariableManagement.world2, 0) == 1) {
+			turnOnButton(content.GetComponentsInChildren<Button>()[6]);
+			turnOnButton(content.GetComponentsInChildren<Button>()[7]);
+		}
 		showMain();
 	}
 
@@ -62,6 +72,12 @@ public class EditorInterface : MonoBehaviour {
 				GetComponent<LevelEditor>().mouseDrag();
 			}
 		}
+	}
+
+	void turnOnButton (Button b) {
+		b.enabled = true;
+		b.image.enabled = true;
+		b.GetComponentInChildren<Text>().enabled = true;
 	}
 
 	void transitionInterface() {
@@ -228,7 +244,7 @@ public class EditorInterface : MonoBehaviour {
 		tempR = rB.GetComponent<Slider>().value + ((rIncX.GetComponent<Slider>().value * blockX) + (rIncZ.GetComponent<Slider>().value * blockZ));
 		tempG = gB.GetComponent<Slider>().value + ((gIncX.GetComponent<Slider>().value * blockX) + (gIncZ.GetComponent<Slider>().value * blockZ));
 		tempB = bB.GetComponent<Slider>().value + ((bIncX.GetComponent<Slider>().value * blockX) + (bIncZ.GetComponent<Slider>().value * blockZ));
-		if (block.name == VariableManagement.multistepBlockTile.ToString()) {
+		if (block.name == VariableManagement.multistepBlock + VariableManagement.clone) {
 			tempR = ((tempR + Camera.main.backgroundColor.r) / 2);
 			tempG = ((tempG + Camera.main.backgroundColor.g) / 2);
 			tempB = ((tempB + Camera.main.backgroundColor.b) / 2);

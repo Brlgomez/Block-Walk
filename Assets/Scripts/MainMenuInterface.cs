@@ -96,7 +96,7 @@ public class MainMenuInterface : MonoBehaviour {
 			interfaceMenu = 5;
 			popUp.AddComponent<MenuTransitions>();
 			popUp.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
-			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats! You just unlocked a new world and you unlocked a new piece for the editor!";
+			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats! You just unlocked a new world and new editor blocks!";
 		} else {
 			worlds.AddComponent<MenuTransitions>();
 			worlds.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
@@ -146,6 +146,8 @@ public class MainMenuInterface : MonoBehaviour {
 			for (int i = 0; i < 16; i++) {
 				int levelNumber = (world * 16) + i;
 				if (PlayerPrefs.GetInt(levelNumber.ToString(), 0) == 1) {
+					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Text>()[0].text = "";
+					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].color = Color.white;
 					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = 
 						Resources.Load<Sprite>("Levels/" + ((world + 1) + "-" + (i + 1)));
 				} else {
@@ -182,9 +184,6 @@ public class MainMenuInterface : MonoBehaviour {
 			confirmation.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
 			userCreated.AddComponent<MenuTransitions>();
 			interfaceMenu = 4;
-			string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
-			if (File.Exists(filePath)) {
-			}
 		}
 	}
 

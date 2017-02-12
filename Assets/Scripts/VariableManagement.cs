@@ -43,6 +43,7 @@ public class VariableManagement : MonoBehaviour {
 	public static char rotateLBlockTile = 'W';
 
 	// text files
+	public static string world0 = "World0";
 	public static string world1 = "World1";
 	public static string world2 = "World2";
 	public static string world3 = "World3";

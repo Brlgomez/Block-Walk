@@ -187,10 +187,17 @@ public class GameplayInterface : MonoBehaviour {
 		GetComponent<BlurOptimized>().enabled = true;
 		if (GetComponent<VariableManagement>().getWorldLevel() + 1 <= lastLevel &&
 		    GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
-			nextLevel.GetComponent<Button>().enabled = true;
-			nextLevel.GetComponent<Button>().image.color = Color.white;
-			nextLevel.GetComponentInChildren<Text>().color = Color.black;
-			nextLevel.GetComponent<BoxCollider2D>().enabled = true;
+			if ((currentLevel + 1)%16 == 0 && PlayerPrefs.GetInt("World" + ((currentLevel/16).ToString()), 0) == 1) {
+				nextLevel.GetComponent<Button>().enabled = true;
+				nextLevel.GetComponent<Button>().image.color = Color.white;
+				nextLevel.GetComponentInChildren<Text>().color = Color.black;
+				nextLevel.GetComponent<BoxCollider2D>().enabled = true;
+			} else if ((currentLevel + 1)%16 != 0) {
+				nextLevel.GetComponent<Button>().enabled = true;
+				nextLevel.GetComponent<Button>().image.color = Color.white;
+				nextLevel.GetComponentInChildren<Text>().color = Color.black;
+				nextLevel.GetComponent<BoxCollider2D>().enabled = true;
+			}
 		}
 		gameStatus.GetComponent<Text>().text = "Success";
 		timer = 0;
