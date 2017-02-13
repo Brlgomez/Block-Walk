@@ -127,12 +127,14 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public void restartButtonClick() {
+		sliderMoving = false;
 		PlayerPrefs.SetInt(VariableManagement.worldLevel, GetComponent<VariableManagement>().getWorldLevel());
 		gameObject.AddComponent<BackgroundColorTransition>();
 		GetComponent<BackgroundColorTransition>().transition(VariableManagement.restartOrNextLevel);
 	}
 
 	public void nextLevelClick() {
+		sliderMoving = false;
 		GetComponent<VariableManagement>().turnOffCameraShift();
 		PlayerPrefs.SetInt(VariableManagement.worldLevel, GetComponent<VariableManagement>().getWorldLevel() + 1);
 		gameObject.AddComponent<BackgroundColorTransition>();
@@ -140,6 +142,7 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public void mainMenuClick() {
+		sliderMoving = false;
 		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu ||
 		    GetComponent<VariableManagement>().getLastMenu() == VariableManagement.userLevelMenu) {
 			gameObject.AddComponent<BackgroundColorTransition>();
@@ -185,19 +188,13 @@ public class GameplayInterface : MonoBehaviour {
 			PlayerPrefs.Save();
 		}
 		GetComponent<BlurOptimized>().enabled = true;
-		if (GetComponent<VariableManagement>().getWorldLevel() + 1 <= lastLevel &&
-		    GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
-			if ((currentLevel + 1)%16 == 0 && PlayerPrefs.GetInt("World" + ((currentLevel/16).ToString()), 0) == 1) {
-				nextLevel.GetComponent<Button>().enabled = true;
-				nextLevel.GetComponent<Button>().image.color = Color.white;
-				nextLevel.GetComponentInChildren<Text>().color = Color.black;
-				nextLevel.GetComponent<BoxCollider2D>().enabled = true;
-			} else if ((currentLevel + 1)%16 != 0) {
-				nextLevel.GetComponent<Button>().enabled = true;
-				nextLevel.GetComponent<Button>().image.color = Color.white;
-				nextLevel.GetComponentInChildren<Text>().color = Color.black;
-				nextLevel.GetComponent<BoxCollider2D>().enabled = true;
-			}
+		if (GetComponent<VariableManagement>().getWorldLevel() + 1 <= lastLevel && 
+			GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu && 
+			((currentLevel + 1)%16) != 0) { 
+			nextLevel.GetComponent<Button>().enabled = true;
+			nextLevel.GetComponent<Button>().image.color = Color.white;
+			nextLevel.GetComponentInChildren<Text>().color = Color.black;
+			nextLevel.GetComponent<BoxCollider2D>().enabled = true;	
 		}
 		gameStatus.GetComponent<Text>().text = "Success";
 		timer = 0;

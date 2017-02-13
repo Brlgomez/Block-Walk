@@ -10,8 +10,8 @@ public class LevelEditor : MonoBehaviour {
 	GameObject standardBlock;
 	GameObject currentObject;
 	List<List<GameObject>> blockPos;
-	float rayCastCount = 0.05f;
-	float rayCastLimit = 0.05f;
+	float rayCastCount = 0.025f;
+	float rayCastLimit = 0.025f;
 
 	void Awake() {
 		cubes = GameObject.Find("Cubes");

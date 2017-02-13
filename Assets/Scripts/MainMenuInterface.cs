@@ -12,7 +12,7 @@ public class MainMenuInterface : MonoBehaviour {
 	static int minAmountOfUserLevels = 1;
 
 	bool loading = false;
-	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp;
+	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles;
 	GameObject worldText, userText, blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock;
 	GameObject rotateRBlock, rotateLBlock, playButton, editButton, deleteButton;
 	int levelMultiplier = 1;
@@ -26,6 +26,7 @@ public class MainMenuInterface : MonoBehaviour {
 		playButton = GameObject.Find("Play");
 		editButton = GameObject.Find("Edit");
 		deleteButton = GameObject.Find("Delete");
+		particles = GameObject.Find("Sprite Holder");
 		mainMenu = GameObject.Find("Menu");
 		mainMenu.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		worlds = GameObject.Find("Worlds");
@@ -38,6 +39,8 @@ public class MainMenuInterface : MonoBehaviour {
 		confirmation.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		popUp = GameObject.Find("Pop Up");
 		popUp.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
+		intro = GameObject.Find("Intro Title");
+		intro.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		standardBlock = GameObject.Find(VariableManagement.standardBlock);
 		multistepBlock = GameObject.Find(VariableManagement.multistepBlock);
 		switchBlock = GameObject.Find(VariableManagement.switchBlock);
@@ -65,22 +68,52 @@ public class MainMenuInterface : MonoBehaviour {
 			toUserCreatedLevels();
 			Camera.main.backgroundColor = MenuColors.editorColor;
 		} else {
-			interfaceMenu = 0;
-			toMainMenu();
+			interfaceMenu = -1;
+			toIntro();
 			Camera.main.backgroundColor = MenuColors.menuColor;
 		}
 		PlayerPrefs.SetString(VariableManagement.lastMenu, "");
 		GetComponent<VariableManagement>().turnOffCameraShift();
 	}
+
+	public void unlockWorld2 () {
+		PlayerPrefs.SetInt("World0", 1);
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+	}
+
+	public void unlockWorld3 () {
+		PlayerPrefs.SetInt("World1", 1);
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 2);
+	}
+
+	public void toIntro () {
+		particles.GetComponentInChildren<ParticleSystem>().Play();
+		if (GetComponent<Intro>() == null) {
+			gameObject.AddComponent<Intro>();
+		}
+		intro.AddComponent<MenuTransitions>();
+		intro.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.menuColor);
+		if (interfaceMenu == 0) {
+			mainMenu.AddComponent<MenuTransitions>();
+		}
+		interfaceMenu = -1;
+	}
 		
 	public void toMainMenu() {
 		destroyBlockChildren();
+		particles.GetComponentInChildren<ParticleSystem>().Stop();
+		if (GetComponent<Intro>() != null) {
+			Destroy(GetComponent<Intro>());
+		}
 		mainMenu.AddComponent<MenuTransitions>();
 		mainMenu.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.menuColor);
 		if (interfaceMenu == 1) {
 			worlds.AddComponent<MenuTransitions>();
 		} else if (interfaceMenu == 3) {
 			userCreated.AddComponent<MenuTransitions>();
+		} else if (interfaceMenu == -1) {
+			particles.AddComponent<MenuTransitions>();
+			intro.AddComponent<MenuTransitions>();
 		}
 		interfaceMenu = 0;
 	}
@@ -110,6 +143,8 @@ public class MainMenuInterface : MonoBehaviour {
 		for (int i = 0; i < 3; i++) {
 			if (PlayerPrefs.GetInt(("World" + i).ToString(), 0) == 0) {
 				worlds.GetComponentsInChildren<Image>()[i + 1].color = new Color(0.75f, 0.75f, 0.75f, 1);
+			} else {
+				worlds.GetComponentsInChildren<Image>()[i + 1].color = new Color(1, 1, 1, 1);
 			}
 		}
 	}

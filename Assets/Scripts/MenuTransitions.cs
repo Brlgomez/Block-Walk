@@ -24,10 +24,12 @@ public class MenuTransitions : MonoBehaviour {
 			}
 		}
 		newPos = new Vector3[items.Count];
-		if (items[0].transform.position.x < 0) {
-			direction = Screen.width;
-		} else {
-			direction = -(Screen.width);
+		if (items.Count > 0) {
+			if (items[0].transform.position.x < 0) {
+				direction = Screen.width;
+			} else {
+				direction = -(Screen.width);
+			}
 		}
 		for (int j = 0; j < items.Count; j++) {
 			newPos[j] = new Vector3((items[j].transform.position.x + direction), items[j].transform.position.y, 0);
