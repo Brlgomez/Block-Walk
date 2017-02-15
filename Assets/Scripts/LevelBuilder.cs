@@ -60,7 +60,7 @@ public class LevelBuilder : MonoBehaviour {
 			if (File.Exists(filePath)) {
 				r = File.OpenText(filePath);
 			} else {
-				File.AppendAllText(filePath, "160,192,224\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n");
+				File.AppendAllText(filePath, "Untitled\nUnknown\n160,192,224\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n");
 				for (int i = 0; i < 14; i++) {
 					File.AppendAllText(filePath, "--------\n");
 				}
@@ -81,10 +81,11 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	void setVariables(string[] lines) {
-		string[] bg = lines[0].Split(","[0]);
-		string[] blockRGB = lines[1].Split(","[0]);
-		string[] rgbIncX = lines[2].Split(","[0]);
-		string[] rgbIncZ = lines[3].Split(","[0]);
+		string title = lines[0];
+		string[] bg = lines[2].Split(","[0]);
+		string[] blockRGB = lines[3].Split(","[0]);
+		string[] rgbIncX = lines[4].Split(","[0]);
+		string[] rgbIncZ = lines[5].Split(","[0]);
 		Camera.main.backgroundColor = new Color32(byte.Parse(bg[0]), byte.Parse(bg[1]), byte.Parse(bg[2]), 255);
 		r = float.Parse(blockRGB[0]);
 		g = float.Parse(blockRGB[1]);
@@ -96,12 +97,12 @@ public class LevelBuilder : MonoBehaviour {
 		gIncZ = float.Parse(rgbIncZ[1]);
 		bIncZ = float.Parse(rgbIncZ[2]);
 		if (GetComponent<CharacterMovement>() == null) {
-			GetComponent<EditorInterface>().setVariables(r, g, b, rIncX, gIncX, bIncX, rIncZ, gIncZ, bIncZ);
+			GetComponent<EditorInterface>().setVariables(r, g, b, rIncX, gIncX, bIncX, rIncZ, gIncZ, bIncZ, title);
 		}
 	}
 
 	void setBlocks(string[] lines) {
-		for (int i = 4; i < lines.Length; i++) {
+		for (int i = 6; i < lines.Length; i++) {
 			for (int j = 0; j < lines[i].Length; j++) {
 				if (lines[i][j] == VariableManagement.standardBlockTile) {
 					numberOfBlocks++;
@@ -130,10 +131,10 @@ public class LevelBuilder : MonoBehaviour {
 		GameObject temp = Instantiate(block);
 		temp.layer = 8;
 		if (GetComponent<CharacterMovement>() != null) {
-			temp.transform.position = new Vector3(x - 3.5f, 0, -z + 10.5f);
+			temp.transform.position = new Vector3(x - 3.5f, 0, -z + 12.5f);
 		} else {
-			temp.transform.position = new Vector3(x, 0, -z + 17);
-			GetComponent<LevelEditor>().addToBlockList(x, -z + 17, temp);
+			temp.transform.position = new Vector3(x, 0, -z + 19);
+			GetComponent<LevelEditor>().addToBlockList(x, -z + 19, temp);
 		}
 		addBlock(temp);
 		changeBlockColor(temp);
@@ -143,11 +144,11 @@ public class LevelBuilder : MonoBehaviour {
 		if ((temp.transform.position.x + temp.transform.position.z) < leftMost) {
 			leftMost = (temp.transform.position.x + temp.transform.position.z);
 		}
-		if ((-x + 4 + -z + 10) > topMost) {
-			topMost = (-x + 4 + -z + 10);
+		if ((-x + 4 + -z + 12) > topMost) {
+			topMost = (-x + 4 + -z + 12);
 		} 
-		if ((-x + 4 + -z + 10) < bottomMost) {
-			bottomMost = (-x + 4 + -z + 10);
+		if ((-x + 4 + -z + 12) < bottomMost) {
+			bottomMost = (-x + 4 + -z + 12);
 		}
 		if (temp.transform.localPosition.x < xMin) {
 			xMin = temp.transform.localPosition.x;

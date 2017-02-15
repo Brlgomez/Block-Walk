@@ -59,6 +59,8 @@ public class VariableManagement : MonoBehaviour {
 	public static string lastMenu = "Last Menu";
 	public static string shiftCamera = "Shift Camera";
 	public static string newWorldUnlocked = "New World";
+	public static string userName = "User Name";
+	public static string userId = "User ID";
 
 	// last menus
 	public static string userLevelMenu = "User";

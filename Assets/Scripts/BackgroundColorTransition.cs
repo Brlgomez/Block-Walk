@@ -126,7 +126,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 				return MenuColors.editorInterface;
 			}
 		} 
-		string[] color = lines[0].Split(","[0]);
+		string[] color = lines[2].Split(","[0]);
 		Color32 c = new Color32(byte.Parse(color[0]), byte.Parse(color[1]), byte.Parse(color[2]), 255);
 		return c;
 	}

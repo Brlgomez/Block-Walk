@@ -18,6 +18,8 @@ public class GooglePlay : MonoBehaviour {
 			Social.localUser.Authenticate ((bool success) => {
 				if (success) {
 					PlayerPrefs.SetInt ("Online", 0);
+					PlayerPrefs.SetString(VariableManagement.userName, Social.localUser.userName);
+					PlayerPrefs.SetString(VariableManagement.userId, Social.localUser.id);
 					PlayerPrefs.Save ();
 				} else {
 					PlayerPrefs.SetInt ("Online", 1);

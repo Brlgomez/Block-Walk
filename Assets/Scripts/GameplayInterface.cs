@@ -38,9 +38,6 @@ public class GameplayInterface : MonoBehaviour {
 		if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
 			levelNum = GetComponent<VariableManagement>().getWorldLevel();
 			gameStatus.GetComponent<Text>().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
-		} else {
-			levelNum = GetComponent<VariableManagement>().getUserLevel();
-			gameStatus.GetComponent<Text>().text = levelNum.ToString();
 		}
 		middleWidth = Screen.width / 2;
 		height = Screen.height;

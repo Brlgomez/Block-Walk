@@ -119,7 +119,12 @@ public class EditorInterface : MonoBehaviour {
 		}
 	}
 
-	public void setVariables(float sR, float sG, float sB, float sRInc, float sGInc, float sBInc, float sRInc2, float sGInc2, float sBInc2) {
+	public void setVariables(float sR, float sG, float sB, float sRInc, float sGInc, float sBInc, float sRInc2, float sGInc2, float sBInc2, string title) {
+		optionHolder = GameObject.Find("Option Holder");
+		if (title != "Untitled") {
+			optionHolder.GetComponentInChildren<InputField>().text = title;
+		}
+
 		r = GameObject.Find("R");
 		g = GameObject.Find("G");
 		b = GameObject.Find("B");
@@ -257,6 +262,14 @@ public class EditorInterface : MonoBehaviour {
 	public void saveLevel() {
 		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
 		File.Delete(filePath);
+		if (optionHolder.GetComponentInChildren<InputField>().text != "") {
+			File.AppendAllText(filePath, optionHolder.GetComponentInChildren<InputField>().text);
+		} else {
+			File.AppendAllText(filePath, "Untitled");
+		}
+		File.AppendAllText(filePath, "\n");
+		File.AppendAllText(filePath, PlayerPrefs.GetString(VariableManagement.userName, "Unknown"));
+		File.AppendAllText(filePath, "\n");
 		File.AppendAllText(filePath, r.GetComponent<Slider>().value + "," + g.GetComponent<Slider>().value + "," + b.GetComponent<Slider>().value);
 		File.AppendAllText(filePath, "\n");
 		File.AppendAllText(filePath, rB.GetComponent<Slider>().value + "," + gB.GetComponent<Slider>().value + "," + bB.GetComponent<Slider>().value);

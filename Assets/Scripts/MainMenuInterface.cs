@@ -337,9 +337,11 @@ public class MainMenuInterface : MonoBehaviour {
 			r = File.OpenText(filePath);
 			userLevel = r.ReadToEnd().Split(VariableManagement.levelDelimiter.ToString()[0]);
 			lines = userLevel[0].Split("\n"[0]);
-			createSpriteLevel(lines, 4);
+			level += lines[0] + "\n";
+			level += "By: " + lines[1];
+			createSpriteLevel(lines, 6);
 		} else {
-			level += "Empty";
+			level += "Empty Slot";
 		}
 		userText.GetComponent<Text>().text = level;
 	}
@@ -373,7 +375,6 @@ public class MainMenuInterface : MonoBehaviour {
 			worldLevels.GetComponentInChildren<Text>().text = "";
 			worldLevels.GetComponentInChildren<Text>().text += GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][0] + "\n";
 			worldLevels.GetComponentInChildren<Text>().text += "By: " + GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][1] + "\n";
-			worldLevels.GetComponentInChildren<Text>().text += GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][2] + "\n";
 			worldLevels.GetComponentInChildren<Text>().text += "Downloads: " + GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][3];
 			lines = GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][4].Split(" "[0]);
 			createSpriteLevel(lines, 0);
