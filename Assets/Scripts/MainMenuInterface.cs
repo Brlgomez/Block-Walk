@@ -12,12 +12,13 @@ public class MainMenuInterface : MonoBehaviour {
 	static int minAmountOfUserLevels = 1;
 
 	bool loading = false;
-	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles;
+	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels;
 	GameObject worldText, userText, blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock;
 	GameObject rotateRBlock, rotateLBlock, playButton, editButton, deleteButton;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
 	Vector3 levelIconStart, levelIconEnd;
+	int publicLevelCount = 0;
 
 	void Start() {
 		worldText = GameObject.Find("World Text");
@@ -41,6 +42,8 @@ public class MainMenuInterface : MonoBehaviour {
 		popUp.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		intro = GameObject.Find("Intro Title");
 		intro.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
+		worldLevels = GameObject.Find("World Levels");
+		worldLevels.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		standardBlock = GameObject.Find(VariableManagement.standardBlock);
 		multistepBlock = GameObject.Find(VariableManagement.multistepBlock);
 		switchBlock = GameObject.Find(VariableManagement.switchBlock);
@@ -114,6 +117,8 @@ public class MainMenuInterface : MonoBehaviour {
 		} else if (interfaceMenu == -1) {
 			particles.AddComponent<MenuTransitions>();
 			intro.AddComponent<MenuTransitions>();
+		} else if (interfaceMenu == 6) {
+			worldLevels.AddComponent<MenuTransitions>();
 		}
 		interfaceMenu = 0;
 	}
@@ -137,7 +142,7 @@ public class MainMenuInterface : MonoBehaviour {
 				mainMenu.AddComponent<MenuTransitions>();
 			} else if (interfaceMenu == 2) {
 				levels.AddComponent<MenuTransitions>();
-			}
+			} 
 			interfaceMenu = 1;
 		}
 		for (int i = 0; i < 3; i++) {
@@ -147,6 +152,17 @@ public class MainMenuInterface : MonoBehaviour {
 				worlds.GetComponentsInChildren<Image>()[i + 1].color = new Color(1, 1, 1, 1);
 			}
 		}
+	}
+
+	public void toPublicLevels() {
+		publicLevelCount = 0;
+		showPublicLevel();
+		if (interfaceMenu == 0) {
+			mainMenu.AddComponent<MenuTransitions>();
+		}
+		worldLevels.AddComponent<MenuTransitions>();
+		worldLevels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
+		interfaceMenu = 6;
 	}
 
 	public void toLevelSelect(int world) {
@@ -227,7 +243,7 @@ public class MainMenuInterface : MonoBehaviour {
 		string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 		if (File.Exists(filePath)) {
 			File.Delete(filePath);
-			userText.GetComponent<Text>().text = GetComponent<VariableManagement>().getUserLevel() + "\n\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n";
+			userText.GetComponent<Text>().text = GetComponent<VariableManagement>().getUserLevel() + "\nEmpty";
 			destroyBlockChildren();
 		}
 		toUserCreatedLevels();
@@ -321,30 +337,65 @@ public class MainMenuInterface : MonoBehaviour {
 			r = File.OpenText(filePath);
 			userLevel = r.ReadToEnd().Split(VariableManagement.levelDelimiter.ToString()[0]);
 			lines = userLevel[0].Split("\n"[0]);
-			for (int i = 4; i < lines.Length; i++) {
-				for (int j = 0; j < lines[i].Length; j++) {
-					if (lines[i][j] == VariableManagement.standardBlockTile) {
-						displayBlockImage(i, j, standardBlock);
-					} else if (lines[i][j] == VariableManagement.multistepBlockTile) {
-						displayBlockImage(i, j, multistepBlock);
-					} else if (lines[i][j] == VariableManagement.switchBlockTile) {
-						displayBlockImage(i, j, switchBlock);
-					} else if (lines[i][j] == VariableManagement.activeBlockTile) {
-						displayBlockImage(i, j, redBlock);
-					} else if (lines[i][j] == VariableManagement.inactiveBlockTile) {
-						displayBlockImage(i, j, blueBlock);
-					} else if (lines[i][j] == VariableManagement.rotateRBlockTile) {
-						displayBlockImage(i, j, rotateRBlock);
-					} else if (lines[i][j] == VariableManagement.rotateLBlockTile) {
-						displayBlockImage(i, j, rotateLBlock);
-					}
-				}
-				level += "\n";
-			}
+			createSpriteLevel(lines, 4);
 		} else {
-			level += "\n\n\n\n\n\n\n\nEmpty\n\n\n\n\n\n\n";
+			level += "Empty";
 		}
 		userText.GetComponent<Text>().text = level;
+	}
+
+	public void createSpriteLevel (string[] lines, int num) {
+		destroyBlockChildren();
+		for (int i = num; i < lines.Length; i++) {
+			for (int j = 0; j < lines[i].Length; j++) {
+				if (lines[i][j] == VariableManagement.standardBlockTile) {
+					displayBlockImage(i - num, j, standardBlock);
+				} else if (lines[i][j] == VariableManagement.multistepBlockTile) {
+					displayBlockImage(i - num, j, multistepBlock);
+				} else if (lines[i][j] == VariableManagement.switchBlockTile) {
+					displayBlockImage(i - num, j, switchBlock);
+				} else if (lines[i][j] == VariableManagement.activeBlockTile) {
+					displayBlockImage(i - num, j, redBlock);
+				} else if (lines[i][j] == VariableManagement.inactiveBlockTile) {
+					displayBlockImage(i - num, j, blueBlock);
+				} else if (lines[i][j] == VariableManagement.rotateRBlockTile) {
+					displayBlockImage(i - num, j, rotateRBlock);
+				} else if (lines[i][j] == VariableManagement.rotateLBlockTile) {
+					displayBlockImage(i - num, j, rotateLBlock);
+				}
+			}
+		}
+	}
+
+	public void showPublicLevel() {
+		string[] lines;
+		if (GetComponent<FirebaseDatabases>().getLevelList() != null) {
+			worldLevels.GetComponentInChildren<Text>().text = "";
+			worldLevels.GetComponentInChildren<Text>().text += GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][0] + "\n";
+			worldLevels.GetComponentInChildren<Text>().text += "By: " + GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][1] + "\n";
+			worldLevels.GetComponentInChildren<Text>().text += GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][2] + "\n";
+			worldLevels.GetComponentInChildren<Text>().text += "Downloads: " + GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][3];
+			lines = GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][4].Split(" "[0]);
+			createSpriteLevel(lines, 0);
+		}
+	}
+
+	public void nextPublicLevel () {
+		if (GetComponent<FirebaseDatabases>().getLevelList() != null) {
+			if (publicLevelCount < GetComponent<FirebaseDatabases>().getLevelList().Count - 1) {
+				publicLevelCount++;
+				showPublicLevel();
+			}
+		}
+	}
+
+	public void previousPublicLevel () {
+		if (GetComponent<FirebaseDatabases>().getLevelList() != null) {
+			if (publicLevelCount > 0) {
+				publicLevelCount--;
+				showPublicLevel();
+			}
+		}
 	}
 
 	void displayBlockImage(int i, int j, GameObject b) {
