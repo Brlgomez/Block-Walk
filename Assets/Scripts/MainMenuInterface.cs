@@ -12,13 +12,15 @@ public class MainMenuInterface : MonoBehaviour {
 	static int minAmountOfUserLevels = 1;
 
 	bool loading = false;
-	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels;
+	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database;
 	GameObject worldText, userText, blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock;
 	GameObject rotateRBlock, rotateLBlock, playButton, editButton, deleteButton;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
 	Vector3 levelIconStart, levelIconEnd;
 	int publicLevelCount = 0;
+	string nameOfUserMap = "";
+	string dataOfUserMap = "";
 
 	void Start() {
 		worldText = GameObject.Find("World Text");
@@ -44,6 +46,8 @@ public class MainMenuInterface : MonoBehaviour {
 		intro.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		worldLevels = GameObject.Find("World Levels");
 		worldLevels.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
+		database = GameObject.Find("Database");
+		database.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		standardBlock = GameObject.Find(VariableManagement.standardBlock);
 		multistepBlock = GameObject.Find(VariableManagement.multistepBlock);
 		switchBlock = GameObject.Find(VariableManagement.switchBlock);
@@ -75,7 +79,7 @@ public class MainMenuInterface : MonoBehaviour {
 			toIntro();
 			Camera.main.backgroundColor = MenuColors.menuColor;
 		}
-		PlayerPrefs.SetString(VariableManagement.lastMenu, "");
+		PlayerPrefs.SetString(VariableManagement.lastMenu, ""); 
 		GetComponent<VariableManagement>().turnOffCameraShift();
 	}
 
@@ -118,7 +122,7 @@ public class MainMenuInterface : MonoBehaviour {
 			particles.AddComponent<MenuTransitions>();
 			intro.AddComponent<MenuTransitions>();
 		} else if (interfaceMenu == 6) {
-			worldLevels.AddComponent<MenuTransitions>();
+			database.AddComponent<MenuTransitions>();
 		}
 		interfaceMenu = 0;
 	}
@@ -157,12 +161,32 @@ public class MainMenuInterface : MonoBehaviour {
 	public void toPublicLevels() {
 		publicLevelCount = 0;
 		showPublicLevel();
-		if (interfaceMenu == 0) {
-			mainMenu.AddComponent<MenuTransitions>();
+		if (interfaceMenu == 6) {
+			database.AddComponent<MenuTransitions>();
 		}
 		worldLevels.AddComponent<MenuTransitions>();
 		worldLevels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
+		interfaceMenu = 7;
+	}
+
+	public void toDatabase () {
+		destroyBlockChildren();
+		if (interfaceMenu == 0) {
+			mainMenu.AddComponent<MenuTransitions>();
+		} else if (interfaceMenu == 7) {
+			worldLevels.AddComponent<MenuTransitions>();
+		}
+		database.AddComponent<MenuTransitions>();
+		database.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
 		interfaceMenu = 6;
+	}
+
+	public void getMostRecentLevels () {
+		GetComponent<FirebaseDatabases>().fireBaseMostRecent();
+	}
+
+	public void getMostDownloadedLevels () {
+		GetComponent<FirebaseDatabases>().fireBaseMostDownloaded();
 	}
 
 	public void toLevelSelect(int world) {
@@ -283,6 +307,8 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void left() {
+		nameOfUserMap = "";
+		dataOfUserMap = "";
 		disableButtons();
 		if (GetComponent<VariableManagement>().getUserLevel() > minAmountOfUserLevels) {
 			destroyBlockChildren();
@@ -296,6 +322,8 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void right() {
+		nameOfUserMap = "";
+		dataOfUserMap = "";
 		disableButtons();
 		if (GetComponent<VariableManagement>().getUserLevel() < maxAmountOfUserLevels) {
 			destroyBlockChildren();
@@ -308,7 +336,15 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 	}
 
+	public void postLevel () {
+		if (dataOfUserMap != "") {
+			GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap);
+		}
+	}
+
 	void disableButtons() {
+		userCreated.GetComponentsInChildren<Image>()[0].color = Color.clear;
+		userCreated.GetComponentsInChildren<Text>()[1].color = Color.clear;
 		playButton.GetComponent<Image>().color = Color.clear;
 		deleteButton.GetComponent<Image>().color = Color.clear;
 		playButton.GetComponentInChildren<Text>().color = Color.clear;
@@ -317,6 +353,8 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	void enableButtons() {
+		userCreated.GetComponentsInChildren<Image>()[0].color = Color.white;
+		userCreated.GetComponentsInChildren<Text>()[1].color = Color.black;
 		playButton.GetComponent<Image>().color = Color.white;
 		deleteButton.GetComponent<Image>().color = Color.white;
 		playButton.GetComponentInChildren<Text>().color = Color.black;
@@ -339,6 +377,9 @@ public class MainMenuInterface : MonoBehaviour {
 			lines = userLevel[0].Split("\n"[0]);
 			level += lines[0] + "\n";
 			level += "By: " + lines[1];
+			nameOfUserMap = lines[0];
+			dataOfUserMap = "";
+			dataOfUserMap = lines[2] + " " + lines[3] + " " + lines[4] + " " + lines[5];
 			createSpriteLevel(lines, 6);
 		} else {
 			level += "Empty Slot";
@@ -349,6 +390,7 @@ public class MainMenuInterface : MonoBehaviour {
 	public void createSpriteLevel (string[] lines, int num) {
 		destroyBlockChildren();
 		for (int i = num; i < lines.Length; i++) {
+			dataOfUserMap += (" " + lines[i]);
 			for (int j = 0; j < lines[i].Length; j++) {
 				if (lines[i][j] == VariableManagement.standardBlockTile) {
 					displayBlockImage(i - num, j, standardBlock);
@@ -410,5 +452,9 @@ public class MainMenuInterface : MonoBehaviour {
 		foreach (Transform child in blockHolder.transform) {
 			GameObject.Destroy(child.gameObject);
 		}
+	}
+
+	public int getInterfaceNumber () {
+		return interfaceMenu;
 	}
 }
