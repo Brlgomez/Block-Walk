@@ -261,6 +261,7 @@ public class EditorInterface : MonoBehaviour {
 
 	public void saveLevel() {
 		GetComponent<VariableManagement>().setLevelAuthorization(0);
+		GetComponent<VariableManagement>().setLevelPostValue(0);
 		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
 		File.Delete(filePath);
 		if (optionHolder.GetComponentInChildren<InputField>().text != "") {

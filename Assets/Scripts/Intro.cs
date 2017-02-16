@@ -23,13 +23,13 @@ public class Intro : MonoBehaviour {
 		}
 		text.transform.localPosition = new Vector3(
 			text.transform.localPosition.x, 
-			text.transform.localPosition.y + pingPong(Time.time * 1, -2, 2), 
+			text.transform.localPosition.y + pingPong(Time.time * 1, -1.5f, 1.5f), 
 			text.transform.localPosition.z
 		);
 			text.transform.rotation = Quaternion.Euler(
 			0, 
 			0, 
-			text.transform.rotation.eulerAngles.z + pingPong(Time.time * 2, -1.5f, 1.5f)
+			text.transform.rotation.eulerAngles.z + pingPong(Time.time * 1.5f, -1, 1)
 		);
 	}
 

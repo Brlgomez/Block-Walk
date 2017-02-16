@@ -101,4 +101,12 @@ public class VariableManagement : MonoBehaviour {
 	public void setLevelAuthorization (int n) {
 		PlayerPrefs.SetInt("User" + GetComponent<VariableManagement>().getUserLevel(), n);
 	}
+
+	public bool isLevelPosted () {
+		return (PlayerPrefs.GetInt("Posted" + GetComponent<VariableManagement>().getUserLevel()) == 1);
+	}
+
+	public void setLevelPostValue (int n) {
+		PlayerPrefs.SetInt("Posted" + GetComponent<VariableManagement>().getUserLevel(), n);
+	}
 }
