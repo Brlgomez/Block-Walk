@@ -6,11 +6,11 @@ using UnityEngine.SocialPlatforms;
 public class GooglePlay : MonoBehaviour {
 
 	void Start () {
-		//if (PlayerPrefs.GetInt ("Online", 0) == 0) {
+		if (PlayerPrefs.GetInt ("Online", 0) == 0) {
 			PlayGamesPlatform.DebugLogEnabled = false;
 			PlayGamesPlatform.Activate ();
 			logIn ();
-		//}
+		}
 	}
 
 	public void logIn() {

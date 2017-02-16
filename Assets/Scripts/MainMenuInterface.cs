@@ -275,6 +275,7 @@ public class MainMenuInterface : MonoBehaviour {
 			File.Delete(filePath);
 			userText.GetComponent<Text>().text = GetComponent<VariableManagement>().getUserLevel() + "\nEmpty";
 			destroyBlockChildren();
+			PlayerPrefs.SetInt("User" + GetComponent<VariableManagement>().getUserLevel(), 0);
 		}
 		toUserCreatedLevels();
 	}
@@ -313,7 +314,6 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void left() {
-		userCreated.GetComponentsInChildren<Text>()[1].text = "Post";
 		nameOfUserMap = "";
 		dataOfUserMap = "";
 		disableButtons();
@@ -329,7 +329,6 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void right() {
-		userCreated.GetComponentsInChildren<Text>()[1].text = "Post";
 		nameOfUserMap = "";
 		dataOfUserMap = "";
 		disableButtons();
@@ -345,8 +344,8 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void postLevel () {
-		userCreated.GetComponentsInChildren<Text>()[1].text = "Posting...";
-		if (dataOfUserMap != "") {
+		if (dataOfUserMap != "" && PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel()) == 1) {
+			userCreated.GetComponentsInChildren<Text>()[1].text = "Posting...";
 			GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap, userCreated.GetComponentsInChildren<Text>()[1]);
 		}
 	}
@@ -362,8 +361,14 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	void enableButtons() {
-		userCreated.GetComponentsInChildren<Image>()[0].color = Color.white;
-		userCreated.GetComponentsInChildren<Text>()[1].color = Color.black;
+		if (PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel(), 0) == 1) {
+			userCreated.GetComponentsInChildren<Image>()[0].color = Color.white;
+			userCreated.GetComponentsInChildren<Text>()[1].color = Color.black;
+			userCreated.GetComponentsInChildren<Text>()[1].text = "Post";
+		} else {
+			userCreated.GetComponentsInChildren<Text>()[1].color = Color.white;
+			userCreated.GetComponentsInChildren<Text>()[1].text = "Play to authorize";
+		}
 		playButton.GetComponent<Image>().color = Color.white;
 		deleteButton.GetComponent<Image>().color = Color.white;
 		playButton.GetComponentInChildren<Text>().color = Color.black;

@@ -166,32 +166,36 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public void winText() {
-		int currentLevel = GetComponent<VariableManagement>().getWorldLevel() - 1;
-		if (PlayerPrefs.GetInt((currentLevel).ToString(), 0) == 0) {
-			PlayerPrefs.SetInt((currentLevel).ToString(), 1);
-			int world = currentLevel / 16;
-			bool beatWorld = true;
-			for (int i = 0; i < 16; i++) {
-				int levelNumber = (world * 16) + i;
-				if (PlayerPrefs.GetInt(levelNumber.ToString(), 0) == 0) {
-					beatWorld = false;
-					break;
+		int currentLevel;
+		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
+			currentLevel = GetComponent<VariableManagement>().getWorldLevel() - 1;
+			if (PlayerPrefs.GetInt((currentLevel).ToString(), 0) == 0) {
+				PlayerPrefs.SetInt((currentLevel).ToString(), 1);
+				int world = currentLevel / 16;
+				bool beatWorld = true;
+				for (int i = 0; i < 16; i++) {
+					int levelNumber = (world * 16) + i;
+					if (PlayerPrefs.GetInt(levelNumber.ToString(), 0) == 0) {
+						beatWorld = false;
+						break;
+					}
 				}
+				if (beatWorld) {
+					PlayerPrefs.SetInt("World" + world.ToString(), 1);
+					PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, world + 1);
+				}
+				PlayerPrefs.Save();
 			}
-			if (beatWorld) {
-				PlayerPrefs.SetInt("World" + world.ToString(), 1);
-				PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, world + 1);
+			GetComponent<BlurOptimized>().enabled = true;
+			if (GetComponent<VariableManagement>().getWorldLevel() + 1 <= lastLevel && ((currentLevel + 1) % 16) != 0) { 
+				nextLevel.GetComponent<Button>().enabled = true;
+				nextLevel.GetComponent<Button>().image.color = Color.white;
+				nextLevel.GetComponentInChildren<Text>().color = Color.black;
+				nextLevel.GetComponent<BoxCollider2D>().enabled = true;	
 			}
-			PlayerPrefs.Save();
-		}
-		GetComponent<BlurOptimized>().enabled = true;
-		if (GetComponent<VariableManagement>().getWorldLevel() + 1 <= lastLevel && 
-			GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu && 
-			((currentLevel + 1)%16) != 0) { 
-			nextLevel.GetComponent<Button>().enabled = true;
-			nextLevel.GetComponent<Button>().image.color = Color.white;
-			nextLevel.GetComponentInChildren<Text>().color = Color.black;
-			nextLevel.GetComponent<BoxCollider2D>().enabled = true;	
+		} else if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.userLevelMenu || GetComponent<VariableManagement>().getLastMenu() == VariableManagement.editorMenu) {
+			currentLevel = GetComponent<VariableManagement>().getUserLevel();
+			PlayerPrefs.SetInt("User" + currentLevel, 1);
 		}
 		gameStatus.GetComponent<Text>().text = "Success";
 		timer = 0;
