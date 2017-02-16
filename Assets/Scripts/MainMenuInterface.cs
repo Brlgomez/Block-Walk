@@ -21,6 +21,8 @@ public class MainMenuInterface : MonoBehaviour {
 	int publicLevelCount = 0;
 	string nameOfUserMap = "";
 	string dataOfUserMap = "";
+	int mapDownloadCount;
+	string idOfMap = "";
 
 	void Start() {
 		worldText = GameObject.Find("World Text");
@@ -158,18 +160,8 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 	}
 
-	public void toPublicLevels() {
-		publicLevelCount = 0;
-		showPublicLevel();
-		if (interfaceMenu == 6) {
-			database.AddComponent<MenuTransitions>();
-		}
-		worldLevels.AddComponent<MenuTransitions>();
-		worldLevels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
-		interfaceMenu = 7;
-	}
-
 	public void toDatabase () {
+		database.GetComponentInChildren<Text>().text = "Community";
 		destroyBlockChildren();
 		if (interfaceMenu == 0) {
 			mainMenu.AddComponent<MenuTransitions>();
@@ -177,16 +169,29 @@ public class MainMenuInterface : MonoBehaviour {
 			worldLevels.AddComponent<MenuTransitions>();
 		}
 		database.AddComponent<MenuTransitions>();
-		database.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
+		database.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.dataBaseInterface);
 		interfaceMenu = 6;
 	}
 
+	public void toPublicLevels() {
+		publicLevelCount = 0;
+		showPublicLevel();
+		if (interfaceMenu == 6) {
+			database.AddComponent<MenuTransitions>();
+		}
+		worldLevels.AddComponent<MenuTransitions>();
+		worldLevels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.dataBaseInterface);
+		interfaceMenu = 7;
+	}
+
 	public void getMostRecentLevels () {
-		GetComponent<FirebaseDatabases>().fireBaseMostRecent();
+		database.GetComponentInChildren<Text>().text = "Loading...";
+		GetComponent<FirebaseDatabases>().fireBaseMostRecent(database.GetComponentInChildren<Text>());
 	}
 
 	public void getMostDownloadedLevels () {
-		GetComponent<FirebaseDatabases>().fireBaseMostDownloaded();
+		database.GetComponentInChildren<Text>().text = "Loading...";
+		GetComponent<FirebaseDatabases>().fireBaseMostDownloaded(database.GetComponentInChildren<Text>());
 	}
 
 	public void toLevelSelect(int world) {
@@ -234,6 +239,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void toUserCreatedLevels() {
+		userCreated.GetComponentsInChildren<Text>()[1].text = "Post";
 		disableButtons();
 		showLevel();
 		if (interfaceMenu == 0) {
@@ -307,6 +313,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void left() {
+		userCreated.GetComponentsInChildren<Text>()[1].text = "Post";
 		nameOfUserMap = "";
 		dataOfUserMap = "";
 		disableButtons();
@@ -322,6 +329,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void right() {
+		userCreated.GetComponentsInChildren<Text>()[1].text = "Post";
 		nameOfUserMap = "";
 		dataOfUserMap = "";
 		disableButtons();
@@ -337,8 +345,9 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void postLevel () {
+		userCreated.GetComponentsInChildren<Text>()[1].text = "Posting...";
 		if (dataOfUserMap != "") {
-			GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap);
+			GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap, userCreated.GetComponentsInChildren<Text>()[1]);
 		}
 	}
 
@@ -378,19 +387,18 @@ public class MainMenuInterface : MonoBehaviour {
 			level += lines[0] + "\n";
 			level += "By: " + lines[1];
 			nameOfUserMap = lines[0];
-			dataOfUserMap = "";
 			dataOfUserMap = lines[2] + " " + lines[3] + " " + lines[4] + " " + lines[5];
-			createSpriteLevel(lines, 6);
+			createSpriteLevel(lines, 6, " ");
 		} else {
 			level += "Empty Slot";
 		}
 		userText.GetComponent<Text>().text = level;
 	}
 
-	public void createSpriteLevel (string[] lines, int num) {
+	public void createSpriteLevel (string[] lines, int num, string delimeter) {
 		destroyBlockChildren();
 		for (int i = num; i < lines.Length; i++) {
-			dataOfUserMap += (" " + lines[i]);
+			dataOfUserMap += (delimeter + lines[i]);
 			for (int j = 0; j < lines[i].Length; j++) {
 				if (lines[i][j] == VariableManagement.standardBlockTile) {
 					displayBlockImage(i - num, j, standardBlock);
@@ -412,14 +420,33 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void showPublicLevel() {
+		worldLevels.GetComponentsInChildren<Text>()[4].text = "Download";
+		worldLevels.GetComponentsInChildren<Image>()[0].color = Color.white;
+		worldLevels.GetComponentsInChildren<Text>()[1].color = Color.black;
+		worldLevels.GetComponentsInChildren<Image>()[2].color = Color.white;
+		worldLevels.GetComponentsInChildren<Text>()[3].color = Color.black;
+		if (publicLevelCount == 0) {
+			worldLevels.GetComponentsInChildren<Image>()[0].color = Color.clear;
+			worldLevels.GetComponentsInChildren<Text>()[1].color = Color.clear;
+		} else if (publicLevelCount == GetComponent<FirebaseDatabases>().getLevelList().Count - 1) {
+			worldLevels.GetComponentsInChildren<Image>()[2].color = Color.clear;
+			worldLevels.GetComponentsInChildren<Text>()[3].color = Color.clear;
+		}
 		string[] lines;
 		if (GetComponent<FirebaseDatabases>().getLevelList() != null) {
 			worldLevels.GetComponentInChildren<Text>().text = "";
 			worldLevels.GetComponentInChildren<Text>().text += GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][0] + "\n";
 			worldLevels.GetComponentInChildren<Text>().text += "By: " + GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][1] + "\n";
 			worldLevels.GetComponentInChildren<Text>().text += "Downloads: " + GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][3];
+			mapDownloadCount = int.Parse(GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][3]);
+			idOfMap = GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][5];
+
 			lines = GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][4].Split(" "[0]);
-			createSpriteLevel(lines, 0);
+			dataOfUserMap = GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][0] + "\n" + 
+				GetComponent<FirebaseDatabases>().getLevelList()[publicLevelCount][1] + "\n" + 
+				lines[0] + "\n" + lines[1] + "\n" + lines[2] + "\n" + lines[3];
+			createSpriteLevel(lines, 4, "\n");
+			dataOfUserMap += "*";
 		}
 	}
 
@@ -438,6 +465,23 @@ public class MainMenuInterface : MonoBehaviour {
 				publicLevelCount--;
 				showPublicLevel();
 			}
+		}
+	}
+
+	public void downloadLevel () {
+		bool saved = false;
+		for (int i = minAmountOfUserLevels; i < maxAmountOfUserLevels; i++) {
+			string filePath = Application.persistentDataPath + "/" + i + ".txt";
+			if (!File.Exists(filePath)) {
+				saved = true;
+				GetComponent<FirebaseDatabases>().incrementDownloadCount(idOfMap, mapDownloadCount);
+				worldLevels.GetComponentsInChildren<Text>()[4].text = "Saved In Slot " + i;
+				File.AppendAllText(filePath, dataOfUserMap);
+				break;
+			}
+		}
+		if (!saved) {
+			worldLevels.GetComponentsInChildren<Text>()[4].text = "Storage Full!";
 		}
 	}
 

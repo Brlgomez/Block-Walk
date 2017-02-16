@@ -10,4 +10,5 @@ public class MenuColors : MonoBehaviour {
 	public static Color32 world3Color = new Color32(188, 213, 255, 255);
 	public static Color32 editorColor = new Color32(60, 78, 87, 255);
 	public static Color32 editorInterface = new Color32(160, 192, 224, 255);
+	public static Color32 dataBaseInterface = new Color32(54, 80, 67, 255);
 }

@@ -6,33 +6,44 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FirebaseDatabases : MonoBehaviour {
 
 	List<List<String>> publicLevels;
 
-	public void fireBaseMostRecent() {
+	public void fireBaseMostRecent(Text text) {
+		text.text = "Loading...";
 		FirebaseApp app = FirebaseApp.DefaultInstance;
 		app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
 
 		FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").LimitToLast(25).ValueChanged += (object sender2, ValueChangedEventArgs e2) => {
 			if (e2.DatabaseError != null) {
+				text.text = "Error, please try again";
 				Debug.LogError(e2.DatabaseError.Message);
 				return;
 			}
 
 			if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0) {
-				publicLevels = new List<List<String>>();
+				List<List<String>> temp = new List<List<String>>();
 				int i = 0;
 				foreach (var childSnapshot in e2.Snapshot.Children) {
-					publicLevels.Insert(i, new List<String>());
-					publicLevels[i].Add(childSnapshot.Child("Name").Value.ToString());
-					publicLevels[i].Add(childSnapshot.Child("Username").Value.ToString());
-					publicLevels[i].Add(childSnapshot.Child("Date").Value.ToString());
-					publicLevels[i].Add(childSnapshot.Child("Downloads").Value.ToString());
-					publicLevels[i].Add(childSnapshot.Child("Data").Value.ToString());
+					temp.Insert(i, new List<String>());
+					temp[i].Add(childSnapshot.Child("Name").Value.ToString());
+					temp[i].Add(childSnapshot.Child("Username").Value.ToString());
+					temp[i].Add(childSnapshot.Child("Date").Value.ToString());
+					temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
+					temp[i].Add(childSnapshot.Child("Data").Value.ToString());
+					temp[i].Add(childSnapshot.Key);
 					i++;
 				}
+
+				publicLevels = new List<List<String>>();
+
+				for (int j = temp.Count - 1; j >= 0; j--) {
+					publicLevels.Add(temp[j]);
+				}
+
 				if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
 					GetComponent<MainMenuInterface>().toPublicLevels();
 				}
@@ -40,28 +51,38 @@ public class FirebaseDatabases : MonoBehaviour {
 		};
 	}
 
-	public void fireBaseMostDownloaded () {
+	public void fireBaseMostDownloaded (Text text) {
+		text.text = "Loading...";
 		FirebaseApp app = FirebaseApp.DefaultInstance;
 		app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
 
 		FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Downloads").LimitToLast(25).ValueChanged += (object sender2, ValueChangedEventArgs e2) => {
 			if (e2.DatabaseError != null) {
+				text.text = "Error, please try again";
 				Debug.LogError(e2.DatabaseError.Message);
 				return;
 			}
 
 			if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0) {
-				publicLevels = new List<List<String>>();
+				List<List<String>> temp = new List<List<String>>();
 				int i = 0;
 				foreach (var childSnapshot in e2.Snapshot.Children) {
-					publicLevels.Insert(i, new List<String>());
-					publicLevels[i].Add(childSnapshot.Child("Name").Value.ToString());
-					publicLevels[i].Add(childSnapshot.Child("Username").Value.ToString());
-					publicLevels[i].Add(childSnapshot.Child("Date").Value.ToString());
-					publicLevels[i].Add(childSnapshot.Child("Downloads").Value.ToString());
-					publicLevels[i].Add(childSnapshot.Child("Data").Value.ToString());
+					temp.Insert(i, new List<String>());
+					temp[i].Add(childSnapshot.Child("Name").Value.ToString());
+					temp[i].Add(childSnapshot.Child("Username").Value.ToString());
+					temp[i].Add(childSnapshot.Child("Date").Value.ToString());
+					temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
+					temp[i].Add(childSnapshot.Child("Data").Value.ToString());
+					temp[i].Add(childSnapshot.Key);
 					i++;
 				}
+
+				publicLevels = new List<List<String>>();
+
+				for (int j = temp.Count - 1; j >= 0; j--) {
+					publicLevels.Add(temp[j]);
+				}
+
 				if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
 					GetComponent<MainMenuInterface>().toPublicLevels();
 				}
@@ -69,17 +90,26 @@ public class FirebaseDatabases : MonoBehaviour {
 		};
 	}
 
-	public void postLevel (string data, string name) {
+	public void postLevel (string data, string name, Text text) {
+		text.text = "Posting...";
 		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
 		DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
 
-		string key = reference.Child("scores").Push().Key;
+		string key = reference.Child("Levels").Push().Key;
 		reference.Child("Levels").Child(key).Child("Data").SetValueAsync(data);
 		reference.Child("Levels").Child(key).Child("Date").SetValueAsync(ServerValue.Timestamp);
 		reference.Child("Levels").Child(key).Child("Downloads").SetValueAsync(0);
 		reference.Child("Levels").Child(key).Child("Name").SetValueAsync(name);
 		reference.Child("Levels").Child(key).Child("User ID").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userId, "Unknown"));
 		reference.Child("Levels").Child(key).Child("Username").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userName, "Unknown"));
+		text.text  = "Posted";
+	}
+
+	public void incrementDownloadCount (string id, int n) {
+		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
+		DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
+
+		reference.Child("Levels").Child(id).Child("Downloads").SetValueAsync(n + 1);
 	}
 
 	public List<List<String>> getLevelList () {
