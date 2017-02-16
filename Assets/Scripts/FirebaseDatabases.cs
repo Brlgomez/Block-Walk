@@ -13,11 +13,11 @@ public class FirebaseDatabases : MonoBehaviour {
 	List<List<String>> publicLevels;
 
 	public void fireBaseMostRecent(Text text) {
-		text.text = "Loading...";
 		FirebaseApp app = FirebaseApp.DefaultInstance;
 		app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
 
-		FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").LimitToLast(25).ValueChanged += (object sender2, ValueChangedEventArgs e2) => {
+		FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").LimitToLast(25).ValueChanged += 
+			(object sender2, ValueChangedEventArgs e2) => {
 			if (e2.DatabaseError != null) {
 				text.text = "Error, please try again";
 				Debug.LogError(e2.DatabaseError.Message);
@@ -52,11 +52,11 @@ public class FirebaseDatabases : MonoBehaviour {
 	}
 
 	public void fireBaseMostDownloaded (Text text) {
-		text.text = "Loading...";
 		FirebaseApp app = FirebaseApp.DefaultInstance;
 		app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
 
-		FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Downloads").LimitToLast(25).ValueChanged += (object sender2, ValueChangedEventArgs e2) => {
+		FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Downloads").LimitToLast(25).ValueChanged += 
+			(object sender2, ValueChangedEventArgs e2) => {
 			if (e2.DatabaseError != null) {
 				text.text = "Error, please try again";
 				Debug.LogError(e2.DatabaseError.Message);
@@ -91,7 +91,6 @@ public class FirebaseDatabases : MonoBehaviour {
 	}
 
 	public void postLevel (string data, string name, Text text) {
-		text.text = "Posting...";
 		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
 		DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
 
@@ -102,7 +101,7 @@ public class FirebaseDatabases : MonoBehaviour {
 		reference.Child("Levels").Child(key).Child("Name").SetValueAsync(name);
 		reference.Child("Levels").Child(key).Child("User ID").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userId, "Unknown"));
 		reference.Child("Levels").Child(key).Child("Username").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userName, "Unknown"));
-		text.text  = "Posted";
+		text.text = "Posted";
 	}
 
 	public void incrementDownloadCount (string id, int n) {

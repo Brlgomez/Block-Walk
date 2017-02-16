@@ -59,8 +59,10 @@ public class VariableManagement : MonoBehaviour {
 	public static string lastMenu = "Last Menu";
 	public static string shiftCamera = "Shift Camera";
 	public static string newWorldUnlocked = "New World";
+	public static string isOnline = "Online";
 	public static string userName = "User Name";
 	public static string userId = "User ID";
+	public static string userMapName = "User Map Name";
 
 	// last menus
 	public static string userLevelMenu = "User";
@@ -90,5 +92,13 @@ public class VariableManagement : MonoBehaviour {
 
 	public void turnOffCameraShift () {
 		PlayerPrefs.SetInt(VariableManagement.shiftCamera, 0);
+	}
+
+	public bool isLevelAuthorized () {
+		return (PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel()) == 1);
+	}
+
+	public void setLevelAuthorization (int n) {
+		PlayerPrefs.SetInt("User" + GetComponent<VariableManagement>().getUserLevel(), n);
 	}
 }

@@ -86,12 +86,12 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void unlockWorld2 () {
-		PlayerPrefs.SetInt("World0", 1);
+		PlayerPrefs.SetInt(VariableManagement.world0, 1);
 		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
 	}
 
 	public void unlockWorld3 () {
-		PlayerPrefs.SetInt("World1", 1);
+		PlayerPrefs.SetInt(VariableManagement.world1, 1);
 		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 2);
 	}
 
@@ -161,7 +161,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void toDatabase () {
-		database.GetComponentInChildren<Text>().text = "Community";
+		database.GetComponentInChildren<Text>().text = "Beyond the Voyage";
 		destroyBlockChildren();
 		if (interfaceMenu == 0) {
 			mainMenu.AddComponent<MenuTransitions>();
@@ -275,7 +275,7 @@ public class MainMenuInterface : MonoBehaviour {
 			File.Delete(filePath);
 			userText.GetComponent<Text>().text = GetComponent<VariableManagement>().getUserLevel() + "\nEmpty";
 			destroyBlockChildren();
-			PlayerPrefs.SetInt("User" + GetComponent<VariableManagement>().getUserLevel(), 0);
+			GetComponent<VariableManagement>().setLevelAuthorization(0);
 		}
 		toUserCreatedLevels();
 	}
@@ -298,9 +298,10 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void loadUserLevel() {
-		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
 		string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
-		if (File.Exists(filePath)) {
+		if (File.Exists(filePath)) {		
+			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
+			PlayerPrefs.SetString(VariableManagement.userMapName, nameOfUserMap);
 			gameObject.AddComponent<BackgroundColorTransition>();
 			GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);
 		}
@@ -344,7 +345,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void postLevel () {
-		if (dataOfUserMap != "" && PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel()) == 1) {
+		if (dataOfUserMap != "" && GetComponent<VariableManagement>().isLevelAuthorized()) {
 			userCreated.GetComponentsInChildren<Text>()[1].text = "Posting...";
 			GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap, userCreated.GetComponentsInChildren<Text>()[1]);
 		}
@@ -361,7 +362,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	void enableButtons() {
-		if (PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel(), 0) == 1) {
+		if (GetComponent<VariableManagement>().isLevelAuthorized()) {
 			userCreated.GetComponentsInChildren<Image>()[0].color = Color.white;
 			userCreated.GetComponentsInChildren<Text>()[1].color = Color.black;
 			userCreated.GetComponentsInChildren<Text>()[1].text = "Post";

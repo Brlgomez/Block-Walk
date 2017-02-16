@@ -38,6 +38,8 @@ public class GameplayInterface : MonoBehaviour {
 		if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
 			levelNum = GetComponent<VariableManagement>().getWorldLevel();
 			gameStatus.GetComponent<Text>().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
+		} else {
+			gameStatus.GetComponent<Text>().text = PlayerPrefs.GetString(VariableManagement.userMapName, "");
 		}
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
@@ -194,8 +196,7 @@ public class GameplayInterface : MonoBehaviour {
 				nextLevel.GetComponent<BoxCollider2D>().enabled = true;	
 			}
 		} else if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.userLevelMenu || GetComponent<VariableManagement>().getLastMenu() == VariableManagement.editorMenu) {
-			currentLevel = GetComponent<VariableManagement>().getUserLevel();
-			PlayerPrefs.SetInt("User" + currentLevel, 1);
+			GetComponent<VariableManagement>().setLevelAuthorization(1);
 		}
 		gameStatus.GetComponent<Text>().text = "Success";
 		timer = 0;
