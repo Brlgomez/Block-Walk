@@ -109,4 +109,20 @@ public class VariableManagement : MonoBehaviour {
 	public void setLevelPostValue (int n) {
 		PlayerPrefs.SetInt("Posted" + GetComponent<VariableManagement>().getUserLevel(), n);
 	}
+
+	public bool shouldDownloadCountUp (string name) {
+		bool shouldCountUp = true;
+		PlayerPrefs.SetInt("DownloadIndex", PlayerPrefs.GetInt("DownloadIndex") + 1);
+		if (PlayerPrefs.GetInt("DownloadIndex") > 100) {
+			PlayerPrefs.SetInt("DownloadIndex", 0);
+		}
+		for (int i = 0; i < 100; i++) {
+			if (PlayerPrefs.GetString(("Download" + i)) == name) {
+				shouldCountUp = false;
+				break;
+			}
+		}
+		PlayerPrefs.SetString(("Download" + PlayerPrefs.GetInt("DownloadIndex")), name);
+		return shouldCountUp;
+	}
 }

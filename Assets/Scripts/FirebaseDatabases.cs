@@ -243,10 +243,11 @@ public class FirebaseDatabases : MonoBehaviour {
 	}
 
 	public void incrementDownloadCount (string id, int n) {
-		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
-		DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
-
-		reference.Child("Levels").Child(id).Child("Downloads").SetValueAsync(n + 1);
+		if (GetComponent<VariableManagement>().shouldDownloadCountUp(id)) {
+			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
+			DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
+			reference.Child("Levels").Child(id).Child("Downloads").SetValueAsync(n + 1);
+		}
 	}
 
 	public List<List<String>> getLevelList () {
