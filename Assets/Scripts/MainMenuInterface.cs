@@ -243,6 +243,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void toSearch () {
+		search.GetComponentInChildren<Text>().text = "Search";
 		databaseOrSearch = false;
 		if (interfaceMenu == 6) {
 			database.AddComponent<MenuTransitions>();

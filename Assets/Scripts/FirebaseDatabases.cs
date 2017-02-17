@@ -140,7 +140,8 @@ public class FirebaseDatabases : MonoBehaviour {
 		FirebaseApp app = FirebaseApp.DefaultInstance;
 		app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
 
-		FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Username").StartAt(username).EndAt(username).ValueChanged += 
+		string usernameLower = username.ToLower();
+		FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Username Lower").StartAt(usernameLower).EndAt(usernameLower).ValueChanged += 
 			(object sender2, ValueChangedEventArgs e2) => {
 			if (e2.DatabaseError != null) {
 				text.text = "Error, please try again";
@@ -179,9 +180,11 @@ public class FirebaseDatabases : MonoBehaviour {
 
 	public void searchMapName (Text text, string mapName) {
 		FirebaseApp app = FirebaseApp.DefaultInstance;
+
+		string mapNameLower = mapName.ToLower();
 		app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
 
-		FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Name").StartAt(mapName).EndAt(mapName).ValueChanged += 
+		FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Name Lower").StartAt(mapNameLower).EndAt(mapNameLower).ValueChanged += 
 			(object sender2, ValueChangedEventArgs e2) => {
 			if (e2.DatabaseError != null) {
 				text.text = "Error, please try again";
@@ -237,6 +240,8 @@ public class FirebaseDatabases : MonoBehaviour {
 		reference.Child("Levels").Child(key).Child("Name").SetValueAsync(name);
 		reference.Child("Levels").Child(key).Child("User ID").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userId, "Unknown"));
 		reference.Child("Levels").Child(key).Child("Username").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userName, "Unknown"));
+		reference.Child("Levels").Child(key).Child("Name Lower").SetValueAsync(name.ToLower());
+		reference.Child("Levels").Child(key).Child("Username Lower").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userName, "Unknown").ToLower());
 
 		text.text = "Posted";
 		GetComponent<VariableManagement>().setLevelPostValue(1);
