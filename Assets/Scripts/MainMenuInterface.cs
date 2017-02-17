@@ -438,7 +438,7 @@ public class MainMenuInterface : MonoBehaviour {
 					PlayerPrefs.GetInt (VariableManagement.isOnline, 0) == 0 && 
 					!GetComponent<VariableManagement>().isLevelPosted()) {
 			userCreated.GetComponentsInChildren<Text>()[1].text = "Posting...";
-			GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap, userCreated.GetComponentsInChildren<Text>()[1]);
+			GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap, userCreated.GetComponentsInChildren<Button>()[0]);
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 1) {
 			GetComponent<GooglePlay>().logIn();
