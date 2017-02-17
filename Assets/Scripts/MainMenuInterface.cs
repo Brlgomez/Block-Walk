@@ -12,11 +12,12 @@ public class MainMenuInterface : MonoBehaviour {
 	static int minAmountOfUserLevels = 1;
 
 	bool loading = false;
-	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database, publicConfirmation;
+	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database, publicConfirmation, search;
 	GameObject worldText, userText, blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock;
 	GameObject rotateRBlock, rotateLBlock, playButton, editButton, deleteButton;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
+	bool databaseOrSearch = true;
 	Vector3 levelIconStart, levelIconEnd;
 	int publicLevelCount = 0;
 	string userNameOfMap = "";
@@ -53,6 +54,8 @@ public class MainMenuInterface : MonoBehaviour {
 		database.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		publicConfirmation = GameObject.Find("Public Confirmation");
 		publicConfirmation.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
+		search = GameObject.Find("Search");
+		search.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 		standardBlock = GameObject.Find(VariableManagement.standardBlock);
 		multistepBlock = GameObject.Find(VariableManagement.multistepBlock);
 		switchBlock = GameObject.Find(VariableManagement.switchBlock);
@@ -163,7 +166,16 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 	}
 
+	public void toDatabaseOrSearch () {
+		if (databaseOrSearch) {
+			toDatabase();
+		} else {
+			toSearch();
+		}
+	}
+
 	public void toDatabase () {
+		databaseOrSearch = true;
 		database.GetComponentInChildren<Text>().text = "Beyond the Voyage";
 		destroyBlockChildren();
 		if (interfaceMenu == 0) {
@@ -172,10 +184,12 @@ public class MainMenuInterface : MonoBehaviour {
 			worldLevels.AddComponent<MenuTransitions>();
 		} else if (interfaceMenu == 8) {
 			publicConfirmation.AddComponent<MenuTransitions>();
+		} else if (interfaceMenu == 9) {
+			search.AddComponent<MenuTransitions>();
 		}
 		database.AddComponent<MenuTransitions>();
 		database.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.dataBaseInterface);
-		interfaceMenu = 6;
+		interfaceMenu = 6; 
 	}
 
 	public void toPublicLevels() {
@@ -184,6 +198,8 @@ public class MainMenuInterface : MonoBehaviour {
 			database.AddComponent<MenuTransitions>();
 		} else if (interfaceMenu == 8) {
 			publicConfirmation.AddComponent<MenuTransitions>();
+		} else if (interfaceMenu == 9) {
+			search.AddComponent<MenuTransitions>();
 		}
 		worldLevels.AddComponent<MenuTransitions>();
 		worldLevels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.dataBaseInterface);
@@ -224,6 +240,37 @@ public class MainMenuInterface : MonoBehaviour {
 		publicConfirmation.AddComponent<MenuTransitions>();
 		publicConfirmation.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.dataBaseInterface);
 		interfaceMenu = 8;
+	}
+
+	public void toSearch () {
+		databaseOrSearch = false;
+		if (interfaceMenu == 6) {
+			database.AddComponent<MenuTransitions>();
+		} else if (interfaceMenu == 7) {
+			destroyBlockChildren();
+			worldLevels.AddComponent<MenuTransitions>();
+		}
+		search.AddComponent<MenuTransitions>();
+		search.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.dataBaseInterface);
+		interfaceMenu = 9;
+	}
+
+	public void searchUserName () {
+		publicLevelCount = 0;
+		worldLevels.GetComponentsInChildren<Image>()[4].color = Color.clear;
+		worldLevels.GetComponentsInChildren<Text>()[5].color = Color.clear;
+		worldLevels.GetComponentsInChildren<Button>()[4].interactable = false;
+		search.GetComponentInChildren<Text>().text = "Loading...";
+		GetComponent<FirebaseDatabases>().searchUsername(search.GetComponentInChildren<Text>(), search.GetComponentInChildren<InputField>().text);
+	}
+
+	public void searchMapName () {
+		publicLevelCount = 0;
+		worldLevels.GetComponentsInChildren<Image>()[4].color = Color.clear;
+		worldLevels.GetComponentsInChildren<Text>()[5].color = Color.clear;
+		worldLevels.GetComponentsInChildren<Button>()[4].interactable = false;
+		search.GetComponentInChildren<Text>().text = "Loading...";
+		GetComponent<FirebaseDatabases>().searchMapName(search.GetComponentInChildren<Text>(), search.GetComponentInChildren<InputField>().text);
 	}
 
 	public void deletePublicLevel () {
@@ -387,8 +434,8 @@ public class MainMenuInterface : MonoBehaviour {
 					userNameOfMap == PlayerPrefs.GetString (VariableManagement.userName, "Unknown") && 
 					PlayerPrefs.GetString(VariableManagement.userName, "Unknown") != "Unknown" && 
 					PlayerPrefs.GetString(VariableManagement.userName, "Unknown") != "" && 
-					PlayerPrefs.GetInt (VariableManagement.isOnline, 0) == 0 /*&& 
-					!GetComponent<VariableManagement>().isLevelPosted()*/) {
+					PlayerPrefs.GetInt (VariableManagement.isOnline, 0) == 0 && 
+					!GetComponent<VariableManagement>().isLevelPosted()) {
 			userCreated.GetComponentsInChildren<Text>()[1].text = "Posting...";
 			GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap, userCreated.GetComponentsInChildren<Text>()[1]);
 		}
@@ -416,22 +463,16 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 		if (GetComponent<VariableManagement>().isLevelAuthorized() &&
 		   			userNameOfMap == PlayerPrefs.GetString(VariableManagement.userName, "Unknown") &&
-		    		PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 0 /*&&
-					!GetComponent<VariableManagement>().isLevelPosted()*/) {
+		    		PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 0 &&
+					!GetComponent<VariableManagement>().isLevelPosted()) {
 			userCreated.GetComponentsInChildren<Image>()[0].color = Color.white;
 			userCreated.GetComponentsInChildren<Text>()[1].color = Color.black;
 			userCreated.GetComponentsInChildren<Text>()[1].text = "Post";
-		}/*else if (GetComponent<VariableManagement>().isLevelPosted()) {
+		} else if (GetComponent<VariableManagement>().isLevelPosted()) {
 			userCreated.GetComponentsInChildren<Image>()[0].color = Color.clear;
 			userCreated.GetComponentsInChildren<Text>()[1].color = Color.white;
 			userCreated.GetComponentsInChildren<Text>()[1].text = "Posted";
-		}*/else if (!GetComponent<VariableManagement>().isLevelAuthorized() &&
-		           userNameOfMap == PlayerPrefs.GetString(VariableManagement.userName, "Unknown") &&
-		           PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 0) {
-			userCreated.GetComponentsInChildren<Image>()[0].color = Color.clear;
-			userCreated.GetComponentsInChildren<Text>()[1].color = Color.white;
-			userCreated.GetComponentsInChildren<Text>()[1].text = "Play to Authorize";
-		} else if (userNameOfMap != PlayerPrefs.GetString(VariableManagement.userName, "Unknown")) {
+		}  else if (userNameOfMap != PlayerPrefs.GetString(VariableManagement.userName, "Unknown")) {
 			userCreated.GetComponentsInChildren<Image>()[0].color = Color.clear;
 			userCreated.GetComponentsInChildren<Text>()[1].color = Color.clear;
 			userCreated.GetComponentsInChildren<Text>()[1].text = "";
@@ -441,7 +482,13 @@ public class MainMenuInterface : MonoBehaviour {
 			userCreated.GetComponentsInChildren<Image>()[0].color = Color.white;
 			userCreated.GetComponentsInChildren<Text>()[1].color = Color.black;
 			userCreated.GetComponentsInChildren<Text>()[1].text = "Sign in to Post";
-		} 
+		} else if (!GetComponent<VariableManagement>().isLevelAuthorized() &&
+			userNameOfMap == PlayerPrefs.GetString(VariableManagement.userName, "Unknown") &&
+			PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 0) {
+			userCreated.GetComponentsInChildren<Image>()[0].color = Color.clear;
+			userCreated.GetComponentsInChildren<Text>()[1].color = Color.white;
+			userCreated.GetComponentsInChildren<Text>()[1].text = "Play to Authorize";
+		}
 		playButton.GetComponent<Image>().color = Color.white;
 		deleteButton.GetComponent<Image>().color = Color.white;
 		playButton.GetComponentInChildren<Text>().color = Color.black;

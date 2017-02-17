@@ -266,6 +266,7 @@ public class EditorInterface : MonoBehaviour {
 		File.Delete(filePath);
 		if (optionHolder.GetComponentInChildren<InputField>().text != "") {
 			File.AppendAllText(filePath, optionHolder.GetComponentInChildren<InputField>().text);
+			PlayerPrefs.SetString(VariableManagement.userMapName, optionHolder.GetComponentInChildren<InputField>().text);
 		} else {
 			File.AppendAllText(filePath, "Untitled");
 		}
