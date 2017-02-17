@@ -269,6 +269,7 @@ public class EditorInterface : MonoBehaviour {
 			PlayerPrefs.SetString(VariableManagement.userMapName, optionHolder.GetComponentInChildren<InputField>().text);
 		} else {
 			File.AppendAllText(filePath, "Untitled");
+			PlayerPrefs.SetString(VariableManagement.userMapName, "Untitled");
 		}
 		File.AppendAllText(filePath, "\n");
 		File.AppendAllText(filePath, PlayerPrefs.GetString(VariableManagement.userName, "Unknown"));

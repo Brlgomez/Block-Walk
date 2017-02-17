@@ -8,24 +8,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Net;
+using System.IO;
 
 public class FirebaseDatabases : MonoBehaviour {
 
 	List<List<String>> publicLevels;
+	WebClient client;
+	Stream stream;
 
-	public bool isConnected() {
-		string resource = "http://google.com";
-		HttpWebRequest req = (HttpWebRequest)WebRequest.Create(resource);
+	bool isConnected () {
 		try {
-			using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse()) {
-				bool isSuccess = (int)resp.StatusCode < 299 && (int)resp.StatusCode >= 200;
-				if (isSuccess) {
-					return true;
-				}
-			}
+			client = new System.Net.WebClient();
+			stream = client.OpenRead("http://www.google.com");
+			return true;
 		}
-		catch {
+		catch  {
 			return false;
+		}
+		finally {
+			client.Dispose(); 
+			stream.Dispose();
 		}
 		return false;
 	}
