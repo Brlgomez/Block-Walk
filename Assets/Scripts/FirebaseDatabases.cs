@@ -29,7 +29,6 @@ public class FirebaseDatabases : MonoBehaviour {
 			client.Dispose(); 
 			stream.Dispose();
 		}
-		return false;
 	}
 
 	public void fireBaseMostRecent(Text text) {

@@ -66,18 +66,20 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	void checkOnButtons() {
-		Vector2 mousePos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-		if (handle.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
-			holdingOnToSlider = true;
-			sliderMoving = false;
-			timer = 0;
-			GetComponent<BlurOptimized>().enabled = true;
-		} else if (restartButton.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
-			restartButtonClick();
-		} else if (mainMenu.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
-			mainMenuClick();
-		} else if (nextLevel.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
-			nextLevelClick();
+		if (GetComponent<BackgroundColorTransition>() == null) {
+			Vector2 mousePos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+			if (handle.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+				holdingOnToSlider = true;
+				sliderMoving = false;
+				timer = 0;
+				GetComponent<BlurOptimized>().enabled = true;
+			} else if (restartButton.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+				restartButtonClick();
+			} else if (mainMenu.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+				mainMenuClick();
+			} else if (nextLevel.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+				nextLevelClick();
+			}
 		}
 	}
 

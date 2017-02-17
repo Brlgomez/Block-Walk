@@ -102,7 +102,7 @@ public class EditorInterface : MonoBehaviour {
 			Camera.main.orthographicSize -= deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
 		} else if (transitionNum == 1) {
-			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
+			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
 			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
 			optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.one, deltaTime);
 			transform.position = Vector3.Lerp(transform.position, initialCamPos, deltaTime);
@@ -110,7 +110,7 @@ public class EditorInterface : MonoBehaviour {
 			Camera.main.orthographicSize -= deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
 		} else if (transitionNum == 2) {
-			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.zero, deltaTime);
+			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
 			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.one, deltaTime);
 			optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
 			transform.position = Vector3.Lerp(transform.position, colorMenuCamPos, deltaTime);
