@@ -190,7 +190,6 @@ public class LevelBuilder : MonoBehaviour {
 			newCenter = new Vector3((xMin + xMax) / 2, Mathf.Clamp((yHeight2 / 2) + 1.25f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
 		}
 		if (Vector3.Distance(newCenter, center) > 0.2f) {
-			Debug.Log(Vector3.Distance(newCenter, center));
 			center = newCenter;
 			GetComponent<CharacterMovement>().setPan();
 		}
