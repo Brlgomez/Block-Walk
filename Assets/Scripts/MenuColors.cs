@@ -11,4 +11,5 @@ public class MenuColors : MonoBehaviour {
 	public static Color32 editorColor = new Color32(60, 78, 87, 255);
 	public static Color32 editorInterface = new Color32(128, 200, 200, 255);
 	public static Color32 dataBaseInterface = new Color32(54, 80, 67, 255);
+	public static Color32 deletion = new Color32(255, 69, 84, 255);
 }
