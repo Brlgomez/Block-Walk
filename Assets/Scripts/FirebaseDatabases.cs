@@ -12,6 +12,8 @@ using System.IO;
 
 public class FirebaseDatabases : MonoBehaviour {
 
+	static string url = "https://vox-voyager-87607159.firebaseio.com/";
+
 	List<List<String>> publicLevels;
 	WebClient client;
 	Stream stream;
@@ -34,7 +36,7 @@ public class FirebaseDatabases : MonoBehaviour {
 	public void fireBaseMostRecent(Text text) {
 		if (isConnected()) {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
-			app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
+			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").LimitToLast(25).ValueChanged += 
 			(object sender2, ValueChangedEventArgs e2) => {
@@ -78,7 +80,7 @@ public class FirebaseDatabases : MonoBehaviour {
 	public void fireBaseMostDownloaded (Text text) {
 		if (isConnected()) {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
-			app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
+			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Downloads").LimitToLast(25).ValueChanged += 
 			(object sender2, ValueChangedEventArgs e2) => {
@@ -123,7 +125,7 @@ public class FirebaseDatabases : MonoBehaviour {
 	public void getYourLevels (Text text) {
 		if (isConnected()) {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
-			app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
+			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("User ID").
 			StartAt(PlayerPrefs.GetString(VariableManagement.userId, "Unknown")).
@@ -174,7 +176,7 @@ public class FirebaseDatabases : MonoBehaviour {
 	public void searchUsername (Text text, string username) {
 		if (isConnected()) {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
-			app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
+			app.SetEditorDatabaseUrl(url);
 
 			string usernameLower = username.ToLower();
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Username Lower").
@@ -223,7 +225,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
 
 			string mapNameLower = mapName.ToLower();
-			app.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
+			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Name Lower").StartAt(mapNameLower).EndAt(mapNameLower).ValueChanged += 
 			(object sender2, ValueChangedEventArgs e2) => {
@@ -268,7 +270,7 @@ public class FirebaseDatabases : MonoBehaviour {
 
 	public void deleteLevel (string idOfMap, Text text) {
 		if (isConnected()) {
-			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
+			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
 			DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
 
 			reference.Child("Levels").Child(idOfMap).RemoveValueAsync();
@@ -280,7 +282,7 @@ public class FirebaseDatabases : MonoBehaviour {
 
 	public void postLevel (string data, string name, Button b) {
 		if (isConnected()) {
-			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
+			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
 			DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
 
 			string key = reference.Child("Levels").Push().Key;
@@ -304,7 +306,7 @@ public class FirebaseDatabases : MonoBehaviour {
 
 	public void incrementDownloadCount (string id, int n) {
 		if (GetComponent<VariableManagement>().shouldDownloadCountUp(id)) {
-			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://vox-voyager-87607159.firebaseio.com/");
+			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
 			DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
 			reference.Child("Levels").Child(id).Child("Downloads").SetValueAsync(n + 1);
 		}
