@@ -180,22 +180,22 @@ RMMMBBBB
 --------
 *Voyage
 Brandon Gomez
-176, 225, 180
-0.493, 0.218, 0.36
-0.125, 0, 0.022
-0, -0.107, 0
+192,184,180
+0.1604325,0.1423887,0.2872265
+0.065107,-0.1,-0.07271156
+-0.04590131,0.1,0.05641241
 --------
 --------
 --------
----RMB--
---RRMBB-
--RRCMCBB
--MMMSMMM
--RRCMCBB
---RRMBB-
----RMB--
---------
---------
+-CCSSCC-
+-CRCCBC-
+-CCCCCC-
+-CCCCCC-
+-SMSSMS-
+-CCCCCC-
+-CCCCCC-
+-CRCCBC-
+-CCSSCC-
 --------
 --------
 *Voyage
@@ -217,22 +217,23 @@ CMMSSMMC
 --CCCC--
 --------
 --------
---------*Voyage
+--------
+*Voyage
 Brandon Gomez
-29, 38, 53
-0.292, 0.455, 0.353
-0, 0, 0
--0.101, -0.116, 0.046
+176, 225, 180
+0.493, 0.218, 0.36
+0.125, 0, 0.022
+0, -0.107, 0
 --------
 --------
 --------
---CCBCR-
--CCCCCRR
--CCCCCCC
--CCCSCCC
--CCCCCCC
--BBCCCCC
---BCRCC-
+---RMB--
+--RRMBB-
+-RRCMCBB
+-MMMSMMM
+-RRCMCBB
+--RRMBB-
+---RMB--
 --------
 --------
 --------

@@ -5,62 +5,78 @@ using UnityEngine.UI;
 
 public class MenuTransitions : MonoBehaviour {
 
-	List<Transform> items;
-	Vector3 [] newPos;
+	List<Transform> itemsEntering;
+	List<Transform> itemsLeaving;
+	Vector3 [] newPosForEntering;
+	Vector3 [] newPosForLeaving;
 	float direction;
 	float timer = 0;
 	float timerLimit = 0.75f;
 	Color32 backgroundColor;
 
-	void Start () {
-		items = new List<Transform>();
-		Transform[] children = transform.GetComponentsInChildren<Transform>();
-		foreach (Transform child in children) {
-			if (child.parent == transform) {
-				items.Add(child);
-				if (items[items.Count - 1].GetComponent<Button>() != null) {
-					items[items.Count - 1].GetComponent<Button>().enabled = false;
-				}
-			}
-		}
-		newPos = new Vector3[items.Count];
-		if (items.Count > 0) {
-			if (items[0].transform.position.x < 0) {
-				direction = Screen.width;
-			} else {
-				direction = -(Screen.width);
-			}
-		}
-		for (int j = 0; j < items.Count; j++) {
-			newPos[j] = new Vector3((items[j].transform.position.x + direction), items[j].transform.position.y, 0);
-		}
-	}
-
 	void Update () {
 		timer += Time.deltaTime * 1.5f;
 		if (timer > timerLimit) {
-			for (int i = 0; i < items.Count; i++) {
-				if (items[i].GetComponent<Button>() != null) {
-					if (direction > 0) {
-						items[i].GetComponent<Button>().enabled = true;
-					} else {
-						items[i].GetComponent<Button>().enabled = false;
-					}
+			for (int i = 0; i < itemsLeaving.Count; i++) {
+				if (itemsLeaving[i].GetComponent<Button>() != null) {
+					itemsLeaving[i].GetComponent<Button>().enabled = false;
 				}
-				items[i].transform.position = newPos[i];
+				itemsLeaving[i].transform.position = newPosForLeaving[i];
+			}
+			for (int i = 0; i < itemsEntering.Count; i++) {
+				if (itemsEntering[i].GetComponent<Button>() != null) {
+					itemsEntering[i].GetComponent<Button>().enabled = true;
+				}
+				itemsEntering[i].transform.position = newPosForEntering[i];
 			}
 			Destroy(GetComponent<MenuTransitions>());
 		} else {
-			if (direction > 0) {
-				Camera.main.backgroundColor = Color32.Lerp(Camera.main.backgroundColor, backgroundColor, timer);
+			Camera.main.backgroundColor = Color32.Lerp(Camera.main.backgroundColor, backgroundColor, timer);
+			for (int i = 0; i < itemsLeaving.Count; i++) {
+				itemsLeaving[i].transform.position = Vector3.Lerp(itemsLeaving[i].transform.position, newPosForLeaving[i], timer * ((i + 10) * 0.05f));
 			}
-			for (int i = 0; i < items.Count; i++) {
-				items[i].transform.position = Vector3.Lerp(items[i].transform.position, newPos[i], timer * ((i + 10) * 0.05f));
+			for (int i = 0; i < itemsEntering.Count; i++) {
+				itemsEntering[i].transform.position = Vector3.Lerp(itemsEntering[i].transform.position, newPosForEntering[i], timer * ((i + 10) * 0.05f));
 			}
 		}
 	}
-
-	public void setBackgroundColor (Color32 c) {
+		
+	public void setScreens (GameObject screenLeaving, GameObject screenEntering, Color32 c) {
 		backgroundColor = c;
+		itemsLeaving = new List<Transform>();
+
+		if (screenLeaving != null) {
+			Transform[] childrenLeaving = screenLeaving.GetComponentsInChildren<Transform>();
+			foreach (Transform child in childrenLeaving) {
+				if (child.parent == screenLeaving.transform) {
+					itemsLeaving.Add(child);
+					if (itemsLeaving[itemsLeaving.Count - 1].GetComponent<Button>() != null) {
+						itemsLeaving[itemsLeaving.Count - 1].GetComponent<Button>().enabled = false;
+					}
+				}
+			}
+			newPosForLeaving = new Vector3[itemsLeaving.Count];
+			for (int i = 0; i < itemsLeaving.Count; i++) {
+				if (itemsLeaving[i].transform.localPosition.x > Screen.width/2) {
+					newPosForLeaving[i] = new Vector3((itemsLeaving[i].transform.position.x - Screen.width), itemsLeaving[i].transform.position.y, 0);
+				} else {
+					newPosForLeaving[i] = itemsLeaving[i].transform.position;
+				}
+			}
+		}
+			
+		if (screenEntering != null) {
+			itemsEntering = new List<Transform>();
+			Transform[] childrenEntering = screenEntering.GetComponentsInChildren<Transform>();
+			foreach (Transform child in childrenEntering) {
+				if (child.parent == screenEntering.transform) {
+					itemsEntering.Add(child);
+				}
+			}
+			newPosForEntering = new Vector3[itemsEntering.Count];
+			for (int i = 0; i < itemsEntering.Count; i++) {
+				newPosForEntering[i] = new Vector3((itemsEntering[i].transform.position.x + Screen.width), itemsEntering[i].transform.position.y, 0);
+			}
+		}
 	}
 }

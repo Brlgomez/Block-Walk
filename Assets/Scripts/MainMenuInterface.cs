@@ -62,7 +62,7 @@ public class MainMenuInterface : MonoBehaviour {
 		redBlock = GameObject.Find(VariableManagement.activeBlock);
 		blueBlock = GameObject.Find(VariableManagement.inactiveBlock);
 		rotateRBlock = GameObject.Find(VariableManagement.rotateRBlock);
-		rotateLBlock = GameObject.Find(VariableManagement.rotateRBlock);
+		rotateLBlock = GameObject.Find(VariableManagement.rotateLBlock);
 
 		if (GetComponent<VariableManagement>().getUserLevel() < minAmountOfUserLevels ||
 		    GetComponent<VariableManagement>().getUserLevel() > maxAmountOfUserLevels) {
@@ -96,31 +96,25 @@ public class MainMenuInterface : MonoBehaviour {
 		if (GetComponent<Intro>() == null) {
 			gameObject.AddComponent<Intro>();
 		}
-		intro.AddComponent<MenuTransitions>();
-		intro.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.menuColor);
-		if (interfaceMenu == 0) {
-			mainMenu.AddComponent<MenuTransitions>();
-		}
+		gameObject.AddComponent<MenuTransitions>().setScreens(null, intro, MenuColors.menuColor);
 		interfaceMenu = -1;
 	}
 		
 	public void toMainMenu() {
 		destroyBlockChildren();
-		particles.GetComponentInChildren<ParticleSystem>().Stop();
 		if (GetComponent<Intro>() != null) {
 			Destroy(GetComponent<Intro>());
 		}
-		mainMenu.AddComponent<MenuTransitions>();
-		mainMenu.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.menuColor);
 		if (interfaceMenu == 1) {
-			worlds.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(worlds, mainMenu, MenuColors.menuColor);
 		} else if (interfaceMenu == 3) {
-			userCreated.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(userCreated, mainMenu, MenuColors.menuColor);
 		} else if (interfaceMenu == -1) {
-			particles.AddComponent<MenuTransitions>();
-			intro.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(intro, mainMenu, MenuColors.menuColor);
+			particles.GetComponentInChildren<ParticleSystem>().Stop();
+			particles.GetComponentInChildren<ParticleSystem>().Clear();
 		} else if (interfaceMenu == 6) {
-			database.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(database, mainMenu, MenuColors.menuColor);
 		}
 		interfaceMenu = 0;
 	}
@@ -129,21 +123,17 @@ public class MainMenuInterface : MonoBehaviour {
 		if (PlayerPrefs.GetInt(VariableManagement.newWorldUnlocked, 0) > 0) {
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 0);
 			if (interfaceMenu == 0) {
-				mainMenu.AddComponent<MenuTransitions>();
+				gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, popUp, MenuColors.worldColor);
 			} else if (interfaceMenu == 2) {
-				levels.AddComponent<MenuTransitions>();
+				gameObject.AddComponent<MenuTransitions>().setScreens(levels, popUp, MenuColors.worldColor);
 			}
 			interfaceMenu = 5;
-			popUp.AddComponent<MenuTransitions>();
-			popUp.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
 			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats! You just unlocked a new world and new editor blocks!";
 		} else {
-			worlds.AddComponent<MenuTransitions>();
-			worlds.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
 			if (interfaceMenu == 0) {
-				mainMenu.AddComponent<MenuTransitions>();
+				gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, worlds, MenuColors.worldColor);
 			} else if (interfaceMenu == 2) {
-				levels.AddComponent<MenuTransitions>();
+				gameObject.AddComponent<MenuTransitions>().setScreens(levels, worlds, MenuColors.worldColor);
 			} 
 			interfaceMenu = 1;
 		}
@@ -169,30 +159,26 @@ public class MainMenuInterface : MonoBehaviour {
 		database.GetComponentInChildren<Text>().text = "Beyond the Voyage";
 		destroyBlockChildren();
 		if (interfaceMenu == 0) {
-			mainMenu.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, database, MenuColors.dataBaseInterface);
 		} else if (interfaceMenu == 7) {
-			worldLevels.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(worldLevels, database, MenuColors.dataBaseInterface);
 		} else if (interfaceMenu == 8) {
-			publicConfirmation.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(publicConfirmation, database, MenuColors.dataBaseInterface);
 		} else if (interfaceMenu == 9) {
-			search.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(search, database, MenuColors.dataBaseInterface);
 		}
-		database.AddComponent<MenuTransitions>();
-		database.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.dataBaseInterface);
 		interfaceMenu = 6; 
 	}
 
 	public void toPublicLevels() {
 		showPublicLevel();
 		if (interfaceMenu == 6) {
-			database.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(database, worldLevels, MenuColors.dataBaseInterface);
 		} else if (interfaceMenu == 8) {
-			publicConfirmation.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(publicConfirmation, worldLevels, MenuColors.dataBaseInterface);
 		} else if (interfaceMenu == 9) {
-			search.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(search, worldLevels, MenuColors.dataBaseInterface);
 		}
-		worldLevels.AddComponent<MenuTransitions>();
-		worldLevels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.dataBaseInterface);
 		interfaceMenu = 7;
 	}
 
@@ -225,10 +211,8 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void toDeletionConfirmationPublicLevel () {
 		if (interfaceMenu == 7) {
-			worldLevels.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(worldLevels, publicConfirmation, MenuColors.dataBaseInterface);
 		}
-		publicConfirmation.AddComponent<MenuTransitions>();
-		publicConfirmation.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.dataBaseInterface);
 		interfaceMenu = 8;
 	}
 
@@ -236,13 +220,11 @@ public class MainMenuInterface : MonoBehaviour {
 		search.GetComponentInChildren<Text>().text = "Search";
 		databaseOrSearch = false;
 		if (interfaceMenu == 6) {
-			database.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(database, search, MenuColors.dataBaseInterface);
 		} else if (interfaceMenu == 7) {
 			destroyBlockChildren();
-			worldLevels.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(worldLevels, search, MenuColors.dataBaseInterface);
 		}
-		search.AddComponent<MenuTransitions>();
-		search.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.dataBaseInterface);
 		interfaceMenu = 9;
 	}
 
@@ -278,22 +260,15 @@ public class MainMenuInterface : MonoBehaviour {
 		} 
 		if (!beatAllLevels) {
 			interfaceMenu = 5;
-			worlds.AddComponent<MenuTransitions>();
-			popUp.AddComponent<MenuTransitions>();
-			popUp.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
+			gameObject.AddComponent<MenuTransitions>().setScreens(worlds, popUp, MenuColors.dataBaseInterface);
 			popUp.GetComponentsInChildren<Text>()[0].text = "World " + (world + 1) + " locked. Must beat all levels from World " + world + " .";
-		}
-		else {
-			if (interfaceMenu == 1) {
-				worlds.AddComponent<MenuTransitions>();
-			}
-			levels.AddComponent<MenuTransitions>();
+		} else {
 			if (world == 0) {
-				levels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.world1Color);
+				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world1Color);
 			} else if (world == 1) {
-				levels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.world2Color);
+				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world2Color);
 			} else if (world == 2) {
-				levels.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.world3Color);
+				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world3Color);
 			}
 			interfaceMenu = 2;
 			worldText.GetComponent<Text>().text = "World " + (world + 1);
@@ -318,27 +293,23 @@ public class MainMenuInterface : MonoBehaviour {
 		disableButtons();
 		showLevel();
 		if (interfaceMenu == 0) {
-			mainMenu.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, userCreated, MenuColors.editorColor);
 		} else if (interfaceMenu == 4) {
-			confirmation.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(confirmation, userCreated, MenuColors.editorColor);
+		} else {
+			gameObject.AddComponent<MenuTransitions>().setScreens(null, userCreated, MenuColors.editorColor);
 		}
-		userCreated.AddComponent<MenuTransitions>();
-		userCreated.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
 		interfaceMenu = 3;
 	}
 
 	public void exitPopUp () {
+		gameObject.AddComponent<MenuTransitions>().setScreens(worlds, popUp, MenuColors.worldColor);
 		interfaceMenu = 1;
-		popUp.AddComponent<MenuTransitions>();
-		worlds.AddComponent<MenuTransitions>();
-		worlds.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.worldColor);
 	}
 
 	public void openConfirmation() {
 		if (interfaceMenu == 3) {
-			confirmation.AddComponent<MenuTransitions>();
-			confirmation.GetComponent<MenuTransitions>().setBackgroundColor(MenuColors.editorColor);
-			userCreated.AddComponent<MenuTransitions>();
+			gameObject.AddComponent<MenuTransitions>().setScreens(userCreated, confirmation, MenuColors.worldColor);
 			interfaceMenu = 4;
 		}
 	}
@@ -493,7 +464,7 @@ public class MainMenuInterface : MonoBehaviour {
 		string[] userLevel;
 		string[] lines;
 		string filePath = Application.persistentDataPath + "/" + n + ".txt";
-		level += n + "\n";
+		level += "Slot " + n + "\n";
 		if (File.Exists(filePath)) {
 			StreamReader r;
 			r = File.OpenText(filePath);
@@ -507,7 +478,7 @@ public class MainMenuInterface : MonoBehaviour {
 			createSpriteLevel(lines, 6, " ");
 			enableButtons();
 		} else {
-			level += "Empty Slot";
+			level += "Empty";
 		}
 		userText.GetComponent<Text>().text = level;
 	}
