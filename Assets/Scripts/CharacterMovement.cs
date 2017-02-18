@@ -28,8 +28,6 @@ public class CharacterMovement : MonoBehaviour {
 	float initialOrthoSize;
 	GameObject playerOn;
 	bool canPlayerMove = false;
-	bool panUp = false;
-	float panTimer = 0;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag (VariableManagement.player);
@@ -43,9 +41,6 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void Update () {
-		if (panUp && cameraFixed) {
-			panCamera();
-		}
 		if (!cameraFixed) {
 			moveCamera ();
 		}
@@ -72,16 +67,6 @@ public class CharacterMovement : MonoBehaviour {
 		}
 	}
 
-	void panCamera () {
-		center = GetComponent<LevelBuilder> ().getCenter ();
-		panTimer += Time.deltaTime;
-		if (Camera.main.orthographicSize < center.y) {
-			Camera.main.orthographicSize += panTimer;
-		} else {
-			panUp = false;
-		}
-	}
-
 	void moveCamera () {
 		center = GetComponent<LevelBuilder> ().getCenter ();
 		if (playerFirstMoved) {
@@ -96,8 +81,10 @@ public class CharacterMovement : MonoBehaviour {
 			transform.position = Vector3.Slerp (transform.position, center, shiftTimer);
 			transform.rotation = Quaternion.Lerp (transform.rotation, camRotateTarget, shiftTimer);
 		}
-		if (transform.rotation.eulerAngles.x >= 90 && Camera.main.orthographicSize > center.y - 0.1f && Camera.main.orthographicSize < center.y + 0.1f) {
-			setCameraFinalPosition ();
+		if (Camera.main.orthographicSize > center.y - 0.05f && Camera.main.orthographicSize < center.y + 0.05f) {
+			if (Vector3.Distance(transform.position, center) < 0.05f && transform.rotation.eulerAngles.x >= 90) {
+				setCameraFinalPosition();
+			}
 		}
 	}
 
@@ -111,8 +98,9 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	public void setPan () {
-		panUp = true;
-		panTimer = 0;
+		initialOrthoSize = Camera.main.orthographicSize;
+		cameraFixed = false;
+		shiftTimer = 0;
 	}
 
 	void mouseDown () {

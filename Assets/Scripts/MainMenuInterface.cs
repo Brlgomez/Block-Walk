@@ -90,17 +90,7 @@ public class MainMenuInterface : MonoBehaviour {
 		PlayerPrefs.SetString(VariableManagement.lastMenu, ""); 
 		GetComponent<VariableManagement>().turnOffCameraShift();
 	}
-
-	public void unlockWorld2 () {
-		PlayerPrefs.SetInt(VariableManagement.world0, 1);
-		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-	}
-
-	public void unlockWorld3 () {
-		PlayerPrefs.SetInt(VariableManagement.world1, 1);
-		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 2);
-	}
-
+		
 	public void toIntro () {
 		particles.GetComponentInChildren<ParticleSystem>().Play();
 		if (GetComponent<Intro>() == null) {

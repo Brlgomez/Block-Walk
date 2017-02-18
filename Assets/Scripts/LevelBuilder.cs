@@ -166,6 +166,36 @@ public class LevelBuilder : MonoBehaviour {
 		return temp;
 	}
 
+	public void recalculateBlocks () {
+		for (int i = 0; i < blocks.Count; i++) {
+			if (blocks[i].transform.localPosition.x < xMin) {
+				xMin = blocks[i].transform.localPosition.x;
+			} 
+			if (blocks[i].transform.localPosition.x > xMax) {
+				xMax = blocks[i].transform.localPosition.x;
+			}
+			if (blocks[i].transform.localPosition.z < zMin) {
+				zMin = blocks[i].transform.localPosition.z;
+			} 
+			if (blocks[i].transform.localPosition.z > zMax) {
+				zMax = blocks[i].transform.localPosition.z;
+			}
+		}
+		float yHeight1 = Mathf.Abs(xMin - xMax);
+		float yHeight2 = Mathf.Abs(zMin - zMax);
+		Vector3 newCenter;
+		if ((yHeight2 / yHeight1) < 1.625f) {
+			newCenter = new Vector3((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
+		} else {
+			newCenter = new Vector3((xMin + xMax) / 2, Mathf.Clamp((yHeight2 / 2) + 1.25f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
+		}
+		if (Vector3.Distance(newCenter, center) > 0.2f) {
+			Debug.Log(Vector3.Distance(newCenter, center));
+			center = newCenter;
+			GetComponent<CharacterMovement>().setPan();
+		}
+	}
+
 	void setCamera() {
 		float yHeight1 = Mathf.Abs(xMin - xMax);
 		float yHeight2 = Mathf.Abs(zMin - zMax);
@@ -188,19 +218,6 @@ public class LevelBuilder : MonoBehaviour {
 			Camera.main.transform.position.y + ((topMost + bottomMost) * 0.6f), 
 			Camera.main.transform.position.z
 		);
-	}
-
-	public Vector4 getMinAndMax() {
-		return new Vector4(xMin, xMax, zMin, zMax);
-	}
-
-	public void setMinAndMax() {
-		xMin -= 1;
-		xMax += 1;
-		zMin -= 1;
-		zMax += 1;
-		GetComponent<CharacterMovement>().setPan();
-		center = new Vector3(center.x, center.y + 2, center.z);
 	}
 
 	public void changeBlockColor(GameObject block) {

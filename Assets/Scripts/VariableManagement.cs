@@ -125,4 +125,19 @@ public class VariableManagement : MonoBehaviour {
 		PlayerPrefs.SetString(("Download" + PlayerPrefs.GetInt("DownloadIndex")), name);
 		return shouldCountUp;
 	}
+
+	public void unlockWorld2 () {
+		PlayerPrefs.SetInt(VariableManagement.world0, 1);
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+	}
+
+	public void unlockWorld3 () {
+		PlayerPrefs.SetInt(VariableManagement.world1, 1);
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 2);
+	}
+
+	public void unlockWorld4 () {
+		PlayerPrefs.SetInt(VariableManagement.world2, 1);
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 3);
+	}
 }

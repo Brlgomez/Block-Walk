@@ -171,6 +171,7 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void winText() {
 		int currentLevel;
+		GetComponent<BlurOptimized>().enabled = true;
 		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
 			currentLevel = GetComponent<VariableManagement>().getWorldLevel() - 1;
 			if (PlayerPrefs.GetInt((currentLevel).ToString(), 0) == 0) {
@@ -190,7 +191,6 @@ public class GameplayInterface : MonoBehaviour {
 				}
 				PlayerPrefs.Save();
 			}
-			GetComponent<BlurOptimized>().enabled = true;
 			if (GetComponent<VariableManagement>().getWorldLevel() + 1 <= lastLevel && ((currentLevel + 1) % 16) != 0) { 
 				nextLevel.GetComponent<Button>().enabled = true;
 				nextLevel.GetComponent<Button>().image.color = Color.white;
