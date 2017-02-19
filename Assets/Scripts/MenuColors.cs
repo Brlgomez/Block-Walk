@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MenuColors : MonoBehaviour {
 
-	public static Color32 menuColor = new Color32(255, 182, 156, 255);
+	public static Color32 menuColor = new Color32(246, 168, 181, 255);
 	public static Color32 worldColor = new Color32(120, 184, 255, 255);
 	public static Color32 world1Color = new Color32(139, 230, 185, 255);
 	public static Color32 world2Color = new Color32(221, 177, 177, 255);

@@ -224,8 +224,7 @@ public class MainMenuInterface : MonoBehaviour {
 	public void loadUserLevel() {
 		string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 		if (File.Exists(filePath)) {		
-			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
-			PlayerPrefs.SetString(VariableManagement.userMapName, nameOfUserMap);
+			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);;
 			gameObject.AddComponent<BackgroundColorTransition>();
 			GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);
 		}

@@ -20,7 +20,6 @@ public class GameplayInterface : MonoBehaviour {
 	GameObject mainMenu;
 	GameObject handle;
 	bool loading = false;
-	int levelNum;
 	float timer;
 	bool sliderMoving = false;
 	bool holdingOnToSlider = false;
@@ -35,12 +34,7 @@ public class GameplayInterface : MonoBehaviour {
 		nextLevel = GameObject.Find("Next Level");
 		mainMenu = GameObject.Find("Main Menu");
 		handle = GameObject.Find("Floor");
-		if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
-			levelNum = GetComponent<VariableManagement>().getWorldLevel();
-			gameStatus.GetComponent<Text>().text = (((levelNum - 1) / 16) + 1) + "-" + (((levelNum - 1) % 16) + 1);
-		} else {
-			gameStatus.GetComponent<Text>().text = PlayerPrefs.GetString(VariableManagement.userMapName, "");
-		}
+		gameStatus.GetComponent<Text>().text = PlayerPrefs.GetString(VariableManagement.userMapName);
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
 		handleHeight = handle.transform.position.y;
@@ -48,6 +42,15 @@ public class GameplayInterface : MonoBehaviour {
 		topOfScreen = new Vector3(middleWidth, height - handleHeight, 0);
 		GetComponent<BlurOptimized>().downsample = blurDownsample;
 		GetComponent<BackgroundColorTransition>().levelStarting();
+		if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
+			if (PlayerPrefs.GetInt((GetComponent<VariableManagement>().getWorldLevel() - 1).ToString(), 0) == 0) {
+				handle.GetComponentsInChildren<Image>()[4].color = Color.clear;
+			}
+		} else {
+			if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
+				handle.GetComponentsInChildren<Image>()[4].color = Color.clear;
+			}
+		}
 	}
 
 	void Update() {
@@ -172,6 +175,7 @@ public class GameplayInterface : MonoBehaviour {
 	public void winText() {
 		int currentLevel;
 		GetComponent<BlurOptimized>().enabled = true;
+		handle.GetComponentsInChildren<Image>()[4].color = Color.white;
 		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
 			currentLevel = GetComponent<VariableManagement>().getWorldLevel() - 1;
 			if (PlayerPrefs.GetInt((currentLevel).ToString(), 0) == 0) {

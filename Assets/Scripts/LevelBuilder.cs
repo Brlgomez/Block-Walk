@@ -86,6 +86,7 @@ public class LevelBuilder : MonoBehaviour {
 
 	void setVariables(string[] lines) {
 		string title = lines[0];
+		PlayerPrefs.SetString(VariableManagement.userMapName, lines[0]);
 		string[] bg = lines[2].Split(","[0]);
 		string[] blockRGB = lines[3].Split(","[0]);
 		string[] rgbIncX = lines[4].Split(","[0]);
