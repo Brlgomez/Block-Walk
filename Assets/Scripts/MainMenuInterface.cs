@@ -124,11 +124,13 @@ public class MainMenuInterface : MonoBehaviour {
 			}
 			interfaceMenu = 1;
 		}
-		for (int i = 0; i < 3; i++) {
-			if (PlayerPrefs.GetInt(("World" + i).ToString(), 0) == 0) {
-				worlds.GetComponentsInChildren<Image>()[i + 1].color = new Color(0.75f, 0.75f, 0.75f, 1);
+		for (int i = 1; i < 4; i++) {
+			if (PlayerPrefs.GetInt(("World" + (i - 1)).ToString(), 0) == 0) {
+				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Image>().color = Color.black;
+				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Text>().color = Color.clear;
 			} else {
-				worlds.GetComponentsInChildren<Image>()[i + 1].color = Color.white;
+				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Image>().color = Color.white;
+				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Text>().color = Color.white;
 			}
 		}
 	}
@@ -143,7 +145,7 @@ public class MainMenuInterface : MonoBehaviour {
 		if (!beatAllLevels) {
 			interfaceMenu = 5;
 			gameObject.AddComponent<MenuTransitions>().setScreens(worlds, popUp, MenuColors.worldColor);
-			popUp.GetComponentsInChildren<Text>()[0].text = "World " + (world + 1) + " locked. Must beat all levels from World " + world + " .";
+			popUp.GetComponentsInChildren<Text>()[0].text = "Locked!\nMust beat all levels from the previous world.";
 		} else {
 			if (world == 0) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world1Color);
