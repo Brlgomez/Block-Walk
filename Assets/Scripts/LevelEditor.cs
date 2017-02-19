@@ -56,11 +56,14 @@ public class LevelEditor : MonoBehaviour {
 
 	void spawnObject(int x, int z) {
 		if (blockPos[z][x] == null && currentObject.name != VariableManagement.player) {
+			GetComponent<EditorInterface>().deauthorizedLevel();
 			createBlock(x, z);
 		} else {
 			if (currentObject.name == VariableManagement.player) {
+				GetComponent<EditorInterface>().deauthorizedLevel();
 				Destroy(blockPos[z][x]);
 			} else if (blockPos[z][x].name != currentObject.name + VariableManagement.clone) {
+				GetComponent<EditorInterface>().deauthorizedLevel();
 				Destroy(blockPos[z][x]);
 				createBlock(x, z);
 			}

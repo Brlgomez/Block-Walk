@@ -189,9 +189,9 @@ public class LevelBuilder : MonoBehaviour {
 		float yHeight2 = Mathf.Abs(zMin - zMax);
 		Vector3 newCenter;
 		if ((yHeight2 / yHeight1) < 1.625f) {
-			newCenter = new Vector3((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
+			newCenter = new Vector3((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, endOrthoMin, endOrthoMax * 2), (zMin + zMax) / 2);
 		} else {
-			newCenter = new Vector3((xMin + xMax) / 2, Mathf.Clamp((yHeight2 / 2) + 1.25f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
+			newCenter = new Vector3((xMin + xMax) / 2, Mathf.Clamp((yHeight2 / 2) + 1.25f, endOrthoMin, endOrthoMax * 2), (zMin + zMax) / 2);
 		}
 		if (Vector3.Distance(newCenter, center) > 0.2f) {
 			center = newCenter;

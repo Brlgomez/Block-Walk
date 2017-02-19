@@ -30,6 +30,7 @@ public class EditorInterface : MonoBehaviour {
 	float deltaTime;
 	Vector3 initialCamPos;
 	Vector3 colorMenuCamPos;
+	bool deauthorize = false;
 
 	void Start() {
 		filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
@@ -260,9 +261,11 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void saveLevel() {
-		GetComponent<VariableManagement>().setLevelAuthorization(0);
-		GetComponent<VariableManagement>().setLevelPostValue(0);
 		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
+		if (deauthorize) {
+			GetComponent<VariableManagement>().setLevelAuthorization(0);
+			GetComponent<VariableManagement>().setLevelPostValue(0);
+		}
 		File.Delete(filePath);
 		if (optionHolder.GetComponentInChildren<InputField>().text != "") {
 			File.AppendAllText(filePath, optionHolder.GetComponentInChildren<InputField>().text);
@@ -320,5 +323,9 @@ public class EditorInterface : MonoBehaviour {
 		rIncZ.GetComponent<Slider>().value = Random.Range(rIncZ.GetComponent<Slider>().minValue, rIncZ.GetComponent<Slider>().maxValue);
 		gIncZ.GetComponent<Slider>().value = Random.Range(gIncZ.GetComponent<Slider>().minValue, gIncZ.GetComponent<Slider>().maxValue);
 		bIncZ.GetComponent<Slider>().value = Random.Range(bIncZ.GetComponent<Slider>().minValue, bIncZ.GetComponent<Slider>().maxValue);
+	}
+
+	public void deauthorizedLevel () {
+		deauthorize = true;
 	}
 }

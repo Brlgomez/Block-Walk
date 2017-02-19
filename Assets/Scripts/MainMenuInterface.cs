@@ -119,7 +119,9 @@ public class MainMenuInterface : MonoBehaviour {
 				gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, worlds, MenuColors.worldColor);
 			} else if (interfaceMenu == 2) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(levels, worlds, MenuColors.worldColor);
-			} 
+			} else if (interfaceMenu == 5) {
+				gameObject.AddComponent<MenuTransitions>().setScreens(popUp, worlds, MenuColors.worldColor);
+			}
 			interfaceMenu = 1;
 		}
 		for (int i = 0; i < 3; i++) {
@@ -140,7 +142,7 @@ public class MainMenuInterface : MonoBehaviour {
 		} 
 		if (!beatAllLevels) {
 			interfaceMenu = 5;
-			gameObject.AddComponent<MenuTransitions>().setScreens(worlds, popUp, MenuColors.dataBaseInterface);
+			gameObject.AddComponent<MenuTransitions>().setScreens(worlds, popUp, MenuColors.worldColor);
 			popUp.GetComponentsInChildren<Text>()[0].text = "World " + (world + 1) + " locked. Must beat all levels from World " + world + " .";
 		} else {
 			if (world == 0) {
@@ -166,11 +168,6 @@ public class MainMenuInterface : MonoBehaviour {
 				}
 			}
 		} 
-	}
-
-	public void exitPopUp () {
-		gameObject.AddComponent<MenuTransitions>().setScreens(worlds, popUp, MenuColors.worldColor);
-		interfaceMenu = 1;
 	}
 
 	/* -------------------------------------------play, create, share------------------------------------------------ */

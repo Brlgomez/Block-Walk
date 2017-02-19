@@ -57,7 +57,7 @@ public class MenuTransitions : MonoBehaviour {
 			}
 			newPosForLeaving = new Vector3[itemsLeaving.Count];
 			for (int i = 0; i < itemsLeaving.Count; i++) {
-				if (itemsLeaving[i].transform.localPosition.x > Screen.width/2) {
+				if (itemsLeaving[i].transform.position.x > 0) {
 					newPosForLeaving[i] = new Vector3((itemsLeaving[i].transform.position.x - Screen.width), itemsLeaving[i].transform.position.y, 0);
 				} else {
 					newPosForLeaving[i] = itemsLeaving[i].transform.position;
