@@ -198,7 +198,7 @@ public class GameplayInterface : MonoBehaviour {
 			if (GetComponent<VariableManagement>().getWorldLevel() + 1 <= lastLevel && ((currentLevel + 1) % 16) != 0) { 
 				nextLevel.GetComponent<Button>().enabled = true;
 				nextLevel.GetComponent<Button>().image.color = Color.white;
-				nextLevel.GetComponentInChildren<Text>().color = Color.black;
+				nextLevel.GetComponentInChildren<Text>().color = Color.white;
 				nextLevel.GetComponent<BoxCollider2D>().enabled = true;	
 			}
 		} else if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.userLevelMenu || GetComponent<VariableManagement>().getLastMenu() == VariableManagement.editorMenu) {

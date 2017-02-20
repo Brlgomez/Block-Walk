@@ -57,6 +57,7 @@ public class FirebaseDatabases : MonoBehaviour {
 						temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
 						temp[i].Add(childSnapshot.Child("Data").Value.ToString());
 						temp[i].Add(childSnapshot.Key);
+						temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
 						i++;
 					}
 					publicLevels = new List<List<String>>();
@@ -72,6 +73,7 @@ public class FirebaseDatabases : MonoBehaviour {
 					return;
 				}
 			};
+			app.Dispose();
 		} else {
 			text.text = "No Connection";
 		}
@@ -101,6 +103,7 @@ public class FirebaseDatabases : MonoBehaviour {
 						temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
 						temp[i].Add(childSnapshot.Child("Data").Value.ToString());
 						temp[i].Add(childSnapshot.Key);
+						temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
 						i++;
 					}
 
@@ -117,6 +120,7 @@ public class FirebaseDatabases : MonoBehaviour {
 					text.text = "No Posts";
 				}
 			};
+			app.Dispose();
 		} else {
 			text.text = "No Connection";
 		}
@@ -148,6 +152,7 @@ public class FirebaseDatabases : MonoBehaviour {
 						temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
 						temp[i].Add(childSnapshot.Child("Data").Value.ToString());
 						temp[i].Add(childSnapshot.Key);
+						temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
 						i++;
 					}
 
@@ -168,6 +173,7 @@ public class FirebaseDatabases : MonoBehaviour {
 					}
 				}
 			};
+			app.Dispose();
 		} else {
 			text.text = "No Connection";
 		}
@@ -199,6 +205,7 @@ public class FirebaseDatabases : MonoBehaviour {
 						temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
 						temp[i].Add(childSnapshot.Child("Data").Value.ToString());
 						temp[i].Add(childSnapshot.Key);
+						temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
 						i++;
 					}
 
@@ -215,6 +222,7 @@ public class FirebaseDatabases : MonoBehaviour {
 					text.text = "No Posts";
 				}
 			};
+			app.Dispose();
 		} else {
 			text.text = "No Connection";
 		}
@@ -246,6 +254,7 @@ public class FirebaseDatabases : MonoBehaviour {
 						temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
 						temp[i].Add(childSnapshot.Child("Data").Value.ToString());
 						temp[i].Add(childSnapshot.Key);
+						temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
 						i++;
 					}
 
@@ -263,6 +272,7 @@ public class FirebaseDatabases : MonoBehaviour {
 					return;
 				}
 			};
+			app.Dispose();
 		} else {
 			text.text = "No Connection";
 		}
@@ -272,7 +282,6 @@ public class FirebaseDatabases : MonoBehaviour {
 		if (isConnected()) {
 			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
 			DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
-
 			reference.Child("Levels").Child(idOfMap).RemoveValueAsync();
 			getYourLevels(text);
 		} else {
