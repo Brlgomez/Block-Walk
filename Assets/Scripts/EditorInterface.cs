@@ -31,6 +31,7 @@ public class EditorInterface : MonoBehaviour {
 	Vector3 initialCamPos;
 	Vector3 colorMenuCamPos;
 	bool deauthorize = false;
+	bool movingSlider = false;
 
 	void Start() {
 		filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
@@ -67,12 +68,17 @@ public class EditorInterface : MonoBehaviour {
 				GetComponent<LevelEditor>().mouseDown();
 			}
 			if (Input.GetMouseButtonUp(0)) {
+				movingSlider = false;
 				GetComponent<LevelEditor>().mouseUp();
 			}
-			if (GetComponent<LevelEditor>().getMouseDrag()) {
+			if (GetComponent<LevelEditor>().getMouseDrag() && !movingSlider) {
 				GetComponent<LevelEditor>().mouseDrag();
 			}
 		}
+	}
+
+	public void ifMovingSlider () {
+		movingSlider = true;
 	}
 
 	void turnOnButton (Button b) {

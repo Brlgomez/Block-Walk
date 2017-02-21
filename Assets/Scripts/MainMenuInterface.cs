@@ -615,18 +615,23 @@ public class MainMenuInterface : MonoBehaviour {
 			GL.PushMatrix();
 			mat.SetPass(0);
 			GL.Begin(GL.QUADS);
+			GL.Color(Color.gray);
+			GL.Vertex3((0.075f) - 7.5f, 0, 11.175f);
+			GL.Vertex3((0.075f) - 7.5f, 0, 11.025f);
+			GL.Vertex3(((15) - 0.075f) - 7.5f, 0, 11.025f);
+			GL.Vertex3(((15) - 0.075f) - 7.5f, 0, 11.175f);
 			GL.Color(Color.white);
 			for (int i = 0; i < filePositions.Count; i++) {
-				GL.Vertex3((filePositions[i] + 0.075f) - 7.5f, 0, -3.375f);
-				GL.Vertex3((filePositions[i] + 0.075f) - 7.5f, 0, -3.225f);
-				GL.Vertex3((filePositions[i] - 0.075f) - 7.5f, 0, -3.225f);
-				GL.Vertex3((filePositions[i] - 0.075f) - 7.5f, 0, -3.375f);
+				GL.Vertex3((filePositions[i] + 0.075f) - 7.5f, 0, 11.175f);
+				GL.Vertex3((filePositions[i] + 0.075f) - 7.5f, 0, 11.025f);
+				GL.Vertex3((filePositions[i] - 0.075f) - 7.5f, 0, 11.025f);
+				GL.Vertex3((filePositions[i] - 0.075f) - 7.5f, 0, 11.175f);
 			}
 			GL.Color(Color.red);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) + 0.075f) - 7.5f, 0, -3.375f);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) + 0.075f) - 7.5f, 0, -3.225f);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) - 0.075f) - 7.5f, 0, -3.225f);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) - 0.075f) - 7.5f, 0, -3.375f);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) + 0.075f) - 7.5f, 0, 11.175f);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) + 0.075f) - 7.5f, 0, 11.025f);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) - 0.075f) - 7.5f, 0, 11.025f);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) - 0.075f) - 7.5f, 0, 11.175f);
 			GL.End();
 			GL.PopMatrix();
 		}

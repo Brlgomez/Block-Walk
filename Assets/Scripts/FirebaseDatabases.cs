@@ -38,42 +38,23 @@ public class FirebaseDatabases : MonoBehaviour {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
 			app.SetEditorDatabaseUrl(url);
 
-			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").LimitToLast(24).ValueChanged += 
-			(object sender2, ValueChangedEventArgs e2) => {
-				if (e2.DatabaseError != null) {
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").LimitToLast(24).
+			GetValueAsync().ContinueWith(task => {
+				if (task.IsFaulted) {
 					text.text = "Error, please try again";
-					Debug.LogError(e2.DatabaseError.Message);
 					return;
 				}
-
-				if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0) {
-					List<List<String>> temp = new List<List<String>>();
-					int i = 0;
-					foreach (var childSnapshot in e2.Snapshot.Children) {
-						temp.Insert(i, new List<String>());
-						temp[i].Add(childSnapshot.Child("Name").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Username").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Date").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Data").Value.ToString());
-						temp[i].Add(childSnapshot.Key);
-						temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
-						i++;
+				else if (task.IsCompleted) {
+					if (task.Result.ChildrenCount > 0) {
+						setList(task.Result.Children);
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
+							GetComponent<MainMenuInterface>().toPublicLevels();
+						}
+					} else {
+						text.text = "No Posts";
 					}
-					publicLevels = new List<List<String>>();
-					for (int j = temp.Count - 1; j >= 0; j--) {
-						publicLevels.Add(temp[j]);
-					}
-
-					if (PlayerPrefs.GetInt("To Database", 0) == 1) {
-						GetComponent<MainMenuInterface>().toDatabase();
-					} else if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
-						GetComponent<MainMenuInterface>().toPublicLevels();
-					} 
-				} else {
-					text.text = "No Posts";
 				}
-			};
+			});
 			app.Dispose();
 		} else {
 			text.text = "No Connection";
@@ -85,43 +66,23 @@ public class FirebaseDatabases : MonoBehaviour {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
 			app.SetEditorDatabaseUrl(url);
 
-			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Downloads").LimitToLast(24).ValueChanged += 
-			(object sender2, ValueChangedEventArgs e2) => {
-				if (e2.DatabaseError != null) {
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Downloads").LimitToLast(24).
+			GetValueAsync().ContinueWith(task => {
+				if (task.IsFaulted) {
 					text.text = "Error, please try again";
-					Debug.LogError(e2.DatabaseError.Message);
 					return;
 				}
-				if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0) {
-					List<List<String>> temp = new List<List<String>>();
-					int i = 0;
-					foreach (var childSnapshot in e2.Snapshot.Children) {
-						temp.Insert(i, new List<String>());
-						temp[i].Add(childSnapshot.Child("Name").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Username").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Date").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Data").Value.ToString());
-						temp[i].Add(childSnapshot.Key);
-						temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
-						i++;
+				else if (task.IsCompleted) {
+					if (task.Result.ChildrenCount > 0) {
+						setList(task.Result.Children);
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
+							GetComponent<MainMenuInterface>().toPublicLevels();
+						}
+					} else {
+						text.text = "No Posts";
 					}
-
-					publicLevels = new List<List<String>>();
-
-					for (int j = temp.Count - 1; j >= 0; j--) {
-						publicLevels.Add(temp[j]);
-					}
-
-					if (PlayerPrefs.GetInt("To Database", 0) == 1) {
-						GetComponent<MainMenuInterface>().toDatabase();
-					} else if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
-						GetComponent<MainMenuInterface>().toPublicLevels();
-					}
-				} else {
-					text.text = "No Posts";
 				}
-			};
+			});
 			app.Dispose();
 		} else {
 			text.text = "No Connection";
@@ -134,48 +95,26 @@ public class FirebaseDatabases : MonoBehaviour {
 			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("User ID").
-			EqualTo(PlayerPrefs.GetString(VariableManagement.userId, "Unknown")).LimitToLast(24).ValueChanged += 
-			(object sender2, ValueChangedEventArgs e2) => {
-				if (e2.DatabaseError != null) {
+			EqualTo(PlayerPrefs.GetString(VariableManagement.userId, "Unknown")).LimitToLast(24).GetValueAsync().
+			ContinueWith(task => {
+				if (task.IsFaulted) {
 					text.text = "Error, please try again";
-					Debug.LogError(e2.DatabaseError.Message);
 					return;
-				}
-
-				if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0) {
-					List<List<String>> temp = new List<List<String>>();
-					int i = 0;
-					foreach (var childSnapshot in e2.Snapshot.Children) {
-						temp.Insert(i, new List<String>());
-						temp[i].Add(childSnapshot.Child("Name").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Username").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Date").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Data").Value.ToString());
-						temp[i].Add(childSnapshot.Key);
-						temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
-						i++;
-					}
-
-					publicLevels = new List<List<String>>();
-
-					for (int j = temp.Count - 1; j >= 0; j--) {
-						publicLevels.Add(temp[j]);
-					}
-
-					if (PlayerPrefs.GetInt("To Database", 0) == 1) {
-						GetComponent<MainMenuInterface>().toDatabase();
-					} else if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6 ||
-					    GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
-						GetComponent<MainMenuInterface>().toPublicLevels();
-					}
-				} else {
-					text.text = "No Posts";
-					if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
-						GetComponent<MainMenuInterface>().toDatabase();
+				} else if (task.IsCompleted) {
+					if (task.Result.ChildrenCount > 0) {
+						setList(task.Result.Children);
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6 ||
+							GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
+							GetComponent<MainMenuInterface>().toPublicLevels();
+						}
+					} else {
+						text.text = "No Posts";
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
+							GetComponent<MainMenuInterface>().toDatabase();
+						}
 					}
 				}
-			};
+			});
 			app.Dispose();
 		} else {
 			text.text = "No Connection";
@@ -184,48 +123,27 @@ public class FirebaseDatabases : MonoBehaviour {
 
 	public void searchUsername (Text text, string username) {
 		if (isConnected()) {
+			string usernameLower = username.ToLower();
 			FirebaseApp app = FirebaseApp.DefaultInstance;
 			app.SetEditorDatabaseUrl(url);
 
-			string usernameLower = username.ToLower();
-			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Username Lower").EqualTo(usernameLower).LimitToLast(24).ValueChanged += 
-			(object sender2, ValueChangedEventArgs e2) => {
-				if (e2.DatabaseError != null) {
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Username Lower").
+			EqualTo(usernameLower).LimitToLast(24).GetValueAsync().ContinueWith(task => {
+				if (task.IsFaulted) {
 					text.text = "Error, please try again";
-					Debug.LogError(e2.DatabaseError.Message);
 					return;
 				}
-
-				if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0) {
-					List<List<String>> temp = new List<List<String>>();
-					int i = 0;
-					foreach (var childSnapshot in e2.Snapshot.Children) {
-						temp.Insert(i, new List<String>());
-						temp[i].Add(childSnapshot.Child("Name").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Username").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Date").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Data").Value.ToString());
-						temp[i].Add(childSnapshot.Key);
-						temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
-						i++;
+				else if (task.IsCompleted) {
+					if (task.Result.ChildrenCount > 0) {
+						setList(task.Result.Children);
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9) {
+							GetComponent<MainMenuInterface>().toPublicLevels();
+						}
+					} else {
+						text.text = "No Posts";
 					}
-
-					publicLevels = new List<List<String>>();
-
-					for (int j = temp.Count - 1; j >= 0; j--) {
-						publicLevels.Add(temp[j]);
-					}
-
-					if (PlayerPrefs.GetInt("To Database", 0) == 1) {
-						GetComponent<MainMenuInterface>().toDatabase();
-					} else if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9) {
-						GetComponent<MainMenuInterface>().toPublicLevels();
-					}
-				} else {
-					text.text = "No Posts";
 				}
-			};
+			});
 			app.Dispose();
 		} else {
 			text.text = "No Connection";
@@ -234,49 +152,27 @@ public class FirebaseDatabases : MonoBehaviour {
 
 	public void searchMapName (Text text, string mapName) {
 		if (isConnected()) {
-			FirebaseApp app = FirebaseApp.DefaultInstance;
-
 			string mapNameLower = mapName.ToLower();
+			FirebaseApp app = FirebaseApp.DefaultInstance;
 			app.SetEditorDatabaseUrl(url);
 
-			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Name Lower").EqualTo(mapNameLower).LimitToLast(24).ValueChanged += 
-			(object sender2, ValueChangedEventArgs e2) => {
-				if (e2.DatabaseError != null) {
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Name Lower").
+			EqualTo(mapNameLower).LimitToLast(24).GetValueAsync().ContinueWith(task => {
+				if (task.IsFaulted) {
 					text.text = "Error, please try again";
-					Debug.LogError(e2.DatabaseError.Message);
 					return;
 				}
-
-				if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0) {
-					List<List<String>> temp = new List<List<String>>();
-					int i = 0;
-					foreach (var childSnapshot in e2.Snapshot.Children) {
-						temp.Insert(i, new List<String>());
-						temp[i].Add(childSnapshot.Child("Name").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Username").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Date").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
-						temp[i].Add(childSnapshot.Child("Data").Value.ToString());
-						temp[i].Add(childSnapshot.Key);
-						temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
-						i++;
+				else if (task.IsCompleted) {
+					if (task.Result.ChildrenCount > 0) {
+						setList(task.Result.Children);
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9) {
+							GetComponent<MainMenuInterface>().toPublicLevels();
+						}
+					} else {
+						text.text = "No Posts";
 					}
-
-					publicLevels = new List<List<String>>();
-
-					for (int j = temp.Count - 1; j >= 0; j--) {
-						publicLevels.Add(temp[j]);
-					}
-
-					if (PlayerPrefs.GetInt("To Database", 0) == 1) {
-						GetComponent<MainMenuInterface>().toDatabase();
-					} else if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9) {
-						GetComponent<MainMenuInterface>().toPublicLevels();
-					}
-				} else {
-					text.text = "No Posts";
 				}
-			};
+			});
 			app.Dispose();
 		} else {
 			text.text = "No Connection";
@@ -288,12 +184,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
 			DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
 			reference.Child("Levels").Child(idOfMap).RemoveValueAsync();
-			if (publicLevels.Count > 1) {
-				getYourLevels(text);
-			} else {
-				PlayerPrefs.SetInt("To Database", 1);
-				GetComponent<MainMenuInterface>().toDatabase();
-			}
+			getYourLevels(text);
 		} else {
 			text.text = "No Connection";
 		}
@@ -333,5 +224,27 @@ public class FirebaseDatabases : MonoBehaviour {
 
 	public List<List<String>> getLevelList () {
 		return publicLevels;
+	}
+
+	void setList (IEnumerable<DataSnapshot> children) {
+		List<List<String>> temp = new List<List<String>>();
+		int i = 0;
+		foreach (var childSnapshot in children) {
+			temp.Insert(i, new List<String>());
+			temp[i].Add(childSnapshot.Child("Name").Value.ToString());
+			temp[i].Add(childSnapshot.Child("Username").Value.ToString());
+			temp[i].Add(childSnapshot.Child("Date").Value.ToString());
+			temp[i].Add(childSnapshot.Child("Downloads").Value.ToString());
+			temp[i].Add(childSnapshot.Child("Data").Value.ToString());
+			temp[i].Add(childSnapshot.Key);
+			temp[i].Add(childSnapshot.Child("User ID").Value.ToString());
+			i++;
+		}
+
+		publicLevels = new List<List<String>>();
+
+		for (int j = temp.Count - 1; j >= 0; j--) {
+			publicLevels.Add(temp[j]);
+		}
 	}
 }
