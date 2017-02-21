@@ -356,6 +356,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void getMostRecentLevels () {
 		publicLevelCount = 0;
+		PlayerPrefs.SetInt("To Database", 0);
 		turnOffButton(worldLevels.GetComponentsInChildren<Button>()[0]);
 		database.GetComponentInChildren<Text>().text = "Loading...";
 		GetComponent<FirebaseDatabases>().fireBaseMostRecent(database.GetComponentInChildren<Text>());
@@ -363,6 +364,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void getMostDownloadedLevels () {
 		publicLevelCount = 0;
+		PlayerPrefs.SetInt("To Database", 0);
 		turnOffButton(worldLevels.GetComponentsInChildren<Button>()[0]);
 		database.GetComponentInChildren<Text>().text = "Loading...";
 		GetComponent<FirebaseDatabases>().fireBaseMostDownloaded(database.GetComponentInChildren<Text>());
@@ -370,6 +372,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void getYourLevels () {
 		publicLevelCount = 0;
+		PlayerPrefs.SetInt("To Database", 0);
 		turnOnButton(worldLevels.GetComponentsInChildren<Button>()[0]);
 		database.GetComponentInChildren<Text>().text = "Loading...";
 		GetComponent<FirebaseDatabases>().getYourLevels(database.GetComponentInChildren<Text>());
@@ -403,6 +406,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void searchUserName () {
 		publicLevelCount = 0;
+		PlayerPrefs.SetInt("To Database", 0);
 		turnOffButton(worldLevels.GetComponentsInChildren<Button>()[0]);
 		search.GetComponentInChildren<Text>().text = "Loading...";
 		GetComponent<FirebaseDatabases>().searchUsername(search.GetComponentInChildren<Text>(), search.GetComponentInChildren<InputField>().text);
@@ -410,6 +414,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void searchMapName () {
 		publicLevelCount = 0;
+		PlayerPrefs.SetInt("To Database", 0);
 		turnOffButton(worldLevels.GetComponentsInChildren<Button>()[0]);
 		search.GetComponentInChildren<Text>().text = "Loading...";
 		GetComponent<FirebaseDatabases>().searchMapName(search.GetComponentInChildren<Text>(), search.GetComponentInChildren<InputField>().text);
@@ -625,5 +630,11 @@ public class MainMenuInterface : MonoBehaviour {
 			GL.End();
 			GL.PopMatrix();
 		}
+	}
+
+	public void unlockAllWorlds () {
+		PlayerPrefs.SetInt("World0", 1);
+		PlayerPrefs.SetInt("World1", 1);
+		PlayerPrefs.SetInt("World2", 1);
 	}
 }

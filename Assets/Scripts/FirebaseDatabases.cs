@@ -38,7 +38,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
 			app.SetEditorDatabaseUrl(url);
 
-			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").LimitToLast(25).ValueChanged += 
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").LimitToLast(24).ValueChanged += 
 			(object sender2, ValueChangedEventArgs e2) => {
 				if (e2.DatabaseError != null) {
 					text.text = "Error, please try again";
@@ -65,12 +65,13 @@ public class FirebaseDatabases : MonoBehaviour {
 						publicLevels.Add(temp[j]);
 					}
 
-					if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
+					if (PlayerPrefs.GetInt("To Database", 0) == 1) {
+						GetComponent<MainMenuInterface>().toDatabase();
+					} else if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
 						GetComponent<MainMenuInterface>().toPublicLevels();
-					}
+					} 
 				} else {
 					text.text = "No Posts";
-					return;
 				}
 			};
 			app.Dispose();
@@ -84,14 +85,13 @@ public class FirebaseDatabases : MonoBehaviour {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
 			app.SetEditorDatabaseUrl(url);
 
-			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Downloads").LimitToLast(25).ValueChanged += 
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Downloads").LimitToLast(24).ValueChanged += 
 			(object sender2, ValueChangedEventArgs e2) => {
 				if (e2.DatabaseError != null) {
 					text.text = "Error, please try again";
 					Debug.LogError(e2.DatabaseError.Message);
 					return;
 				}
-
 				if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0) {
 					List<List<String>> temp = new List<List<String>>();
 					int i = 0;
@@ -113,7 +113,9 @@ public class FirebaseDatabases : MonoBehaviour {
 						publicLevels.Add(temp[j]);
 					}
 
-					if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
+					if (PlayerPrefs.GetInt("To Database", 0) == 1) {
+						GetComponent<MainMenuInterface>().toDatabase();
+					} else if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
 						GetComponent<MainMenuInterface>().toPublicLevels();
 					}
 				} else {
@@ -132,8 +134,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("User ID").
-			StartAt(PlayerPrefs.GetString(VariableManagement.userId, "Unknown")).
-			EndAt(PlayerPrefs.GetString(VariableManagement.userId, "Unknown")).ValueChanged += 
+			EqualTo(PlayerPrefs.GetString(VariableManagement.userId, "Unknown")).LimitToLast(24).ValueChanged += 
 			(object sender2, ValueChangedEventArgs e2) => {
 				if (e2.DatabaseError != null) {
 					text.text = "Error, please try again";
@@ -162,7 +163,9 @@ public class FirebaseDatabases : MonoBehaviour {
 						publicLevels.Add(temp[j]);
 					}
 
-					if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6 ||
+					if (PlayerPrefs.GetInt("To Database", 0) == 1) {
+						GetComponent<MainMenuInterface>().toDatabase();
+					} else if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6 ||
 					    GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
 						GetComponent<MainMenuInterface>().toPublicLevels();
 					}
@@ -185,8 +188,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			app.SetEditorDatabaseUrl(url);
 
 			string usernameLower = username.ToLower();
-			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Username Lower").
-			StartAt(usernameLower).EndAt(usernameLower).ValueChanged += 
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Username Lower").EqualTo(usernameLower).LimitToLast(24).ValueChanged += 
 			(object sender2, ValueChangedEventArgs e2) => {
 				if (e2.DatabaseError != null) {
 					text.text = "Error, please try again";
@@ -215,7 +217,9 @@ public class FirebaseDatabases : MonoBehaviour {
 						publicLevels.Add(temp[j]);
 					}
 
-					if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9) {
+					if (PlayerPrefs.GetInt("To Database", 0) == 1) {
+						GetComponent<MainMenuInterface>().toDatabase();
+					} else if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9) {
 						GetComponent<MainMenuInterface>().toPublicLevels();
 					}
 				} else {
@@ -235,7 +239,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			string mapNameLower = mapName.ToLower();
 			app.SetEditorDatabaseUrl(url);
 
-			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Name Lower").StartAt(mapNameLower).EndAt(mapNameLower).ValueChanged += 
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Name Lower").EqualTo(mapNameLower).LimitToLast(24).ValueChanged += 
 			(object sender2, ValueChangedEventArgs e2) => {
 				if (e2.DatabaseError != null) {
 					text.text = "Error, please try again";
@@ -264,12 +268,13 @@ public class FirebaseDatabases : MonoBehaviour {
 						publicLevels.Add(temp[j]);
 					}
 
-					if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9) {
+					if (PlayerPrefs.GetInt("To Database", 0) == 1) {
+						GetComponent<MainMenuInterface>().toDatabase();
+					} else if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9) {
 						GetComponent<MainMenuInterface>().toPublicLevels();
 					}
 				} else {
 					text.text = "No Posts";
-					return;
 				}
 			};
 			app.Dispose();
@@ -283,7 +288,12 @@ public class FirebaseDatabases : MonoBehaviour {
 			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
 			DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
 			reference.Child("Levels").Child(idOfMap).RemoveValueAsync();
-			getYourLevels(text);
+			if (publicLevels.Count > 1) {
+				getYourLevels(text);
+			} else {
+				PlayerPrefs.SetInt("To Database", 1);
+				GetComponent<MainMenuInterface>().toDatabase();
+			}
 		} else {
 			text.text = "No Connection";
 		}
