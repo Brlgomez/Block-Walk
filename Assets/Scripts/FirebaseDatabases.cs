@@ -47,7 +47,8 @@ public class FirebaseDatabases : MonoBehaviour {
 				else if (task.IsCompleted) {
 					if (task.Result.ChildrenCount > 0) {
 						setList(task.Result.Children);
-						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6 ||
+							GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
 							GetComponent<MainMenuInterface>().toPublicLevels();
 						}
 					} else {
@@ -75,11 +76,15 @@ public class FirebaseDatabases : MonoBehaviour {
 				else if (task.IsCompleted) {
 					if (task.Result.ChildrenCount > 0) {
 						setList(task.Result.Children);
-						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6) {
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6 ||
+							GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
 							GetComponent<MainMenuInterface>().toPublicLevels();
 						}
 					} else {
 						text.text = "No Posts";
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
+							GetComponent<MainMenuInterface>().toDatabase();
+						}
 					}
 				}
 			});
@@ -136,11 +141,15 @@ public class FirebaseDatabases : MonoBehaviour {
 				else if (task.IsCompleted) {
 					if (task.Result.ChildrenCount > 0) {
 						setList(task.Result.Children);
-						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9) {
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9 ||
+							GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
 							GetComponent<MainMenuInterface>().toPublicLevels();
 						}
 					} else {
 						text.text = "No Posts";
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
+							GetComponent<MainMenuInterface>().toDatabase();
+						}
 					}
 				}
 			});
@@ -165,11 +174,15 @@ public class FirebaseDatabases : MonoBehaviour {
 				else if (task.IsCompleted) {
 					if (task.Result.ChildrenCount > 0) {
 						setList(task.Result.Children);
-						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9) {
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 9 ||
+							GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
 							GetComponent<MainMenuInterface>().toPublicLevels();
 						}
 					} else {
 						text.text = "No Posts";
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
+							GetComponent<MainMenuInterface>().toDatabase();
+						}
 					}
 				}
 			});
@@ -179,12 +192,22 @@ public class FirebaseDatabases : MonoBehaviour {
 		}
 	}
 
-	public void deleteLevel (string idOfMap, Text text) {
+	public void deleteLevel (string idOfMap, Text text, int lastScreen, string search) {
 		if (isConnected()) {
 			FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(url);
 			DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
 			reference.Child("Levels").Child(idOfMap).RemoveValueAsync();
-			getYourLevels(text);
+			if (lastScreen == 0) {
+				fireBaseMostDownloaded(text);
+			} else if (lastScreen == 1) {
+				fireBaseMostRecent(text);
+			} else if (lastScreen == 2) {
+				getYourLevels(text);
+			} else if (lastScreen == 3) {
+				searchUsername(text, search);
+			} else if (lastScreen == 4) {
+				searchMapName(text, search);
+			}
 		} else {
 			text.text = "No Connection";
 		}

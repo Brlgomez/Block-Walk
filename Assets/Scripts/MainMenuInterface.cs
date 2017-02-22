@@ -24,7 +24,7 @@ public class MainMenuInterface : MonoBehaviour {
 	int mapDownloadCount;
 	List<float> filePositions;
 	public Material mat;
-	bool drawPoints = false;
+	int lastDatabaseMenu = 0;
 
 	void Start() {
 		blockHolder = GameObject.Find("Block Holder");
@@ -67,6 +67,8 @@ public class MainMenuInterface : MonoBehaviour {
 				Camera.main.backgroundColor = MenuColors.world2Color;
 			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 2) {
 				Camera.main.backgroundColor = MenuColors.world3Color;
+			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 3) {
+				Camera.main.backgroundColor = MenuColors.world4Color;
 			}
 		} else if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.userLevelMenu) {
 			interfaceMenu = 3;
@@ -92,7 +94,6 @@ public class MainMenuInterface : MonoBehaviour {
 		
 	public void toMainMenu() {
 		destroyBlockChildren();
-		drawPoints = false;
 		if (GetComponent<Intro>() != null) {
 			Destroy(GetComponent<Intro>());
 		}
@@ -159,6 +160,8 @@ public class MainMenuInterface : MonoBehaviour {
 				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world2Color);
 			} else if (world == 2) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world3Color);
+			} else if (world == 3) {
+				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world4Color);
 			}
 			interfaceMenu = 2;
 			levels.GetComponentInChildren<Text>().text = "World " + (world + 1);
@@ -181,7 +184,6 @@ public class MainMenuInterface : MonoBehaviour {
 	/* -------------------------------------------play, create, share------------------------------------------------ */
 
 	public void toUserCreatedLevels() {
-		drawPoints = true;
 		userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Post";
 		showLevel();
 		if (interfaceMenu == 0) {
@@ -196,7 +198,6 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void openConfirmation() {
-		drawPoints = false;
 		if (interfaceMenu == 3) {
 			gameObject.AddComponent<MenuTransitions>().setScreens(userCreated, confirmation, MenuColors.deletion);
 			interfaceMenu = 4;
@@ -217,7 +218,6 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void LoadLevel(int level) {
-		drawPoints = false;
 		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.worldMenu);
 		PlayerPrefs.SetInt(VariableManagement.worldLevel, level + levelMultiplier);
 		gameObject.AddComponent<BackgroundColorTransition>();
@@ -225,17 +225,17 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void openEditor() {
-		drawPoints = false;
+		interfaceMenu = 0;
 		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
 		gameObject.AddComponent<BackgroundColorTransition>();
 		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toEditorFromMain);
 	}
 		
 	public void loadUserLevel() {
-		drawPoints = false;
+		interfaceMenu = 0;
 		string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 		if (File.Exists(filePath)) {		
-			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);;
+			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
 			gameObject.AddComponent<BackgroundColorTransition>();
 			GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);
 		}
@@ -354,26 +354,23 @@ public class MainMenuInterface : MonoBehaviour {
 		interfaceMenu = 7;
 	}
 
-	public void getMostRecentLevels () {
-		publicLevelCount = 0;
-		PlayerPrefs.SetInt("To Database", 0);
-		turnOffButton(worldLevels.GetComponentsInChildren<Button>()[0]);
-		database.GetComponentInChildren<Text>().text = "Loading...";
-		GetComponent<FirebaseDatabases>().fireBaseMostRecent(database.GetComponentInChildren<Text>());
-	}
-
 	public void getMostDownloadedLevels () {
 		publicLevelCount = 0;
-		PlayerPrefs.SetInt("To Database", 0);
-		turnOffButton(worldLevels.GetComponentsInChildren<Button>()[0]);
+		lastDatabaseMenu = 0;
 		database.GetComponentInChildren<Text>().text = "Loading...";
 		GetComponent<FirebaseDatabases>().fireBaseMostDownloaded(database.GetComponentInChildren<Text>());
 	}
 
+	public void getMostRecentLevels () {
+		publicLevelCount = 0;
+		lastDatabaseMenu = 1;
+		database.GetComponentInChildren<Text>().text = "Loading...";
+		GetComponent<FirebaseDatabases>().fireBaseMostRecent(database.GetComponentInChildren<Text>());
+	}
+
 	public void getYourLevels () {
 		publicLevelCount = 0;
-		PlayerPrefs.SetInt("To Database", 0);
-		turnOnButton(worldLevels.GetComponentsInChildren<Button>()[0]);
+		lastDatabaseMenu = 2;
 		database.GetComponentInChildren<Text>().text = "Loading...";
 		GetComponent<FirebaseDatabases>().getYourLevels(database.GetComponentInChildren<Text>());
 	}
@@ -387,7 +384,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void deletePublicLevel () {
 		if (userID == PlayerPrefs.GetString(VariableManagement.userId, "Unknown")) {
-			GetComponent<FirebaseDatabases>().deleteLevel(idOfMap, database.GetComponentInChildren<Text>());
+			GetComponent<FirebaseDatabases>().deleteLevel(idOfMap, database.GetComponentInChildren<Text>(), lastDatabaseMenu, search.GetComponentInChildren<InputField>().text);
 			destroyBlockChildren();
 		}
 	}
@@ -406,16 +403,14 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void searchUserName () {
 		publicLevelCount = 0;
-		PlayerPrefs.SetInt("To Database", 0);
-		turnOffButton(worldLevels.GetComponentsInChildren<Button>()[0]);
+		lastDatabaseMenu = 3;
 		search.GetComponentInChildren<Text>().text = "Loading...";
 		GetComponent<FirebaseDatabases>().searchUsername(search.GetComponentInChildren<Text>(), search.GetComponentInChildren<InputField>().text);
 	}
 
 	public void searchMapName () {
 		publicLevelCount = 0;
-		PlayerPrefs.SetInt("To Database", 0);
-		turnOffButton(worldLevels.GetComponentsInChildren<Button>()[0]);
+		lastDatabaseMenu = 4;
 		search.GetComponentInChildren<Text>().text = "Loading...";
 		GetComponent<FirebaseDatabases>().searchMapName(search.GetComponentInChildren<Text>(), search.GetComponentInChildren<InputField>().text);
 	}
@@ -453,6 +448,11 @@ public class MainMenuInterface : MonoBehaviour {
 				lines[0] + "\n" + lines[1] + "\n" + lines[2] + "\n" + lines[3];
 			createSpriteLevel(lines, 4, "\n");
 			dataOfUserMap += "*";
+			if (userID == PlayerPrefs.GetString(VariableManagement.userId, "Unknown")) {
+				turnOnButton(worldLevels.GetComponentsInChildren<Button>()[0]);
+			} else {
+				turnOffButton(worldLevels.GetComponentsInChildren<Button>()[0]);
+			}
 		}
 	}
 
@@ -611,7 +611,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	void OnPostRender () {
-		if (drawPoints) {
+		if (interfaceMenu == 3) {
 			GL.PushMatrix();
 			mat.SetPass(0);
 			GL.Begin(GL.QUADS);
