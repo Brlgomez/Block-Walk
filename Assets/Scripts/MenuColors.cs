@@ -4,6 +4,8 @@ using System.Collections;
 public class MenuColors : MonoBehaviour {
 
 	public static Color32 menuColor = new Color32(246, 168, 181, 255);
+	public static Color32 settingsColor = new Color32(254, 194, 143, 255);
+	public static Color32 storeColor = new Color32(90, 231, 187, 255);
 	public static Color32 worldColor = new Color32(120, 184, 255, 255);
 	public static Color32 world1Color = new Color32(127, 210, 170, 255);
 	public static Color32 world2Color = new Color32(221, 177, 177, 255);

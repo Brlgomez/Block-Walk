@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CharacterMovement : MonoBehaviour {
 
-	static float maxTimeForDrag = 0.25f;
+	static float maxTimeForDrag = 0.3f;
 	static float maxTimeForSolution = 0.5f;
 	static float pathThickness = 0.03f;
 	static int playerSpeed = 10;
@@ -14,7 +14,7 @@ public class CharacterMovement : MonoBehaviour {
 	List<GameObject> path;
 	bool moveCharacter = false;
 	bool playerFirstMoved = false;
-	float timerForDrag = 0.01f;
+	float timerForDrag = 0.3f;
 	public Material mat;
 	Vector3 center;
 	bool pointOnSwitch = false;
@@ -154,7 +154,7 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	GameObject findNearestBlock (Vector3 point) {
-		if (Vector3.Distance (point, path [path.Count - 1].transform.position) > 0.75f) {
+		if (Mathf.Abs(point.x - path [path.Count - 1].transform.position.x) > 0.6f || Mathf.Abs(point.z - path [path.Count - 1].transform.position.z) > 0.6f) {
 			GameObject lastBlock = path [path.Count - 1];
 			GameObject secondToLast = null;
 			if (path.Count > 1) {
@@ -180,10 +180,21 @@ public class CharacterMovement : MonoBehaviour {
 			}
 			// pick best block
 			for (int i = 0; i < nearbyBlocks.Count; i++) {
-				float dist = Vector3.Distance (nearbyBlocks [i].transform.position, point);
-				if (dist < shortestDist) {
-					returnedBlock = nearbyBlocks [i];
-					shortestDist = dist;
+				bool test = true;
+				if (path.Count > 3) {
+					for (int j = 0; j < path.Count - 3; j++) {
+						if (nearbyBlocks[i] == path[j]) {
+							test = false;
+							break;
+						}
+					}
+				} 
+				if (test) {
+					float dist = Vector3.Distance(nearbyBlocks[i].transform.position, point);
+					if (dist < shortestDist) {
+						returnedBlock = nearbyBlocks[i];
+						shortestDist = dist;
+					}
 				}
 			}
 			if (returnedBlock != null) {

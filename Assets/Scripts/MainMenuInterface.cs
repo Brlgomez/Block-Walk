@@ -13,7 +13,8 @@ public class MainMenuInterface : MonoBehaviour {
 	static int minAmountOfUserLevels = 1;
 
 	bool loading = false;
-	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database, publicConfirmation, search;
+	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database;
+	GameObject publicConfirmation, search, settings, store;
 	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
@@ -40,6 +41,8 @@ public class MainMenuInterface : MonoBehaviour {
 		database = findAndSetUi("Database");
 		publicConfirmation = findAndSetUi("Public Confirmation");
 		search = findAndSetUi("Search");
+		settings = findAndSetUi("Settings");
+		store = findAndSetUi("Store");
 		standardBlock = GameObject.Find(VariableManagement.standardBlock);
 		multistepBlock = GameObject.Find(VariableManagement.multistepBlock);
 		switchBlock = GameObject.Find(VariableManagement.switchBlock);
@@ -107,10 +110,24 @@ public class MainMenuInterface : MonoBehaviour {
 			particles.GetComponentInChildren<ParticleSystem>().Clear();
 		} else if (interfaceMenu == 6) {
 			gameObject.AddComponent<MenuTransitions>().setScreens(database, mainMenu, MenuColors.menuColor);
+		} else if (interfaceMenu == 10) {
+			gameObject.AddComponent<MenuTransitions>().setScreens(settings, mainMenu, MenuColors.menuColor);
+		} else if (interfaceMenu == 11) {
+			gameObject.AddComponent<MenuTransitions>().setScreens(store, mainMenu, MenuColors.menuColor);
 		}
 		interfaceMenu = 0;
 	}
 
+	public void toSettings () {
+		gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, settings, MenuColors.settingsColor);
+		interfaceMenu = 10;
+	}
+
+	public void toStore () {
+		gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, store, MenuColors.storeColor);
+		interfaceMenu = 11;
+	}
+		
 	public void toWorldSelect() {
 		if (PlayerPrefs.GetInt(VariableManagement.newWorldUnlocked, 0) > 0) {
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 0);
@@ -263,12 +280,38 @@ public class MainMenuInterface : MonoBehaviour {
 		showLevel();
 	}
 
+	public void leftTen() {
+		nameOfUserMap = "";
+		dataOfUserMap = "";
+		if (GetComponent<VariableManagement>().getUserLevel() == minAmountOfUserLevels) {
+			PlayerPrefs.SetInt(VariableManagement.userLevel, maxAmountOfUserLevels);
+		} else if (GetComponent<VariableManagement>().getUserLevel() - 10 > minAmountOfUserLevels) {
+			PlayerPrefs.SetInt(VariableManagement.userLevel, GetComponent<VariableManagement>().getUserLevel() - 10);
+		} else {
+			PlayerPrefs.SetInt(VariableManagement.userLevel, minAmountOfUserLevels);
+		}
+		showLevel();
+	}
+
+	public void rightTen() {
+		nameOfUserMap = "";
+		dataOfUserMap = "";
+		if (GetComponent<VariableManagement>().getUserLevel() == maxAmountOfUserLevels) {
+			PlayerPrefs.SetInt(VariableManagement.userLevel, minAmountOfUserLevels);
+		} else if (GetComponent<VariableManagement>().getUserLevel() + 10 < maxAmountOfUserLevels) {
+			PlayerPrefs.SetInt(VariableManagement.userLevel, GetComponent<VariableManagement>().getUserLevel() + 10);
+		} else {
+			PlayerPrefs.SetInt(VariableManagement.userLevel, maxAmountOfUserLevels);
+		}
+		showLevel();
+	}
+
 	void disableButtons() {
 		turnOffButton(userCreated.GetComponentsInChildren<Button>()[0]);
 		turnOffButton(userCreated.GetComponentsInChildren<Button>()[1]);
 		turnOffButton(userCreated.GetComponentsInChildren<Button>()[2]);
 		userCreated.GetComponentsInChildren<Image>()[0].color = Color.clear;
-		userCreated.GetComponentsInChildren<Button>()[4].GetComponentInChildren<Text>().text = "Create";
+		userCreated.GetComponentsInChildren<Button>()[5].GetComponentInChildren<Text>().text = "Create";
 	}
 
 	void enableButtons() {
@@ -305,7 +348,7 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 		turnOnButton(userCreated.GetComponentsInChildren<Button>()[0]);
 		turnOnButton(userCreated.GetComponentsInChildren<Button>()[1]);
-		userCreated.GetComponentsInChildren<Button>()[4].GetComponentInChildren<Text>().text = "Edit";
+		userCreated.GetComponentsInChildren<Button>()[5].GetComponentInChildren<Text>().text = "Edit";
 	}
 
 	public void postLevel () {

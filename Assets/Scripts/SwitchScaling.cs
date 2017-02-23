@@ -15,6 +15,33 @@ public class SwitchScaling : MonoBehaviour {
 	void Start () {
 		redBlocks = GetComponent<LevelBuilder>().getRedBlocks();
 		blueBlocks = GetComponent<LevelBuilder>().getBlueBlocks();
+		for (int i = 0; i < redBlocks.Count; i++) {
+			if (redBlocks[i] != null) {
+				if (redBlocks[i].GetComponent<FallingBlock>() == null) {
+					if (GetComponent<SwitchAttributes>().getState()) {
+						redBlocks[i].GetComponent<BoxCollider> ().size = Vector3.zero;
+					} else {
+						redBlocks[i].GetComponent<BoxCollider>().size = Vector3.one;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < blueBlocks.Count; i++) {
+			if (blueBlocks[i] != null) {
+				if (blueBlocks[i].GetComponent<FallingBlock>() == null) {
+					if (GetComponent<SwitchAttributes>().getState()) {
+						blueBlocks[i].GetComponent<BoxCollider> ().size = Vector3.one;
+					} else {
+						blueBlocks[i].GetComponent<BoxCollider> ().size = Vector3.zero;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < GetComponent<CharacterMovement> ().getPath ().Count; i++) {
+			if (GetComponent<CharacterMovement> ().getPath () [i].transform.localScale.x < 1) {
+				GetComponent<CharacterMovement> ().getPath () [i].GetComponent<BoxCollider> ().size = Vector3.one * 4;
+			}
+		}
 	}
 	
 	void Update () {
