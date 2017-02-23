@@ -351,7 +351,7 @@ public class CharacterMovement : MonoBehaviour {
 		if ((numberOfBlocks == 1 && playerOnUnbreakableBlock) || numberOfBlocks < 1) {
 			GetComponent<GameplayInterface> ().winText ();
 			Destroy (GetComponent<CharacterMovement> ());
-		} else if (cameraFixed) {
+		} else {
 			bool lose = true;
 			List<GameObject> tempBlocks = GetComponent<LevelBuilder> ().getBlocks ();
 			for (int i = 0; i < tempBlocks.Count; i++) {
