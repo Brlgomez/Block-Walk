@@ -58,6 +58,11 @@ public class MainMenuInterface : MonoBehaviour {
 		PlayerPrefs.SetString(VariableManagement.lastMenu, ""); 
 		GetComponent<VariableManagement>().turnOffCameraShift();
 		updateFiles();
+		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
+			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: Off";
+		} else {
+			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: On";
+		}
 	}
 
 	void goToLastMenu () {
@@ -87,9 +92,11 @@ public class MainMenuInterface : MonoBehaviour {
 	/* ------------------------------------------------voyage-------------------------------------------------------- */
 		
 	public void toIntro () {
-		particles.GetComponentInChildren<ParticleSystem>().Play();
-		if (GetComponent<Intro>() == null) {
-			gameObject.AddComponent<Intro>();
+		if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
+			particles.GetComponentInChildren<ParticleSystem>().Play();
+			if (GetComponent<Intro>() == null) {
+				gameObject.AddComponent<Intro>();
+			}
 		}
 		gameObject.AddComponent<MenuTransitions>().setScreens(null, intro, MenuColors.menuColor);
 		interfaceMenu = -1;
@@ -121,6 +128,16 @@ public class MainMenuInterface : MonoBehaviour {
 	public void toSettings () {
 		gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, settings, MenuColors.settingsColor);
 		interfaceMenu = 10;
+	}
+
+	public void savePower () {
+		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
+			PlayerPrefs.SetInt(VariableManagement.savePower, 1);
+			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: On";
+		} else {
+			PlayerPrefs.SetInt(VariableManagement.savePower, 0);
+			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: Off";
+		}
 	}
 
 	public void toStore () {

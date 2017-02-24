@@ -81,8 +81,8 @@ public class CharacterMovement : MonoBehaviour {
 			transform.position = Vector3.Slerp (transform.position, center, shiftTimer);
 			transform.rotation = Quaternion.Lerp (transform.rotation, camRotateTarget, shiftTimer);
 		}
-		if (Camera.main.orthographicSize > center.y - 0.05f && Camera.main.orthographicSize < center.y + 0.05f) {
-			if (Vector3.Distance(transform.position, center) < 0.05f && transform.rotation.eulerAngles.x >= 90) {
+		if (Camera.main.orthographicSize > center.y - 0.05f && Camera.main.orthographicSize < center.y + 0.05f || PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
+			if (Vector3.Distance(transform.position, center) < 0.05f && transform.rotation.eulerAngles.x >= 90 || PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
 				setCameraFinalPosition();
 			}
 		}

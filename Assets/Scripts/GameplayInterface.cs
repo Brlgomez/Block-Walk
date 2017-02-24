@@ -75,7 +75,9 @@ public class GameplayInterface : MonoBehaviour {
 				holdingOnToSlider = true;
 				sliderMoving = false;
 				timer = 0;
-				GetComponent<BlurOptimized>().enabled = true;
+				if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
+					GetComponent<BlurOptimized>().enabled = true;
+				}
 			} else if (restartButton.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
 				restartButtonClick();
 			} else if (mainMenu.GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
@@ -174,7 +176,9 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void winText() {
 		int currentLevel;
-		GetComponent<BlurOptimized>().enabled = true;
+		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
+			GetComponent<BlurOptimized>().enabled = true;
+		}
 		handle.GetComponentsInChildren<Image>()[4].color = Color.white;
 		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
 			currentLevel = GetComponent<VariableManagement>().getWorldLevel() - 1;
@@ -213,7 +217,9 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public void loseText() {
-		GetComponent<BlurOptimized>().enabled = true;
+		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
+			GetComponent<BlurOptimized>().enabled = true;
+		}
 		gameStatus.GetComponent<Text>().text = "Stuck!";
 		timer = 0;
 		sliderMoving = true;

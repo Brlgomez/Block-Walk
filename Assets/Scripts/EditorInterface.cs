@@ -108,6 +108,16 @@ public class EditorInterface : MonoBehaviour {
 			GetComponent<BlurOptimized>().blurSize = colorHolder.transform.localScale.x * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
+			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
+				menuHolder.transform.localScale = Vector3.one;
+				colorHolder.transform.localScale = Vector3.zero;
+				optionHolder.transform.localScale = Vector3.zero;
+				transform.position = initialCamPos;
+				Camera.main.orthographicSize = minOrtho;
+				transition = false;
+				deltaTime = 0;
+				GetComponent<LevelEditor>().mouseUp();
+			}
 		} else if (transitionNum == 1) {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
 			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
@@ -116,6 +126,16 @@ public class EditorInterface : MonoBehaviour {
 			GetComponent<BlurOptimized>().blurSize = optionHolder.transform.localScale.x * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
+			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
+				menuHolder.transform.localScale = new Vector3(1,0,1);
+				colorHolder.transform.localScale = Vector3.zero;
+				optionHolder.transform.localScale = Vector3.one;
+				transform.position = initialCamPos;
+				Camera.main.orthographicSize = minOrtho;
+				transition = false;
+				deltaTime = 0;
+				GetComponent<LevelEditor>().mouseUp();
+			}
 		} else if (transitionNum == 2) {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
 			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.one, deltaTime);
@@ -123,6 +143,16 @@ public class EditorInterface : MonoBehaviour {
 			transform.position = Vector3.Lerp(transform.position, colorMenuCamPos, deltaTime);
 			Camera.main.orthographicSize += deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
+			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
+				menuHolder.transform.localScale = new Vector3(1,0,1);
+				colorHolder.transform.localScale = Vector3.one;
+				optionHolder.transform.localScale = Vector3.zero;
+				transform.position = colorMenuCamPos;
+				Camera.main.orthographicSize = maxOrtho;
+				transition = false;
+				deltaTime = 0;
+				GetComponent<LevelEditor>().mouseUp();
+			}
 		}
 	}
 
@@ -193,7 +223,9 @@ public class EditorInterface : MonoBehaviour {
 		transition = true;
 		transitionNum = 1;
 		deltaTime = 0;
-		GetComponent<BlurOptimized>().enabled = true;
+		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
+			GetComponent<BlurOptimized>().enabled = true;
+		}
 	}
 
 	public void toMainMenu() {

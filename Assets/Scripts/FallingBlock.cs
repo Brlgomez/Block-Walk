@@ -23,7 +23,7 @@ public class FallingBlock : MonoBehaviour {
 		float deltaTime = Time.deltaTime * timerSpeed;
 		timer += deltaTime;
 		transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, deltaTime * speed);
-		if (timer > timerLimit) {
+		if (timer > timerLimit || PlayerPrefs.GetInt(VariableManagement.savePower) == 1) {
 			Destroy(gameObject);
 		}
 	}

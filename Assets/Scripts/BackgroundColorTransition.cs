@@ -36,7 +36,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 			timer += Time.deltaTime;
 			ui.position = Vector3.Lerp(ui.position, uiPosition, timer * uiSpeed);
 			cubes.position = Vector3.Lerp(cubes.position, positionOfCubes, timer * cubesSpeed);
-			if (Vector3.Distance(cubes.position, positionOfCubes) < minCubeDistance) {
+			if (Vector3.Distance(cubes.position, positionOfCubes) < minCubeDistance || PlayerPrefs.GetInt(VariableManagement.savePower) == 1) {
 				cubes.position = positionOfCubes;
 				ui.position = uiPosition;
 				if (GetComponent<CharacterMovement>() != null) {
@@ -47,13 +47,13 @@ public class BackgroundColorTransition : MonoBehaviour {
 		}
 		if (transitionToColor) {
 			timer += Time.deltaTime;
-			if (timer < transitionLength - 0.1f) {
+			if (timer < transitionLength - 0.1f && PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
 				Camera.main.backgroundColor = Color32.Lerp(Camera.main.backgroundColor, newColor, timer * colorSpeed);
 				ui.position = Vector3.Lerp(ui.position, endPosOfUi, timer * uiSpeed);
 				cubes.position = Vector3.Lerp(cubes.position, Vector3.right * cubeDistance, timer * cubesSpeed);
-			} else if (timer > transitionLength - 0.1f && timer < transitionLength) {
+			} else if (timer > transitionLength - 0.1f && timer < transitionLength && PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
 				Camera.main.backgroundColor = newColor;
-			} else if (timer > transitionLength) {
+			} else if (timer > transitionLength || PlayerPrefs.GetInt(VariableManagement.savePower) == 1) {
 				goingToNextScene();
 				Destroy(GetComponent<BackgroundColorTransition>());
 			}

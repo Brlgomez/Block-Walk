@@ -14,9 +14,10 @@ public class RotateBlock : MonoBehaviour {
 	}
 
 	void Update () {
-		timer += Time.deltaTime;
-		transform.position = Vector3.Slerp(transform.position, point, timer);
-		if (timer > timerCap) {
+		if (timer < timerCap && PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
+			timer += Time.deltaTime;
+			transform.position = Vector3.Slerp(transform.position, point, timer);
+		} else {
 			transform.position = point;
 			Camera.main.GetComponent<CharacterMovement>().setIfPlayerCanMove(true);
 			if (firstBlock) {

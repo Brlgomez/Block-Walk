@@ -46,7 +46,7 @@ public class SwitchScaling : MonoBehaviour {
 	
 	void Update () {
 		timer += Time.deltaTime * speed;
-		if (timer < timerLimit) {
+		if (timer < timerLimit && PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
 			for (int i = 0; i < redBlocks.Count; i++) {
 				if (redBlocks[i] != null) {
 					if (redBlocks[i].GetComponent<FallingBlock>() == null) {
