@@ -110,8 +110,8 @@ public class VariableManagement : MonoBehaviour {
 	}
 
 	public bool isOnlineCheck () {
-		return (PlayerPrefs.GetInt(isOnline, 0) == 0 && Social.localUser.userName != "Lerpz" && 
-			Social.localUser.id != "1000" && PlayerPrefs.GetString(VariableManagement.userName) != "" && 
+		return (PlayerPrefs.GetInt(isOnline, 0) == 0 && Social.localUser.id != "1000" && Social.localUser.id != "0" && 
+			PlayerPrefs.GetString(VariableManagement.userName) != "" &&
 			PlayerPrefs.GetString(VariableManagement.userId) != "" );
 	}
 
