@@ -100,7 +100,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("User ID").
-			EqualTo(PlayerPrefs.GetString(VariableManagement.userId, "Unknown")).LimitToLast(24).GetValueAsync().
+			EqualTo(PlayerPrefs.GetString(VariableManagement.userId)).LimitToLast(24).GetValueAsync().
 			ContinueWith(task => {
 				if (task.IsFaulted) {
 					text.text = "Error, please try again";
@@ -223,10 +223,10 @@ public class FirebaseDatabases : MonoBehaviour {
 			reference.Child("Levels").Child(key).Child("Date").SetValueAsync(ServerValue.Timestamp);
 			reference.Child("Levels").Child(key).Child("Downloads").SetValueAsync(0);
 			reference.Child("Levels").Child(key).Child("Name").SetValueAsync(name);
-			reference.Child("Levels").Child(key).Child("User ID").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userId, "Unknown"));
-			reference.Child("Levels").Child(key).Child("Username").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userName, "Unknown"));
+			reference.Child("Levels").Child(key).Child("User ID").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userId));
+			reference.Child("Levels").Child(key).Child("Username").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userName));
 			reference.Child("Levels").Child(key).Child("Name Lower").SetValueAsync(name.ToLower());
-			reference.Child("Levels").Child(key).Child("Username Lower").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userName, "Unknown").ToLower());
+			reference.Child("Levels").Child(key).Child("Username Lower").SetValueAsync(PlayerPrefs.GetString(VariableManagement.userName).ToLower());
 
 			b.GetComponentInChildren<Text>().text = "Posted";
 			b.GetComponentInChildren<Text>().color = Color.white;

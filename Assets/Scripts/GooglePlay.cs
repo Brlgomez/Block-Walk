@@ -14,19 +14,17 @@ public class GooglePlay : MonoBehaviour {
 	}
 
 	public void logIn() {
-		if (!Social.localUser.authenticated) {
-			Social.localUser.Authenticate ((bool success) => {
-				if (success) {
-					PlayerPrefs.SetInt (VariableManagement.isOnline, 0);
-					PlayerPrefs.SetString(VariableManagement.userName, Social.localUser.userName);
-					PlayerPrefs.SetString(VariableManagement.userId, Social.localUser.id);
-					PlayerPrefs.Save ();
-				} else {
-					PlayerPrefs.SetInt (VariableManagement.isOnline, 1);
-					PlayerPrefs.Save ();
-				}
-			});
-		}
+		Social.localUser.Authenticate ((bool success) => {
+			if (success) {
+				PlayerPrefs.SetInt (VariableManagement.isOnline, 0);
+				PlayerPrefs.SetString(VariableManagement.userName, Social.localUser.userName);
+				PlayerPrefs.SetString(VariableManagement.userId, Social.localUser.id);
+				PlayerPrefs.Save ();
+			} else {
+				PlayerPrefs.SetInt (VariableManagement.isOnline, 1);
+				PlayerPrefs.Save ();
+			}
+		});
 	}
 
 	public void activateAchievements() {

@@ -311,7 +311,11 @@ public class EditorInterface : MonoBehaviour {
 			File.AppendAllText(filePath, "Untitled");
 		}
 		File.AppendAllText(filePath, "\n");
-		File.AppendAllText(filePath, PlayerPrefs.GetString(VariableManagement.userName, "Unknown"));
+		if (PlayerPrefs.GetString(VariableManagement.userName) == "") {
+			File.AppendAllText(filePath, "Unknown");
+		} else {
+			File.AppendAllText(filePath, PlayerPrefs.GetString(VariableManagement.userName));
+		}
 		File.AppendAllText(filePath, "\n");
 		File.AppendAllText(filePath, r.GetComponent<Slider>().value + "," + g.GetComponent<Slider>().value + "," + b.GetComponent<Slider>().value);
 		File.AppendAllText(filePath, "\n");

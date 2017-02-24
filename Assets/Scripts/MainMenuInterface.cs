@@ -338,8 +338,8 @@ public class MainMenuInterface : MonoBehaviour {
 			userCreated.GetComponentsInChildren<Image>()[0].color = Color.clear;
 		}
 		if (GetComponent<VariableManagement>().isLevelAuthorized() &&
-				userNameOfMap == PlayerPrefs.GetString(VariableManagement.userName, "Unknown") &&
-				PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 0 &&
+				userNameOfMap == PlayerPrefs.GetString(VariableManagement.userName) &&
+				GetComponent<VariableManagement>().isOnlineCheck() &&
 				!GetComponent<VariableManagement>().isLevelPosted()) {
 			turnOnButton(userCreated.GetComponentsInChildren<Button>()[2]);
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Post";
@@ -348,17 +348,13 @@ public class MainMenuInterface : MonoBehaviour {
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Posted";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
-		} else if (userNameOfMap != PlayerPrefs.GetString(VariableManagement.userName, "Unknown")) {
+		} else if (userNameOfMap != PlayerPrefs.GetString(VariableManagement.userName)) {
 			turnOffButton(userCreated.GetComponentsInChildren<Button>()[2]);
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "";
-		} else if (PlayerPrefs.GetString(VariableManagement.userName, "Unknown") == "Unknown" ||
-				PlayerPrefs.GetString(VariableManagement.userName, "Unknown") == "" ||
-				PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 1) {
+		} else if (!GetComponent<VariableManagement>().isOnlineCheck()) {
 			turnOnButton(userCreated.GetComponentsInChildren<Button>()[2]);
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Sign in to Post";
-		} else if (!GetComponent<VariableManagement>().isLevelAuthorized() &&
-				userNameOfMap == PlayerPrefs.GetString(VariableManagement.userName, "Unknown") &&
-				PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 0) {
+		} else if (!GetComponent<VariableManagement>().isLevelAuthorized() && !GetComponent<VariableManagement>().isOnlineCheck()) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Play to Authorize";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
@@ -370,15 +366,13 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void postLevel () {
 		if (dataOfUserMap != "" && GetComponent<VariableManagement>().isLevelAuthorized() && 
-				userNameOfMap == PlayerPrefs.GetString (VariableManagement.userName, "Unknown") && 
-				PlayerPrefs.GetString(VariableManagement.userName, "Unknown") != "Unknown" && 
-				PlayerPrefs.GetString(VariableManagement.userName, "Unknown") != "" && 
-				PlayerPrefs.GetInt (VariableManagement.isOnline, 0) == 0 && 
+				userNameOfMap == PlayerPrefs.GetString (VariableManagement.userName) && 
+				GetComponent<VariableManagement>().isOnlineCheck() && 
 				!GetComponent<VariableManagement>().isLevelPosted()) {
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Posting...";
 			GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap, userCreated.GetComponentsInChildren<Button>()[2]);
 		}
-		if (PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 1) {
+		if (!GetComponent<VariableManagement>().isOnlineCheck()) {
 			GetComponent<GooglePlay>().logIn();
 			enableButtons();
 		}
@@ -443,7 +437,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void deletePublicLevel () {
-		if (userID == PlayerPrefs.GetString(VariableManagement.userId, "Unknown")) {
+		if (userID == PlayerPrefs.GetString(VariableManagement.userId)) {
 			GetComponent<FirebaseDatabases>().deleteLevel(idOfMap, database.GetComponentInChildren<Text>(), lastDatabaseMenu, search.GetComponentInChildren<InputField>().text);
 			destroyBlockChildren();
 		}
@@ -508,7 +502,7 @@ public class MainMenuInterface : MonoBehaviour {
 				lines[0] + "\n" + lines[1] + "\n" + lines[2] + "\n" + lines[3];
 			createSpriteLevel(lines, 4, "\n");
 			dataOfUserMap += "*";
-			if (userID == PlayerPrefs.GetString(VariableManagement.userId, "Unknown")) {
+			if (userID == PlayerPrefs.GetString(VariableManagement.userId)) {
 				turnOnButton(worldLevels.GetComponentsInChildren<Button>()[0]);
 			} else {
 				turnOffButton(worldLevels.GetComponentsInChildren<Button>()[0]);

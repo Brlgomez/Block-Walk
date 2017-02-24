@@ -62,11 +62,19 @@ public class LevelBuilder : MonoBehaviour {
 			if (File.Exists(filePath)) {
 				r = File.OpenText(filePath);
 			} else {
-				File.AppendAllText(
-					filePath, "Untitled\n" + PlayerPrefs.GetString(VariableManagement.userName, "Unknown") + "\n" + 
-					MenuColors.editorInterface.r + "," + MenuColors.editorInterface.g + "," + MenuColors.editorInterface.b + 
-					"\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n"
-				);
+				if (PlayerPrefs.GetString(VariableManagement.userName) == "") {
+					File.AppendAllText(
+						filePath, "Untitled\nUnknown\n" + 
+						MenuColors.editorInterface.r + "," + MenuColors.editorInterface.g + "," + MenuColors.editorInterface.b + 
+						"\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n"
+					);
+				} else {
+					File.AppendAllText(
+						filePath, "Untitled\n" + PlayerPrefs.GetString(VariableManagement.userName) + "\n" + 
+						MenuColors.editorInterface.r + "," + MenuColors.editorInterface.g + "," + MenuColors.editorInterface.b + 
+						"\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n"
+					);
+				}
 				for (int i = 0; i < 14; i++) {
 					File.AppendAllText(filePath, "--------\n");
 				}
