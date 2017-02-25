@@ -16,7 +16,7 @@ public class EditorInterface : MonoBehaviour {
 	static float timeSpeed = 1.5f;
 	static float blockAlpha = 0.75f;
 
-	GameObject cubes, menuHolder, colorHolder, optionHolder, content, uiHolder, blockAssets;
+	GameObject cubes, menuHolder, colorHolder, optionHolder, content, popUp, uiHolder, blockAssets;
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
 	GameObject rIncX, gIncX, bIncX;
@@ -41,6 +41,7 @@ public class EditorInterface : MonoBehaviour {
 		optionHolder = GameObject.Find("Option Holder");
 		highlight = GameObject.Find("Block Highlight");
 		content = GameObject.Find("Content");
+		popUp = GameObject.Find("Pop Up");
 		uiHolder = GameObject.Find("Floor");
 		blockAssets = GameObject.Find("Block Assets");
 		GetComponent<BlurOptimized>().downsample = blurDownsample;
@@ -50,15 +51,24 @@ public class EditorInterface : MonoBehaviour {
 		Debug.Log(blockAssets.GetComponentsInChildren<Transform>().Length);
 		if (PlayerPrefs.GetInt(VariableManagement.world0, 0) == 1) {
 			turnOnButton(content.GetComponentsInChildren<Button>()[2], GameObject.Find("Multistep Block"));
+		} else {
+			turnOffButton(content.GetComponentsInChildren<Button>()[2]);
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.world1, 0) == 1) {
 			turnOnButton(content.GetComponentsInChildren<Button>()[3], GameObject.Find("Switch Block"));
 			turnOnButton(content.GetComponentsInChildren<Button>()[4], GameObject.Find("Red Block"));
 			turnOnButton(content.GetComponentsInChildren<Button>()[5], GameObject.Find("Blue Block"));
+		} else {
+			turnOffButton(content.GetComponentsInChildren<Button>()[3]);
+			turnOffButton(content.GetComponentsInChildren<Button>()[4]);
+			turnOffButton(content.GetComponentsInChildren<Button>()[5]);
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.world2, 0) == 1) {
 			turnOnButton(content.GetComponentsInChildren<Button>()[6], GameObject.Find("Rotate Block R"));
 			turnOnButton(content.GetComponentsInChildren<Button>()[7], GameObject.Find("Rotate Block L"));
+		} else {
+			turnOffButton(content.GetComponentsInChildren<Button>()[6]);
+			turnOffButton(content.GetComponentsInChildren<Button>()[7]);
 		}
 		if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
 			uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
@@ -91,8 +101,17 @@ public class EditorInterface : MonoBehaviour {
 		b.onClick.AddListener(() => {
 			GetComponent<LevelEditor>().changeBlock(block);
 		});
+		b.onClick.AddListener(() => {
+			shiftHighlight(b.gameObject);
+		});
 		b.GetComponent<Image>().color = Color.white;
-		b.GetComponentInChildren<Text>().enabled = true;
+	}
+
+	void turnOffButton (Button b) {
+		b.onClick.AddListener(() => {
+			showPopUp();
+		});
+		b.GetComponent<Image>().color = Color.grey;
 	}
 
 	void transitionInterface() {
@@ -112,6 +131,7 @@ public class EditorInterface : MonoBehaviour {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.one, deltaTime);
 			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
 			optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
+			popUp.transform.localScale = Vector3.Slerp(popUp.transform.localScale, new Vector3(1,0,1), deltaTime);
 			transform.position = Vector3.Lerp(transform.position, initialCamPos, deltaTime);
 			GetComponent<BlurOptimized>().blurSize = colorHolder.transform.localScale.x * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
@@ -121,6 +141,7 @@ public class EditorInterface : MonoBehaviour {
 				menuHolder.transform.localScale = Vector3.one;
 				colorHolder.transform.localScale = Vector3.zero;
 				optionHolder.transform.localScale = Vector3.zero;
+				popUp.transform.localScale = new Vector3(1,0,1);
 				transform.position = initialCamPos;
 				Camera.main.orthographicSize = minOrtho;
 				transition = false;
@@ -161,6 +182,17 @@ public class EditorInterface : MonoBehaviour {
 				optionHolder.transform.localScale = Vector3.zero;
 				transform.position = colorMenuCamPos;
 				Camera.main.orthographicSize = maxOrtho;
+				transition = false;
+				deltaTime = 0;
+				GetComponent<LevelEditor>().mouseUp();
+			}
+		} else if (transitionNum == 3) {
+			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
+			popUp.transform.localScale = Vector3.Slerp(popUp.transform.localScale, Vector3.one, deltaTime);
+			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, Color.clear, deltaTime/2);
+			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
+				menuHolder.transform.localScale = new Vector3(1,0,1);
+				popUp.transform.localScale = Vector3.one;
 				transition = false;
 				deltaTime = 0;
 				GetComponent<LevelEditor>().mouseUp();
@@ -235,6 +267,16 @@ public class EditorInterface : MonoBehaviour {
 		menuOn = false;
 		transition = true;
 		transitionNum = 1;
+		deltaTime = 0;
+		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
+			GetComponent<BlurOptimized>().enabled = true;
+		}
+	}
+
+	public void showPopUp () {
+		menuOn = false;
+		transition = true;
+		transitionNum = 3;
 		deltaTime = 0;
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			GetComponent<BlurOptimized>().enabled = true;

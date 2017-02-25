@@ -30,6 +30,7 @@ public class MainMenuInterface : MonoBehaviour {
 	bool loadingDatabase = false;
 
 	void Start() {
+		PlayerPrefs.DeleteAll();
 		blockHolder = GameObject.Find("Block Holder");
 		particles = GameObject.Find("Sprite Holder");
 		mainMenu = findAndSetUi("Menu");
