@@ -359,7 +359,7 @@ public class MainMenuInterface : MonoBehaviour {
 		} else if (!GetComponent<VariableManagement>().isOnlineCheck()) {
 			turnOnButton(userCreated.GetComponentsInChildren<Button>()[2]);
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Sign in to Post";
-		} else if (!GetComponent<VariableManagement>().isLevelAuthorized() && !GetComponent<VariableManagement>().isOnlineCheck()) {
+		} else if (!GetComponent<VariableManagement>().isLevelAuthorized() && GetComponent<VariableManagement>().isOnlineCheck()) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Play to Authorize";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
@@ -526,6 +526,16 @@ public class MainMenuInterface : MonoBehaviour {
 		yield return new WaitForSeconds(0.1f);
 		GetComponent<FirebaseDatabases>().searchMapName(search.GetComponentInChildren<Text>(), search.GetComponentInChildren<InputField>().text);
 		loadingDatabase = false;
+	}
+
+	public void checkText () {
+		string newInputFiltered = ""; 
+		foreach (char c in search.GetComponentInChildren<InputField>().text) { 
+			if (System.Convert.ToInt32(c) < 50000 && c != '\n') { 
+				newInputFiltered += c;
+			} 
+		}
+		search.GetComponentInChildren<InputField>().text = newInputFiltered;
 	}
 
 	public void showPublicLevel() {

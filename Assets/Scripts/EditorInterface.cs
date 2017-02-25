@@ -16,7 +16,7 @@ public class EditorInterface : MonoBehaviour {
 	static float timeSpeed = 1.5f;
 	static float blockAlpha = 0.75f;
 
-	GameObject cubes, menuHolder, colorHolder, optionHolder, content;
+	GameObject cubes, menuHolder, colorHolder, optionHolder, content, uiHolder;
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
 	GameObject rIncX, gIncX, bIncX;
@@ -41,6 +41,7 @@ public class EditorInterface : MonoBehaviour {
 		optionHolder = GameObject.Find("Option Holder");
 		highlight = GameObject.Find("Block Highlight");
 		content = GameObject.Find("Content");
+		uiHolder = GameObject.Find("Floor");
 		GetComponent<BlurOptimized>().downsample = blurDownsample;
 		GetComponent<BackgroundColorTransition>().levelStarting();
 		initialCamPos = transform.position;
@@ -56,6 +57,9 @@ public class EditorInterface : MonoBehaviour {
 		if (PlayerPrefs.GetInt(VariableManagement.world2, 0) == 1) {
 			turnOnButton(content.GetComponentsInChildren<Button>()[6]);
 			turnOnButton(content.GetComponentsInChildren<Button>()[7]);
+		}
+		if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
+			uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
 		}
 		showMain();
 	}
@@ -108,6 +112,7 @@ public class EditorInterface : MonoBehaviour {
 			GetComponent<BlurOptimized>().blurSize = colorHolder.transform.localScale.x * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
+			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, new Color (1, 1, 1, 0.25f), deltaTime);
 			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
 				menuHolder.transform.localScale = Vector3.one;
 				colorHolder.transform.localScale = Vector3.zero;
@@ -118,6 +123,7 @@ public class EditorInterface : MonoBehaviour {
 				deltaTime = 0;
 				GetComponent<LevelEditor>().mouseUp();
 			}
+
 		} else if (transitionNum == 1) {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
 			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
@@ -126,6 +132,7 @@ public class EditorInterface : MonoBehaviour {
 			GetComponent<BlurOptimized>().blurSize = optionHolder.transform.localScale.x * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
+			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, Color.clear, deltaTime);
 			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
 				menuHolder.transform.localScale = new Vector3(1,0,1);
 				colorHolder.transform.localScale = Vector3.zero;
@@ -143,6 +150,7 @@ public class EditorInterface : MonoBehaviour {
 			transform.position = Vector3.Lerp(transform.position, colorMenuCamPos, deltaTime);
 			Camera.main.orthographicSize += deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
+			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, Color.clear, deltaTime);
 			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
 				menuHolder.transform.localScale = new Vector3(1,0,1);
 				colorHolder.transform.localScale = Vector3.one;
@@ -205,6 +213,7 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void showMain() {
+		optionHolder.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Save";
 		menuOn = true;
 		transition = true;
 		transitionNum = 0;
@@ -298,7 +307,19 @@ public class EditorInterface : MonoBehaviour {
 		}
 	}
 
+	public void checkText () {
+		string newInputFiltered = ""; 
+		foreach (char c in optionHolder.GetComponentInChildren<InputField>().text) { 
+			if (System.Convert.ToInt32(c) < 50000 && c != '\n') { 
+				newInputFiltered += c;
+			} 
+		}
+		optionHolder.GetComponentInChildren<InputField>().text = newInputFiltered;
+	}
+
 	public void saveLevel() {
+		checkText();
+		optionHolder.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Saved";
 		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
 		if (deauthorize) {
 			GetComponent<VariableManagement>().setLevelAuthorization(0);
@@ -366,6 +387,7 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void deauthorizedLevel () {
+		uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
 		deauthorize = true;
 	}
 }
