@@ -56,6 +56,10 @@ public class MainMenuInterface : MonoBehaviour {
 		    GetComponent<VariableManagement>().getUserLevel() > maxAmountOfUserLevels) {
 			PlayerPrefs.SetInt(VariableManagement.userLevel, minAmountOfUserLevels);
 		}
+		levelImages = new List<Sprite>();
+		for (int i = 0; i < 64; i++) {
+			levelImages.Add(Resources.Load<Sprite>("Levels/" + (((i/16) + 1) + "-" + ((i%16) + 1))));
+		}
 		goToLastMenu();
 		PlayerPrefs.SetString(VariableManagement.lastMenu, ""); 
 		GetComponent<VariableManagement>().turnOffCameraShift();
@@ -64,10 +68,6 @@ public class MainMenuInterface : MonoBehaviour {
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: Off";
 		} else {
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: On";
-		}
-		levelImages = new List<Sprite>();
-		for (int i = 0; i < 64; i++) {
-			levelImages.Add(Resources.Load<Sprite>("Levels/" + (((i/16) + 1) + "-" + ((i%16) + 1))));
 		}
 	}
 
