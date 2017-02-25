@@ -16,6 +16,7 @@ public class MainMenuInterface : MonoBehaviour {
 	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database;
 	GameObject publicConfirmation, search, settings, store;
 	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock;
+	List<Sprite> levelImages;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
 	bool databaseOrSearch = true;
@@ -26,6 +27,7 @@ public class MainMenuInterface : MonoBehaviour {
 	List<float> filePositions;
 	public Material mat;
 	int lastDatabaseMenu = 0;
+	bool loadingDatabase = false;
 
 	void Start() {
 		blockHolder = GameObject.Find("Block Holder");
@@ -62,6 +64,10 @@ public class MainMenuInterface : MonoBehaviour {
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: Off";
 		} else {
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: On";
+		}
+		levelImages = new List<Sprite>();
+		for (int i = 0; i < 64; i++) {
+			levelImages.Add(Resources.Load<Sprite>("Levels/" + (((i/16) + 1) + "-" + ((i%16) + 1))));
 		}
 	}
 
@@ -205,8 +211,7 @@ public class MainMenuInterface : MonoBehaviour {
 				if (PlayerPrefs.GetInt(levelNumber.ToString(), 0) == 1) {
 					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Text>()[0].text = "";
 					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].color = Color.white;
-					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = 
-						Resources.Load<Sprite>("Levels/" + ((world + 1) + "-" + (i + 1)));
+					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = levelImages[levelNumber];
 				} else {
 					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].color = Color.clear;
 					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Text>()[0].text = (i + 1).ToString();
@@ -370,12 +375,21 @@ public class MainMenuInterface : MonoBehaviour {
 				GetComponent<VariableManagement>().isOnlineCheck() && 
 				!GetComponent<VariableManagement>().isLevelPosted()) {
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Posting...";
-			GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap, userCreated.GetComponentsInChildren<Button>()[2]);
+			if (!loadingDatabase) {
+				StartCoroutine(postLevelCoroutine());
+			}
 		}
 		if (!GetComponent<VariableManagement>().isOnlineCheck()) {
 			GetComponent<GooglePlay>().logIn();
 			enableButtons();
 		}
+	}
+
+	IEnumerator postLevelCoroutine () {
+		loadingDatabase = true;
+		yield return new WaitForSeconds(0.1f);
+		GetComponent<FirebaseDatabases>().postLevel(dataOfUserMap, nameOfUserMap, userCreated.GetComponentsInChildren<Button>()[2]);
+		loadingDatabase = false;
 	}
 
 	/* -------------------------------------------beyond the voyage-------------------------------------------------- */
@@ -409,24 +423,51 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void getMostDownloadedLevels () {
-		publicLevelCount = 0;
-		lastDatabaseMenu = 0;
-		database.GetComponentInChildren<Text>().text = "Loading...";
+		if (!loadingDatabase) {
+			publicLevelCount = 0;
+			lastDatabaseMenu = 0;
+			database.GetComponentInChildren<Text>().text = "Loading...";
+			StartCoroutine(mostDownloadedCoroutine());
+		}
+	}
+
+	IEnumerator mostDownloadedCoroutine () {
+		loadingDatabase = true;
+		yield return new WaitForSeconds(0.1f);
 		GetComponent<FirebaseDatabases>().fireBaseMostDownloaded(database.GetComponentInChildren<Text>());
+		loadingDatabase = false;
 	}
 
 	public void getMostRecentLevels () {
-		publicLevelCount = 0;
-		lastDatabaseMenu = 1;
-		database.GetComponentInChildren<Text>().text = "Loading...";
+		if (!loadingDatabase) {
+			publicLevelCount = 0;
+			lastDatabaseMenu = 1;
+			database.GetComponentInChildren<Text>().text = "Loading...";
+			StartCoroutine(mostRecentCoroutine());
+		}
+	}
+
+	IEnumerator mostRecentCoroutine () {
+		loadingDatabase = true;
+		yield return new WaitForSeconds(0.1f);
 		GetComponent<FirebaseDatabases>().fireBaseMostRecent(database.GetComponentInChildren<Text>());
+		loadingDatabase = false;
 	}
 
 	public void getYourLevels () {
-		publicLevelCount = 0;
-		lastDatabaseMenu = 2;
-		database.GetComponentInChildren<Text>().text = "Loading...";
+		if (!loadingDatabase) {
+			publicLevelCount = 0;
+			lastDatabaseMenu = 2;
+			database.GetComponentInChildren<Text>().text = "Loading...";
+			StartCoroutine(yourLevelsCoroutine());
+		}
+	}
+
+	IEnumerator yourLevelsCoroutine () {
+		loadingDatabase = true;
+		yield return new WaitForSeconds(0.1f);
 		GetComponent<FirebaseDatabases>().getYourLevels(database.GetComponentInChildren<Text>());
+		loadingDatabase = false;
 	}
 
 	public void toDeletionConfirmationPublicLevel () {
@@ -456,17 +497,35 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void searchUserName () {
-		publicLevelCount = 0;
-		lastDatabaseMenu = 3;
-		search.GetComponentInChildren<Text>().text = "Loading...";
+		if (!loadingDatabase) {
+			publicLevelCount = 0;
+			lastDatabaseMenu = 3;
+			search.GetComponentInChildren<Text>().text = "Loading...";
+			StartCoroutine(userNameCoroutine());
+		}
+	}
+
+	IEnumerator userNameCoroutine () {
+		loadingDatabase = true;
+		yield return new WaitForSeconds(0.1f);
 		GetComponent<FirebaseDatabases>().searchUsername(search.GetComponentInChildren<Text>(), search.GetComponentInChildren<InputField>().text);
+		loadingDatabase = false;
 	}
 
 	public void searchMapName () {
-		publicLevelCount = 0;
-		lastDatabaseMenu = 4;
-		search.GetComponentInChildren<Text>().text = "Loading...";
+		if (!loadingDatabase) {
+			publicLevelCount = 0;
+			lastDatabaseMenu = 4;
+			search.GetComponentInChildren<Text>().text = "Loading...";
+			StartCoroutine(mapNameCoroutine());
+		}
+	}
+
+	IEnumerator mapNameCoroutine () {
+		loadingDatabase = true;
+		yield return new WaitForSeconds(0.1f);
 		GetComponent<FirebaseDatabases>().searchMapName(search.GetComponentInChildren<Text>(), search.GetComponentInChildren<InputField>().text);
+		loadingDatabase = false;
 	}
 
 	public void showPublicLevel() {
