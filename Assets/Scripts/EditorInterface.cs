@@ -16,7 +16,7 @@ public class EditorInterface : MonoBehaviour {
 	static float timeSpeed = 1.5f;
 	static float blockAlpha = 0.75f;
 
-	GameObject cubes, menuHolder, colorHolder, optionHolder, content, uiHolder;
+	GameObject cubes, menuHolder, colorHolder, optionHolder, content, uiHolder, blockAssets;
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
 	GameObject rIncX, gIncX, bIncX;
@@ -42,21 +42,23 @@ public class EditorInterface : MonoBehaviour {
 		highlight = GameObject.Find("Block Highlight");
 		content = GameObject.Find("Content");
 		uiHolder = GameObject.Find("Floor");
+		blockAssets = GameObject.Find("Block Assets");
 		GetComponent<BlurOptimized>().downsample = blurDownsample;
 		GetComponent<BackgroundColorTransition>().levelStarting();
 		initialCamPos = transform.position;
 		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 4.75f);
+		Debug.Log(blockAssets.GetComponentsInChildren<Transform>().Length);
 		if (PlayerPrefs.GetInt(VariableManagement.world0, 0) == 1) {
-			turnOnButton(content.GetComponentsInChildren<Button>()[2]);
+			turnOnButton(content.GetComponentsInChildren<Button>()[2], GameObject.Find("Multistep Block"));
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.world1, 0) == 1) {
-			turnOnButton(content.GetComponentsInChildren<Button>()[3]);
-			turnOnButton(content.GetComponentsInChildren<Button>()[4]);
-			turnOnButton(content.GetComponentsInChildren<Button>()[5]);
+			turnOnButton(content.GetComponentsInChildren<Button>()[3], GameObject.Find("Switch Block"));
+			turnOnButton(content.GetComponentsInChildren<Button>()[4], GameObject.Find("Red Block"));
+			turnOnButton(content.GetComponentsInChildren<Button>()[5], GameObject.Find("Blue Block"));
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.world2, 0) == 1) {
-			turnOnButton(content.GetComponentsInChildren<Button>()[6]);
-			turnOnButton(content.GetComponentsInChildren<Button>()[7]);
+			turnOnButton(content.GetComponentsInChildren<Button>()[6], GameObject.Find("Rotate Block R"));
+			turnOnButton(content.GetComponentsInChildren<Button>()[7], GameObject.Find("Rotate Block L"));
 		}
 		if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
 			uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
@@ -85,9 +87,11 @@ public class EditorInterface : MonoBehaviour {
 		movingSlider = true;
 	}
 
-	void turnOnButton (Button b) {
-		b.enabled = true;
-		b.image.enabled = true;
+	void turnOnButton (Button b, GameObject block) {
+		b.onClick.AddListener(() => {
+			GetComponent<LevelEditor>().changeBlock(block);
+		});
+		b.GetComponent<Image>().color = Color.white;
 		b.GetComponentInChildren<Text>().enabled = true;
 	}
 
@@ -112,7 +116,7 @@ public class EditorInterface : MonoBehaviour {
 			GetComponent<BlurOptimized>().blurSize = colorHolder.transform.localScale.x * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
-			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, new Color (1, 1, 1, 0.25f), deltaTime);
+			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, new Color (1, 1, 1, 0.25f), deltaTime/2);
 			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
 				menuHolder.transform.localScale = Vector3.one;
 				colorHolder.transform.localScale = Vector3.zero;
@@ -132,7 +136,7 @@ public class EditorInterface : MonoBehaviour {
 			GetComponent<BlurOptimized>().blurSize = optionHolder.transform.localScale.x * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
-			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, Color.clear, deltaTime);
+			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, Color.clear, deltaTime/2);
 			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
 				menuHolder.transform.localScale = new Vector3(1,0,1);
 				colorHolder.transform.localScale = Vector3.zero;
@@ -150,7 +154,7 @@ public class EditorInterface : MonoBehaviour {
 			transform.position = Vector3.Lerp(transform.position, colorMenuCamPos, deltaTime);
 			Camera.main.orthographicSize += deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
-			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, Color.clear, deltaTime);
+			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, Color.clear, deltaTime/2);
 			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
 				menuHolder.transform.localScale = new Vector3(1,0,1);
 				colorHolder.transform.localScale = Vector3.one;

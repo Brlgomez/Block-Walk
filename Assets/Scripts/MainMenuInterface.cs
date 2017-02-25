@@ -160,7 +160,9 @@ public class MainMenuInterface : MonoBehaviour {
 				gameObject.AddComponent<MenuTransitions>().setScreens(levels, popUp, MenuColors.worldColor);
 			}
 			interfaceMenu = 5;
-			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats! You just unlocked a new world and new blocks!";
+			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!\nYou just unlocked a new world and blocks!";
+			turnOffButton(popUp.GetComponentsInChildren<Button>()[0]);
+			turnOffButton(popUp.GetComponentsInChildren<Button>()[1]);
 		} else {
 			if (interfaceMenu == 0) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, worlds, MenuColors.worldColor);
@@ -184,6 +186,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void toLevelSelect(int world) {
 		bool beatAllLevels = true;
+		PlayerPrefs.SetInt(VariableManagement.worldLevel, (world * 16));
 		if (world > 0) {
 			if (PlayerPrefs.GetInt("World" + (world - 1).ToString(), 0) == 0) {
 				beatAllLevels = false;
@@ -192,7 +195,9 @@ public class MainMenuInterface : MonoBehaviour {
 		if (!beatAllLevels) {
 			interfaceMenu = 5;
 			gameObject.AddComponent<MenuTransitions>().setScreens(worlds, popUp, MenuColors.worldColor);
-			popUp.GetComponentsInChildren<Text>()[0].text = "Locked!\nMust beat all levels from the previous world.";
+			popUp.GetComponentsInChildren<Text>()[0].text = "Locked!\nMust beat all levels from the previous world or select option:";
+			turnOnButton(popUp.GetComponentsInChildren<Button>()[0]);
+			turnOnButton(popUp.GetComponentsInChildren<Button>()[1]);
 		} else {
 			if (world == 0) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world1Color);
@@ -760,9 +765,18 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 	}
 
+	public void unlockWorld () {
+		int world = (GetComponent<VariableManagement>().getWorldLevel() - 1) / 16;
+		PlayerPrefs.SetInt("World" + world, 1);
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+		toWorldSelect();
+	}
+
 	public void unlockAllWorlds () {
-		PlayerPrefs.SetInt("World0", 1);
-		PlayerPrefs.SetInt("World1", 1);
-		PlayerPrefs.SetInt("World2", 1);
+		for (int i = 0; i < 50; i++) {
+			PlayerPrefs.SetInt("World" + i, 1);
+		}
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+		toWorldSelect();
 	}
 }
