@@ -30,7 +30,7 @@ public class MainMenuInterface : MonoBehaviour {
 	bool loadingDatabase = false;
 
 	void Start() {
-		PlayerPrefs.DeleteAll();
+		//PlayerPrefs.DeleteAll();
 		blockHolder = GameObject.Find("Block Holder");
 		particles = GameObject.Find("Sprite Holder");
 		mainMenu = findAndSetUi("Menu");
@@ -161,7 +161,7 @@ public class MainMenuInterface : MonoBehaviour {
 				gameObject.AddComponent<MenuTransitions>().setScreens(levels, popUp, MenuColors.worldColor);
 			}
 			interfaceMenu = 5;
-			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!\nYou just unlocked a new world and blocks!";
+			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!\nYou unlocked a new world and blocks!";
 			turnOffButton(popUp.GetComponentsInChildren<Button>()[0]);
 			turnOffButton(popUp.GetComponentsInChildren<Button>()[1]);
 		} else {

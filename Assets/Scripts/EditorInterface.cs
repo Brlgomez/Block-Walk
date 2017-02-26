@@ -16,7 +16,7 @@ public class EditorInterface : MonoBehaviour {
 	static float timeSpeed = 1.5f;
 	static float blockAlpha = 0.75f;
 
-	GameObject cubes, menuHolder, colorHolder, optionHolder, content, popUp, uiHolder, blockAssets;
+	GameObject cubes, menuHolder, colorHolder, optionHolder, content, popUp, uiHolder;
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
 	GameObject rIncX, gIncX, bIncX;
@@ -32,6 +32,7 @@ public class EditorInterface : MonoBehaviour {
 	Vector3 colorMenuCamPos;
 	bool deauthorize = false;
 	bool movingSlider = false;
+	int worldNumber = 0;
 
 	void Start() {
 		filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
@@ -43,37 +44,45 @@ public class EditorInterface : MonoBehaviour {
 		content = GameObject.Find("Content");
 		popUp = GameObject.Find("Pop Up");
 		uiHolder = GameObject.Find("Floor");
-		blockAssets = GameObject.Find("Block Assets");
 		GetComponent<BlurOptimized>().downsample = blurDownsample;
 		GetComponent<BackgroundColorTransition>().levelStarting();
 		initialCamPos = transform.position;
 		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 4.75f);
-		Debug.Log(blockAssets.GetComponentsInChildren<Transform>().Length);
+		if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
+			uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
+		}
+		showButtons();
+		showMain();
+	}
+
+	void showButtons () {
+		content.GetComponentsInChildren<Button>()[2].onClick.RemoveAllListeners();
+		content.GetComponentsInChildren<Button>()[3].onClick.RemoveAllListeners();
+		content.GetComponentsInChildren<Button>()[4].onClick.RemoveAllListeners();
+		content.GetComponentsInChildren<Button>()[5].onClick.RemoveAllListeners();
+		content.GetComponentsInChildren<Button>()[6].onClick.RemoveAllListeners();
+		content.GetComponentsInChildren<Button>()[7].onClick.RemoveAllListeners();
 		if (PlayerPrefs.GetInt(VariableManagement.world0, 0) == 1) {
 			turnOnButton(content.GetComponentsInChildren<Button>()[2], GameObject.Find("Multistep Block"));
 		} else {
-			turnOffButton(content.GetComponentsInChildren<Button>()[2]);
+			turnOffButton(content.GetComponentsInChildren<Button>()[2], 0);
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.world1, 0) == 1) {
 			turnOnButton(content.GetComponentsInChildren<Button>()[3], GameObject.Find("Switch Block"));
 			turnOnButton(content.GetComponentsInChildren<Button>()[4], GameObject.Find("Red Block"));
 			turnOnButton(content.GetComponentsInChildren<Button>()[5], GameObject.Find("Blue Block"));
 		} else {
-			turnOffButton(content.GetComponentsInChildren<Button>()[3]);
-			turnOffButton(content.GetComponentsInChildren<Button>()[4]);
-			turnOffButton(content.GetComponentsInChildren<Button>()[5]);
+			turnOffButton(content.GetComponentsInChildren<Button>()[3], 1);
+			turnOffButton(content.GetComponentsInChildren<Button>()[4], 1);
+			turnOffButton(content.GetComponentsInChildren<Button>()[5], 1);
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.world2, 0) == 1) {
 			turnOnButton(content.GetComponentsInChildren<Button>()[6], GameObject.Find("Rotate Block R"));
 			turnOnButton(content.GetComponentsInChildren<Button>()[7], GameObject.Find("Rotate Block L"));
 		} else {
-			turnOffButton(content.GetComponentsInChildren<Button>()[6]);
-			turnOffButton(content.GetComponentsInChildren<Button>()[7]);
+			turnOffButton(content.GetComponentsInChildren<Button>()[6], 2);
+			turnOffButton(content.GetComponentsInChildren<Button>()[7], 2);
 		}
-		if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
-			uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
-		}
-		showMain();
 	}
 
 	void Update() {
@@ -107,11 +116,30 @@ public class EditorInterface : MonoBehaviour {
 		b.GetComponent<Image>().color = Color.white;
 	}
 
-	void turnOffButton (Button b) {
+	void turnOffButton (Button b, int world) {
+		b.onClick.AddListener(() => {
+			setWorldNumber(world);
+		});
 		b.onClick.AddListener(() => {
 			showPopUp();
 		});
 		b.GetComponent<Image>().color = Color.grey;
+	}
+
+	void turnOffRegularButton (Button b) {
+		if (b.GetComponentInChildren<Text>() != null) {
+			b.GetComponentInChildren<Text>().color = Color.clear;
+		}
+		b.GetComponent<Image>().color = Color.clear;
+		b.interactable = false;
+	}
+
+	void turnOnRegularButton (Button b) {
+		if (b.GetComponentInChildren<Text>() != null) {
+			b.GetComponentInChildren<Text>().color = Color.white;
+		}
+		b.GetComponent<Image>().color = Color.white;
+		b.interactable = true;
 	}
 
 	void transitionInterface() {
@@ -273,14 +301,41 @@ public class EditorInterface : MonoBehaviour {
 		}
 	}
 
+	public void setWorldNumber (int n) {
+		worldNumber = n;
+	}
+
 	public void showPopUp () {
 		menuOn = false;
 		transition = true;
 		transitionNum = 3;
 		deltaTime = 0;
+		popUp.GetComponentInChildren<Text>().text = "Locked!\nMust beat all levels from the previous world or select option:";
+		turnOnRegularButton(popUp.GetComponentsInChildren<Button>()[0]);
+		turnOnRegularButton(popUp.GetComponentsInChildren<Button>()[1]);
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			GetComponent<BlurOptimized>().enabled = true;
 		}
+	}
+
+	public void unlockWorld () {
+		PlayerPrefs.SetInt("World" + worldNumber, 1);
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+		popUp.GetComponentInChildren<Text>().text = "You unlocked a new world and block pieces!";
+		showButtons();
+		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[0]);
+		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[1]);
+	}
+
+	public void unlockAllWorlds () {
+		for (int i = 0; i < 50; i++) {
+			PlayerPrefs.SetInt("World" + i, 1);
+		}
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+		popUp.GetComponentInChildren<Text>().text = "You unlocked all the worlds and block pieces!";
+		showButtons();
+		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[0]);
+		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[1]);
 	}
 
 	public void toMainMenu() {
