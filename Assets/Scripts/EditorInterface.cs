@@ -123,7 +123,7 @@ public class EditorInterface : MonoBehaviour {
 		b.onClick.AddListener(() => {
 			showPopUp();
 		});
-		b.GetComponent<Image>().color = Color.grey;
+		b.GetComponent<Image>().color = new Color(0.25f, 0.25f, 0.25f, 1);
 	}
 
 	void turnOffRegularButton (Button b) {
@@ -153,7 +153,7 @@ public class EditorInterface : MonoBehaviour {
 			}
 		}
 		if (transitionNum == 0) {
-			if (deltaTime > transitionLength / 4) {
+			if (deltaTime > (transitionLength * 0.33f)) {
 				GetComponent<BlurOptimized>().enabled = false;
 			}
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, Vector3.one, deltaTime);
@@ -161,7 +161,7 @@ public class EditorInterface : MonoBehaviour {
 			optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.zero, deltaTime);
 			popUp.transform.localScale = Vector3.Slerp(popUp.transform.localScale, new Vector3(1,0,1), deltaTime);
 			transform.position = Vector3.Lerp(transform.position, initialCamPos, deltaTime);
-			GetComponent<BlurOptimized>().blurSize = colorHolder.transform.localScale.x * maxBlurSize;
+			GetComponent<BlurOptimized>().blurSize = (optionHolder.transform.localScale.y + popUp.transform.localScale.y) * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
 			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, new Color (1, 1, 1, 0.25f), deltaTime/2);
@@ -182,7 +182,7 @@ public class EditorInterface : MonoBehaviour {
 			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
 			optionHolder.transform.localScale = Vector3.Slerp(optionHolder.transform.localScale, Vector3.one, deltaTime);
 			transform.position = Vector3.Lerp(transform.position, initialCamPos, deltaTime);
-			GetComponent<BlurOptimized>().blurSize = optionHolder.transform.localScale.x * maxBlurSize;
+			GetComponent<BlurOptimized>().blurSize = optionHolder.transform.localScale.y * maxBlurSize;
 			Camera.main.orthographicSize -= deltaTime;
 			Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, minOrtho, maxOrtho);
 			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, Color.clear, deltaTime/2);
@@ -218,6 +218,7 @@ public class EditorInterface : MonoBehaviour {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
 			popUp.transform.localScale = Vector3.Slerp(popUp.transform.localScale, Vector3.one, deltaTime);
 			uiHolder.GetComponent<Image>().color = Color.Lerp(uiHolder.GetComponent<Image>().color, Color.clear, deltaTime/2);
+			GetComponent<BlurOptimized>().blurSize = popUp.transform.localScale.y * maxBlurSize;
 			if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
 				menuHolder.transform.localScale = new Vector3(1,0,1);
 				popUp.transform.localScale = Vector3.one;
