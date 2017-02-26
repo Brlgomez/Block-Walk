@@ -267,15 +267,18 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void addToPath (GameObject block) {
+		bool blockAdded = false;
 		if (path.Count == 0) {
 			path.Add(block);
+			blockAdded = true;
 		} else {
 			if ((path[path.Count - 1].tag != VariableManagement.rotateR && 
 				path[path.Count - 1].tag != VariableManagement.rotateL) || path.Count == 1) {
 				path.Add(block);
+				blockAdded = true;
 			}
 		}
-		if (block.tag == VariableManagement.switchTag && playerOn != block) {
+		if (block.tag == VariableManagement.switchTag && playerOn != block && blockAdded) {
 			GetComponent<SwitchAttributes>().buttonPress();
 			pointOnSwitch = true;
 		}
