@@ -29,12 +29,14 @@ public class MenuTransitions : MonoBehaviour {
 			for (int i = 0; i < itemsLeaving.Count; i++) {
 				if (itemsLeaving[i].GetComponent<Button>() != null) {
 					itemsLeaving[i].GetComponent<Button>().enabled = false;
+					itemsLeaving[i].GetComponent<Button>().interactable = false;
 				}
 				itemsLeaving[i].transform.position = newPosForLeaving[i];
 			}
 			for (int i = 0; i < itemsEntering.Count; i++) {
 				if (itemsEntering[i].GetComponent<Button>() != null) {
 					itemsEntering[i].GetComponent<Button>().enabled = true;
+					itemsEntering[i].GetComponent<Button>().interactable = true;
 				}
 				itemsEntering[i].transform.position = newPosForEntering[i];
 			}
@@ -51,8 +53,9 @@ public class MenuTransitions : MonoBehaviour {
 			foreach (Transform child in childrenLeaving) {
 				if (child.parent == screenLeaving.transform) {
 					itemsLeaving.Add(child);
-					if (itemsLeaving[itemsLeaving.Count - 1].GetComponent<Button>() != null) {
-						itemsLeaving[itemsLeaving.Count - 1].GetComponent<Button>().enabled = false;
+					if (child.GetComponent<Button>() != null) {
+						child.GetComponent<Button>().enabled = false;
+						child.GetComponent<Button>().interactable = false;
 					}
 				}
 			}
@@ -72,6 +75,10 @@ public class MenuTransitions : MonoBehaviour {
 			foreach (Transform child in childrenEntering) {
 				if (child.parent == screenEntering.transform) {
 					itemsEntering.Add(child);
+					if (child.GetComponent<Button>() != null) {
+						child.GetComponent<Button>().enabled = false;
+						child.GetComponent<Button>().interactable = true;
+					}
 				}
 			}
 			newPosForEntering = new Vector3[itemsEntering.Count];

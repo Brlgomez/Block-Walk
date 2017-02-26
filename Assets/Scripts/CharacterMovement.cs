@@ -168,11 +168,11 @@ public class CharacterMovement : MonoBehaviour {
 			for (int i = 0; i < allBlocks.Count; i++) {
 				Transform blockTransform = allBlocks [i].transform;
 				bool nextToBlock = checkAdjacent (blockTransform.position, lastBlock.transform.position);
-				if (nextToBlock && blockTransform.localScale.y > 0.5f) {
+				if (nextToBlock && blockTransform.gameObject.GetComponent<BoxCollider>().size.x > 0.5f) {
 					nearbyBlocks.Add (allBlocks [i]);
 				}
 				if (secondToLast != null) {
-					bool smallBlockOnPath = (secondToLast == allBlocks [i] && secondToLast.transform.localScale.x < 1);
+					bool smallBlockOnPath = (secondToLast == allBlocks [i]);
 					if (lastBlock.tag == VariableManagement.switchTag && smallBlockOnPath) {
 						nearbyBlocks.Add (allBlocks [i]);
 					}
