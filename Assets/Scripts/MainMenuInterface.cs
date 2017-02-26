@@ -76,13 +76,13 @@ public class MainMenuInterface : MonoBehaviour {
 		if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
 			interfaceMenu = 2;
 			toLevelSelect((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16);
-			if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 0) {
+			if (((GetComponent<VariableManagement>().getWorldLevel()) / 16) == 0) {
 				Camera.main.backgroundColor = MenuColors.world1Color;
-			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 1) {
+			} else if (((GetComponent<VariableManagement>().getWorldLevel()) / 16) == 1) {
 				Camera.main.backgroundColor = MenuColors.world2Color;
-			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 2) {
+			} else if (((GetComponent<VariableManagement>().getWorldLevel()) / 16) == 2) {
 				Camera.main.backgroundColor = MenuColors.world3Color;
-			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 3) {
+			} else if (((GetComponent<VariableManagement>().getWorldLevel()) / 16) == 3) {
 				Camera.main.backgroundColor = MenuColors.world4Color;
 			}
 		} else if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.userLevelMenu) {
