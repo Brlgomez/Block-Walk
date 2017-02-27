@@ -100,7 +100,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("User ID").
-			EqualTo(PlayerPrefs.GetString(VariableManagement.userId)).LimitToLast(24).GetValueAsync().
+			EqualTo(PlayerPrefs.GetString(VariableManagement.userId)).GetValueAsync().
 			ContinueWith(task => {
 				if (task.IsFaulted) {
 					text.text = "Error, please try again";
