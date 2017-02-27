@@ -28,6 +28,9 @@ public static class GPGSIds
         public const string achievement_beat_world_2 = "CgkIw-3oxbANEAIQAw"; // <GPGSID>
         public const string achievement_beat_world_3 = "CgkIw-3oxbANEAIQBA"; // <GPGSID>
         public const string achievement_beat_world_4 = "CgkIw-3oxbANEAIQBQ"; // <GPGSID>
+        public const string achievement_sending_precious_cargo = "CgkIw-3oxbANEAIQBw"; // <GPGSID>
+        public const string achievement_the_creator = "CgkIw-3oxbANEAIQBg"; // <GPGSID>
+        public const string achievement_beyond_the_voyage = "CgkIw-3oxbANEAIQCA"; // <GPGSID>
         public const string achievement_beat_world_1 = "CgkIw-3oxbANEAIQAg"; // <GPGSID>
 
 }
