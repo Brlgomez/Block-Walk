@@ -774,10 +774,6 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void unlockAllWorlds () {
-		for (int i = 0; i < 50; i++) {
-			PlayerPrefs.SetInt("World" + i, 1);
-		}
-		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-		toWorldSelect();
+		GetComponent<InAppPurchases>().BuyNonConsumableAll();
 	}
 }
