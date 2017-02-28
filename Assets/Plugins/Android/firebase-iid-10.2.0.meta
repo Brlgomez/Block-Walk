@@ -1,8 +1,10 @@
 fileFormatVersion: 2
-guid: cd26bcbd777b48b98e24d858a4e5db32
+guid: 6c88b4e5942f74ea3b4a9c1c592389d0
 labels:
-- gvh
-- gvh_v3.0.0
+- gpsr
+folderAsset: yes
+timeCreated: 1488229203
+licenseType: Free
 PluginImporter:
   serializedVersion: 1
   iconMap: {}
@@ -10,15 +12,12 @@ PluginImporter:
   isPreloaded: 0
   platformData:
     Any:
-      enabled: 0
+      enabled: 1
       settings: {}
     Editor:
       enabled: 0
       settings:
         DefaultValueInitialized: true
-    iOS:
-      enabled: 1
-      settings: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
