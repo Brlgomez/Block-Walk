@@ -22,7 +22,9 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 	// specific mapping to Unity Purchasing's AddProduct, below.
 	public static string kProductIDConsumable = "exp55555";
 	public static string kProductIDNonConsumableAll = "unlock_all_worlds_and_blocks";
-	public static string kProductIDNonConsumableClassic = "classic_handheld_mode";
+	public static string kProductIDNonConsumableWorld2 = "world_2_unlock";
+	public static string kProductIDNonConsumableWorld3 = "world_3_unlock";
+	public static string kProductIDNonConsumableWorld4 = "world_4_unlock";
 	public static string kProductIDSubscription = "subscription";
 
 	// Apple App Store-specific product identifier for the subscription product.
@@ -54,7 +56,7 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 		builder.AddProduct (kProductIDConsumable, ProductType.Consumable);
 		// Continue adding the non-consumable product.
 		builder.AddProduct (kProductIDNonConsumableAll, ProductType.NonConsumable);
-		builder.AddProduct (kProductIDNonConsumableClassic, ProductType.NonConsumable);
+		builder.AddProduct (kProductIDNonConsumableWorld2, ProductType.NonConsumable);
 		// And finish adding the subscription product. Notice this uses store-specific IDs, illustrating
 		// if the Product ID was configured differently between Apple and Google stores. Also note that
 		// one uses the general kProductIDSubscription handle inside the game - the store-specific IDs 
@@ -86,10 +88,16 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 		BuyProductID (kProductIDNonConsumableAll);
 	}
 
-	public void BuyNonConsumableClassic () {
-		// Buy the non-consumable product using its general identifier. Expect a response either 
-		// through ProcessPurchase or OnPurchaseFailed asynchronously.
-		BuyProductID (kProductIDNonConsumableClassic);
+	public void BuyNonConsumableWorld2 () {
+		BuyProductID (kProductIDNonConsumableWorld2);
+	}
+
+	public void BuyNonConsumableWorld3 () {
+		BuyProductID (kProductIDNonConsumableWorld3);
+	}
+
+	public void BuyNonConsumableWorld4 () {
+		BuyProductID (kProductIDNonConsumableWorld4);
 	}
 
 	public void BuySubscription () {
@@ -131,12 +139,29 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 	public void checkReceipts () {
 		if (IsInitialized ()) {
 			Product allWorlds = m_StoreController.products.WithID (kProductIDNonConsumableAll);
-			Product classicMode = m_StoreController.products.WithID (kProductIDNonConsumableClassic);
+			Product world2 = m_StoreController.products.WithID (kProductIDNonConsumableWorld2);
+			Product world3 = m_StoreController.products.WithID (kProductIDNonConsumableWorld3);
+			Product world4 = m_StoreController.products.WithID (kProductIDNonConsumableWorld4);
 
 			if (allWorlds != null && allWorlds.hasReceipt) {
 				for (int i = 0; i < 50; i++) {
 					PlayerPrefs.SetInt("World" + i, 1);
 				}
+				PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+			}
+
+			if (world2 != null && world2.hasReceipt) {
+				PlayerPrefs.SetInt("World0", 1);
+				PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+			}
+
+			if (world3 != null && world3.hasReceipt) {
+				PlayerPrefs.SetInt("World1", 1);
+				PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+			}
+
+			if (world4 != null && world4.hasReceipt) {
+				PlayerPrefs.SetInt("World2", 1);
 				PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
 			}
 		}
@@ -197,11 +222,23 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 
 
 	public PurchaseProcessingResult ProcessPurchase (PurchaseEventArgs args) {
-		if (String.Equals (args.purchasedProduct.definition.id, kProductIDNonConsumableAll, StringComparison.Ordinal)) {
-			Debug.Log (string.Format ("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
+		if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableAll, StringComparison.Ordinal)) {
+			Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 			for (int i = 0; i < 50; i++) {
 				PlayerPrefs.SetInt("World" + i, 1);
 			}
+			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+			GetComponent<MainMenuInterface>().toWorldSelect();
+		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld2, StringComparison.Ordinal)) {
+			PlayerPrefs.SetInt("World0", 1);
+			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+			GetComponent<MainMenuInterface>().toWorldSelect();
+		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld3, StringComparison.Ordinal)) {
+			PlayerPrefs.SetInt("World1", 1);
+			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+			GetComponent<MainMenuInterface>().toWorldSelect();
+		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld4, StringComparison.Ordinal)) {
+			PlayerPrefs.SetInt("World2", 1);
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
 			GetComponent<MainMenuInterface>().toWorldSelect();
 		}

@@ -768,16 +768,16 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void unlockWorld () {
 		int world = (GetComponent<VariableManagement>().getWorldLevel() - 1) / 16;
-		PlayerPrefs.SetInt("World" + world, 1);
-		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-		toWorldSelect();
+		if (world == 0) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld2();
+		} else if (world == 1) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld3();
+		} else if (world == 2) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld4();
+		}
 	}
 
 	public void unlockAllWorlds () {
-		for (int i = 0; i < 50; i++) {
-			PlayerPrefs.SetInt("World" + i, 1);
-		}
-		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-		toWorldSelect();
+		GetComponent<InAppPurchases>().BuyNonConsumableAll();
 	}
 }
