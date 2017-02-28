@@ -386,7 +386,7 @@ public class MainMenuInterface : MonoBehaviour {
 			}
 		}
 		if (!GetComponent<VariableManagement>().isOnlineCheck()) {
-			GetComponent<GooglePlay>().logIn();
+			GetComponent<OnlineServices>().logIn();
 			enableButtons();
 		}
 	}
