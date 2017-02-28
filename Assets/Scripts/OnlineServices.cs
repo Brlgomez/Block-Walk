@@ -3,7 +3,7 @@ using System.Collections;
 using GooglePlayGames;
 using UnityEngine.SocialPlatforms;
 
-public class GooglePlay : MonoBehaviour {
+public class OnlineServices: MonoBehaviour {
 
 	void Start () {
 		/*
