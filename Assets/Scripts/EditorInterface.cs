@@ -114,7 +114,7 @@ public class EditorInterface : MonoBehaviour {
 					touchingRhandle = true;
 				} else if (gHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos) && !touchingRhandle && !touchingBhandle) {
 					touchingGhandle = true;
-				} else if (bHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos) && touchingRhandle && touchingGhandle) {
+				} else if (bHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos) && !touchingRhandle && !touchingGhandle) {
 					touchingBhandle = true;
 				}
 				if (touchingRhandle) {
