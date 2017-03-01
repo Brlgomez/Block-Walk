@@ -22,7 +22,7 @@ public class EditorInterface : MonoBehaviour {
 	GameObject rB, gB, bB;
 	GameObject rHandle, gHandle, bHandle;
 	Vector2 rGradient, gGradient, bGradient;
-	bool touchingRhandle, touchingGhandle, touchingBhandle = false;
+	bool touchingRhandle, touchingGhandle, touchingBhandle, changingColor = false;
 
 	float gradientSize = 25;
 	float colorTimer = colorTimerLimit;
@@ -86,6 +86,55 @@ public class EditorInterface : MonoBehaviour {
 		}
 	}
 
+	public void setVariables(float sR, float sG, float sB, float sRInc, float sGInc, float sBInc, float sRInc2, float sGInc2, float sBInc2, string title) {
+		optionHolder = GameObject.Find("Option Holder");
+		if (title != "Untitled") {
+			optionHolder.GetComponentInChildren<InputField>().text = title;
+		}
+
+		r = GameObject.Find("R");
+		g = GameObject.Find("G");
+		b = GameObject.Find("B");
+		rB = GameObject.Find("Block R");
+		gB = GameObject.Find("Block G");
+		bB = GameObject.Find("Block B");
+		rHandle = GameObject.Find("R Area");
+		gHandle = GameObject.Find("G Area");
+		bHandle = GameObject.Find("B Area");
+		colorHolder = GameObject.Find("Color Holder");
+		gradientSize = Screen.width * 0.11f;
+		r.GetComponent<Slider>().value = (Camera.main.backgroundColor.r * 255);
+		g.GetComponent<Slider>().value = (Camera.main.backgroundColor.g * 255);
+		b.GetComponent<Slider>().value = (Camera.main.backgroundColor.b * 255);
+		rB.GetComponent<Slider>().value = sR;
+		gB.GetComponent<Slider>().value = sG;
+		bB.GetComponent<Slider>().value = sB;
+		rGradient = gradientHandlePosition(
+			rHandle.transform.position.x + sRInc * (gradientSize * 10), 
+			rHandle.transform.position.y + sRInc2 * (gradientSize * 10), 
+			rHandle
+		);
+		gGradient = gradientHandlePosition(
+			gHandle.transform.position.x + sGInc * (gradientSize * 10), 
+			gHandle.transform.position.y + sGInc2 * (gradientSize * 10), 
+			gHandle
+		);
+		bGradient = gradientHandlePosition(
+			bHandle.transform.position.x + sBInc * (gradientSize * 10), 
+			bHandle.transform.position.y + sBInc2 * (gradientSize * 10), 
+			bHandle
+		);
+		colorHolder.transform.localScale = Vector3.zero;
+		r.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
+		g.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor();	});
+		b.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
+		rB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
+		gB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
+		bB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
+		changeBackgroundColor();
+		showMain();
+	}
+
 	void Update() {
 		if (transition) { 
 			transitionInterface();
@@ -94,13 +143,15 @@ public class EditorInterface : MonoBehaviour {
 				GetComponent<LevelEditor>().mouseDown();
 			}
 			if (Input.GetMouseButtonUp(0)) {
-				if (touchingBhandle || touchingRhandle || touchingGhandle) {
-					changeBlockColors();
+				if (changingColor) {
+					colorTimer = colorTimerLimit;
+					changeBackgroundColor();
 				}
 				movingSlider = false;
 				touchingRhandle = false;
 				touchingGhandle = false;
 				touchingBhandle = false;
+				changingColor = false;
 				colorTimer = colorTimerLimit;
 				GetComponent<LevelEditor>().mouseUp();
 			}
@@ -125,68 +176,10 @@ public class EditorInterface : MonoBehaviour {
 					bGradient = gradientHandlePosition(Input.mousePosition.x, Input.mousePosition.y, bHandle);
 				}
 				if (touchingBhandle || touchingRhandle || touchingGhandle) {
-					colorTimer += Time.deltaTime;
-					if (colorTimer > colorTimerLimit) {
-						colorTimer = 0;
-						changeBlockColors();
-					}
+					changeBackgroundColor();
 				}
 			}
 		}
-	}
-
-	Vector2 gradientHandlePosition (float x, float y, GameObject handle) {
-		Vector3 newPos = new Vector3(
-			Mathf.Clamp(x, handle.transform.position.x - gradientSize, handle.transform.position.x + gradientSize), 
-			Mathf.Clamp(y, handle.transform.position.y - gradientSize, handle.transform.position.y + gradientSize), 
-			0
-		);
-		handle.GetComponentsInChildren<Image>()[1].transform.position = newPos;
-		Vector2 handlePos = new Vector2(
-			(handle.GetComponentsInChildren<Image>()[1].transform.position.x - handle.transform.position.x) / (gradientSize * 10), 
-			(handle.GetComponentsInChildren<Image>()[1].transform.position.y - handle.transform.position.y) / (gradientSize * 10)
-		);
-		return handlePos;
-	}
-
-	public void ifMovingSlider () {
-		movingSlider = true;
-	}
-
-	void turnOnButton (Button b, GameObject block) {
-		b.onClick.AddListener(() => {
-			GetComponent<LevelEditor>().changeBlock(block);
-		});
-		b.onClick.AddListener(() => {
-			shiftHighlight(b.gameObject);
-		});
-		b.GetComponent<Image>().color = Color.white;
-	}
-
-	void turnOffButton (Button b, int world) {
-		b.onClick.AddListener(() => {
-			setWorldNumber(world);
-		});
-		b.onClick.AddListener(() => {
-			showPopUp();
-		});
-		b.GetComponent<Image>().color = new Color(0.25f, 0.25f, 0.25f, 1);
-	}
-
-	void turnOffRegularButton (Button b) {
-		if (b.GetComponentInChildren<Text>() != null) {
-			b.GetComponentInChildren<Text>().color = Color.clear;
-		}
-		b.GetComponent<Image>().color = Color.clear;
-		b.interactable = false;
-	}
-
-	void turnOnRegularButton (Button b) {
-		if (b.GetComponentInChildren<Text>() != null) {
-			b.GetComponentInChildren<Text>().color = Color.white;
-		}
-		b.GetComponent<Image>().color = Color.white;
-		b.interactable = true;
 	}
 
 	void transitionInterface() {
@@ -223,7 +216,6 @@ public class EditorInterface : MonoBehaviour {
 				deltaTime = 0;
 				GetComponent<LevelEditor>().mouseUp();
 			}
-
 		} else if (transitionNum == 1) {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
 			colorHolder.transform.localScale = Vector3.Slerp(colorHolder.transform.localScale, Vector3.zero, deltaTime);
@@ -276,59 +268,7 @@ public class EditorInterface : MonoBehaviour {
 		}
 	}
 
-	public void setVariables(float sR, float sG, float sB, float sRInc, float sGInc, float sBInc, float sRInc2, float sGInc2, float sBInc2, string title) {
-		optionHolder = GameObject.Find("Option Holder");
-		if (title != "Untitled") {
-			optionHolder.GetComponentInChildren<InputField>().text = title;
-		}
-
-		r = GameObject.Find("R");
-		g = GameObject.Find("G");
-		b = GameObject.Find("B");
-		rB = GameObject.Find("Block R");
-		gB = GameObject.Find("Block G");
-		bB = GameObject.Find("Block B");
-		rHandle = GameObject.Find("R Area");
-		gHandle = GameObject.Find("G Area");
-		bHandle = GameObject.Find("B Area");
-		colorHolder = GameObject.Find("Color Holder");
-
-		gradientSize = Screen.width * 0.07f;
-
-		r.GetComponent<Slider>().value = (Camera.main.backgroundColor.r * 255);
-		g.GetComponent<Slider>().value = (Camera.main.backgroundColor.g * 255);
-		b.GetComponent<Slider>().value = (Camera.main.backgroundColor.b * 255);
-		rB.GetComponent<Slider>().value = sR;
-		gB.GetComponent<Slider>().value = sG;
-		bB.GetComponent<Slider>().value = sB;
-
-		rGradient = gradientHandlePosition(
-			rHandle.transform.position.x + sRInc * (gradientSize * 10), 
-			rHandle.transform.position.y + sRInc2 * (gradientSize * 10), 
-			rHandle
-		);
-		gGradient = gradientHandlePosition(
-			gHandle.transform.position.x + sGInc * (gradientSize * 10), 
-			gHandle.transform.position.y + sGInc2 * (gradientSize * 10), 
-			gHandle
-		);
-		bGradient = gradientHandlePosition(
-			bHandle.transform.position.x + sBInc * (gradientSize * 10), 
-			bHandle.transform.position.y + sBInc2 * (gradientSize * 10), 
-			bHandle
-		);
-		colorHolder.transform.localScale = Vector3.zero;
-	
-		r.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
-		g.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor();	});
-		b.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
-		rB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
-		gB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
-		bB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
-
-		changeBackgroundColor();
-		showMain();
-	}
+	/* -------------------------------------------------- Main Screen ----------------------------------------------- */
 
 	public void showMain() {
 		optionHolder.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Save";
@@ -353,6 +293,42 @@ public class EditorInterface : MonoBehaviour {
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			GetComponent<BlurOptimized>().enabled = true;
 		}
+	}
+
+	void turnOnButton (Button b, GameObject block) {
+		b.onClick.AddListener(() => {
+			GetComponent<LevelEditor>().changeBlock(block);
+		});
+		b.onClick.AddListener(() => {
+			shiftHighlight(b.gameObject);
+		});
+		b.GetComponent<Image>().color = Color.white;
+	}
+
+	void turnOffButton (Button b, int world) {
+		b.onClick.AddListener(() => {
+			setWorldNumber(world);
+		});
+		b.onClick.AddListener(() => {
+			showPopUp();
+		});
+		b.GetComponent<Image>().color = new Color(0.25f, 0.25f, 0.25f, 1);
+	}
+
+	void turnOffRegularButton (Button b) {
+		if (b.GetComponentInChildren<Text>() != null) {
+			b.GetComponentInChildren<Text>().color = Color.clear;
+		}
+		b.GetComponent<Image>().color = Color.clear;
+		b.interactable = false;
+	}
+
+	void turnOnRegularButton (Button b) {
+		if (b.GetComponentInChildren<Text>() != null) {
+			b.GetComponentInChildren<Text>().color = Color.white;
+		}
+		b.GetComponent<Image>().color = Color.white;
+		b.interactable = true;
 	}
 
 	public void setWorldNumber (int n) {
@@ -406,6 +382,21 @@ public class EditorInterface : MonoBehaviour {
 		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[1]);
 	}
 
+	public bool isMenuOn() {
+		return menuOn;
+	}
+
+	public void shiftHighlight(GameObject button) {
+		highlight.transform.position = button.transform.position;
+	}
+
+	public void deauthorizedLevel () {
+		uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
+		deauthorize = true;
+	}
+
+	/* -------------------------------------------------- Options Menu ---------------------------------------------- */
+
 	public void toMainMenu() {
 		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
 		gameObject.AddComponent<BackgroundColorTransition>();
@@ -424,23 +415,90 @@ public class EditorInterface : MonoBehaviour {
 		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toTestFromEditor);
 	}
 
-	public bool isMenuOn() {
-		return menuOn;
+	public void saveLevel() {
+		checkText();
+		optionHolder.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Saved";
+		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
+		if (deauthorize) {
+			GetComponent<VariableManagement>().setLevelAuthorization(0);
+			GetComponent<VariableManagement>().setLevelPostValue(0);
+		}
+		File.Delete(filePath);
+		if (optionHolder.GetComponentInChildren<InputField>().text != "") {
+			File.AppendAllText(filePath, optionHolder.GetComponentInChildren<InputField>().text);
+		} else {
+			File.AppendAllText(filePath, "Untitled");
+		}
+		File.AppendAllText(filePath, "\n");
+		if (PlayerPrefs.GetString(VariableManagement.userName) == "") {
+			File.AppendAllText(filePath, "Unknown");
+		} else {
+			File.AppendAllText(filePath, PlayerPrefs.GetString(VariableManagement.userName));
+		}
+		File.AppendAllText(filePath, "\n");
+		File.AppendAllText(filePath, r.GetComponent<Slider>().value + "," + g.GetComponent<Slider>().value + "," + b.GetComponent<Slider>().value + "\n");
+		File.AppendAllText(filePath, rB.GetComponent<Slider>().value + "," + gB.GetComponent<Slider>().value + "," + bB.GetComponent<Slider>().value + "\n");
+		File.AppendAllText(filePath, rGradient.x + "," + gGradient.x + "," + bGradient.x + "\n");
+		File.AppendAllText(filePath, rGradient.y + "," + gGradient.y + "," + bGradient.y + "\n");		
+		for (int i = 13; i >= 0; i--) {
+			for (int j = 0; j < 8; j++) { 
+				if (blocks[i][j] == null) {
+					File.AppendAllText(filePath, VariableManagement.noBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.standardBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.standardBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.multistepBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.multistepBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.switchBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.switchBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.activeBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.activeBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.inactiveBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.inactiveBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.rotateRBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.rotateRBlockTile.ToString());
+				} else if (blocks[i][j].name == VariableManagement.rotateLBlock + VariableManagement.clone) {
+					File.AppendAllText(filePath, VariableManagement.rotateLBlockTile.ToString());
+				}
+			}
+			File.AppendAllText(filePath, "\n");
+		}
+		File.AppendAllText(filePath, VariableManagement.levelDelimiter.ToString());
 	}
 
-	public void shiftHighlight(GameObject button) {
-		highlight.transform.position = button.transform.position;
+	/* -------------------------------------------------- Color Menu ------------------------------------------------ */
+
+	Vector2 gradientHandlePosition (float x, float y, GameObject handle) {
+		Vector3 newPos = new Vector3(
+			Mathf.Clamp(x, handle.transform.position.x - gradientSize, handle.transform.position.x + gradientSize), 
+			Mathf.Clamp(y, handle.transform.position.y - gradientSize, handle.transform.position.y + gradientSize), 
+			0
+		);
+		handle.GetComponentsInChildren<Image>()[1].transform.position = newPos;
+		Vector2 handlePos = new Vector2(
+			(handle.GetComponentsInChildren<Image>()[1].transform.position.x - handle.transform.position.x) / (gradientSize * 10), 
+			(handle.GetComponentsInChildren<Image>()[1].transform.position.y - handle.transform.position.y) / (gradientSize * 10)
+		);
+		return handlePos;
+	}
+
+	public void ifMovingSlider () {
+		movingSlider = true;
 	}
 
 	public void changeBackgroundColor() {
-		byte backR = byte.Parse(r.GetComponent<Slider>().value.ToString());
-		byte backG = byte.Parse(g.GetComponent<Slider>().value.ToString());
-		byte backB = byte.Parse(b.GetComponent<Slider>().value.ToString());
-		r.GetComponentsInChildren<Image>()[1].color = new Color32(backR, 0, 0, 255);
-		g.GetComponentsInChildren<Image>()[1].color = new Color32(0, backG, 0, 255);
-		b.GetComponentsInChildren<Image>()[1].color = new Color32(0, 0, backB, 255);
-		Camera.main.backgroundColor = new Color32(backR, backG, backB, 255);
-		changeBlockColors();
+		changingColor = true;
+		colorTimer += Time.deltaTime;
+		if (colorTimer > colorTimerLimit) {
+			colorTimer = 0;
+			byte backR = byte.Parse(r.GetComponent<Slider>().value.ToString());
+			byte backG = byte.Parse(g.GetComponent<Slider>().value.ToString());
+			byte backB = byte.Parse(b.GetComponent<Slider>().value.ToString());
+			r.GetComponentsInChildren<Image>()[1].color = new Color32(backR, 0, 0, 255);
+			g.GetComponentsInChildren<Image>()[1].color = new Color32(0, backG, 0, 255);
+			b.GetComponentsInChildren<Image>()[1].color = new Color32(0, 0, backB, 255);
+			Camera.main.backgroundColor = new Color32(backR, backG, backB, 255);
+			changeBlockColors();
+		}
 	}
 
 	public void changeBlockColors() {
@@ -486,60 +544,6 @@ public class EditorInterface : MonoBehaviour {
 		optionHolder.GetComponentInChildren<InputField>().text = newInputFiltered;
 	}
 
-	public void saveLevel() {
-		checkText();
-		optionHolder.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Saved";
-		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
-		if (deauthorize) {
-			GetComponent<VariableManagement>().setLevelAuthorization(0);
-			GetComponent<VariableManagement>().setLevelPostValue(0);
-		}
-		File.Delete(filePath);
-		if (optionHolder.GetComponentInChildren<InputField>().text != "") {
-			File.AppendAllText(filePath, optionHolder.GetComponentInChildren<InputField>().text);
-		} else {
-			File.AppendAllText(filePath, "Untitled");
-		}
-		File.AppendAllText(filePath, "\n");
-		if (PlayerPrefs.GetString(VariableManagement.userName) == "") {
-			File.AppendAllText(filePath, "Unknown");
-		} else {
-			File.AppendAllText(filePath, PlayerPrefs.GetString(VariableManagement.userName));
-		}
-		File.AppendAllText(filePath, "\n");
-		File.AppendAllText(filePath, r.GetComponent<Slider>().value + "," + g.GetComponent<Slider>().value + "," + b.GetComponent<Slider>().value);
-		File.AppendAllText(filePath, "\n");
-		File.AppendAllText(filePath, rB.GetComponent<Slider>().value + "," + gB.GetComponent<Slider>().value + "," + bB.GetComponent<Slider>().value);
-		File.AppendAllText(filePath, "\n");
-		File.AppendAllText(filePath, rGradient.x + "," + gGradient.x + "," + bGradient.x);
-		File.AppendAllText(filePath, "\n");
-		File.AppendAllText(filePath, rGradient.y + "," + gGradient.y + "," + bGradient.y);		
-		File.AppendAllText(filePath, "\n");
-		for (int i = 13; i >= 0; i--) {
-			for (int j = 0; j < 8; j++) { 
-				if (blocks[i][j] == null) {
-					File.AppendAllText(filePath, VariableManagement.noBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.standardBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.standardBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.multistepBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.multistepBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.switchBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.switchBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.activeBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.activeBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.inactiveBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.inactiveBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.rotateRBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.rotateRBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.rotateLBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.rotateLBlockTile.ToString());
-				}
-			}
-			File.AppendAllText(filePath, "\n");
-		}
-		File.AppendAllText(filePath, VariableManagement.levelDelimiter.ToString());
-	}
-
 	public void randomColor() {
 		rGradient = gradientHandlePosition(
 			Random.Range(rHandle.transform.position.x - gradientSize, rHandle.transform.position.x + gradientSize), 
@@ -562,10 +566,5 @@ public class EditorInterface : MonoBehaviour {
 		rB.GetComponent<Slider>().value = Random.Range(rB.GetComponent<Slider>().minValue, rB.GetComponent<Slider>().maxValue);
 		gB.GetComponent<Slider>().value = Random.Range(gB.GetComponent<Slider>().minValue, gB.GetComponent<Slider>().maxValue);
 		bB.GetComponent<Slider>().value = Random.Range(bB.GetComponent<Slider>().minValue, bB.GetComponent<Slider>().maxValue);
-	}
-
-	public void deauthorizedLevel () {
-		uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
-		deauthorize = true;
 	}
 }
