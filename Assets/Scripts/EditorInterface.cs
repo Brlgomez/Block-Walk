@@ -15,7 +15,6 @@ public class EditorInterface : MonoBehaviour {
 	static int transitionLength = 1;
 	static float timeSpeed = 1.5f;
 	static float blockAlpha = 0.75f;
-	static int gradientSize = 25;
 	static float colorTimerLimit = 0.05f;
 
 	GameObject cubes, menuHolder, colorHolder, optionHolder, content, popUp, uiHolder, highlight;
@@ -25,6 +24,7 @@ public class EditorInterface : MonoBehaviour {
 	Vector2 rGradient, gGradient, bGradient;
 	bool touchingRhandle, touchingGhandle, touchingBhandle = false;
 
+	float gradientSize = 25;
 	float colorTimer = colorTimerLimit;
 	bool menuOn = true;
 	private string filePath;
@@ -41,7 +41,6 @@ public class EditorInterface : MonoBehaviour {
 		filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 		cubes = GameObject.Find("Cubes");
 		menuHolder = GameObject.Find("Menu Holder");
-		colorHolder = GameObject.Find("Color Holder");
 		optionHolder = GameObject.Find("Option Holder");
 		highlight = GameObject.Find("Block Highlight");
 		content = GameObject.Find("Content");
@@ -111,11 +110,11 @@ public class EditorInterface : MonoBehaviour {
 
 			if (Input.GetMouseButton(0) && transitionNum == 2) {
 				Vector2 mousePos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-				if (rHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+				if (rHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos) && !touchingGhandle && !touchingBhandle) {
 					touchingRhandle = true;
-				} else if (gHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+				} else if (gHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos) && !touchingRhandle && !touchingBhandle) {
 					touchingGhandle = true;
-				} else if (bHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+				} else if (bHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos) && touchingRhandle && touchingGhandle) {
 					touchingBhandle = true;
 				}
 				if (touchingRhandle) {
@@ -292,6 +291,9 @@ public class EditorInterface : MonoBehaviour {
 		rHandle = GameObject.Find("R Area");
 		gHandle = GameObject.Find("G Area");
 		bHandle = GameObject.Find("B Area");
+		colorHolder = GameObject.Find("Color Holder");
+
+		gradientSize = Screen.width * 0.07f;
 
 		r.GetComponent<Slider>().value = (Camera.main.backgroundColor.r * 255);
 		g.GetComponent<Slider>().value = (Camera.main.backgroundColor.g * 255);
@@ -315,6 +317,7 @@ public class EditorInterface : MonoBehaviour {
 			bHandle.transform.position.y + sBInc2 * (gradientSize * 10), 
 			bHandle
 		);
+		colorHolder.transform.localScale = Vector3.zero;
 	
 		r.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
 		g.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor();	});
@@ -370,20 +373,34 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void unlockWorld () {
-		PlayerPrefs.SetInt("World" + worldNumber, 1);
-		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-		popUp.GetComponentInChildren<Text>().text = "You unlocked a new world and block pieces!";
-		showButtons();
-		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[0]);
-		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[1]);
+		if (worldNumber == 0) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld2();
+		} else if (worldNumber == 1) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld3();
+		} else if (worldNumber == 2) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld4();
+		}
 	}
 
 	public void unlockAllWorlds () {
+		GetComponent<InAppPurchases>().BuyNonConsumableAll();
+	}
+
+	public void unlockedAllWorlds () {
 		for (int i = 0; i < 50; i++) {
 			PlayerPrefs.SetInt("World" + i, 1);
 		}
 		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
 		popUp.GetComponentInChildren<Text>().text = "You unlocked all the worlds and block pieces!";
+		showButtons();
+		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[0]);
+		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[1]);
+	}
+
+	public void unlockedWorld () {
+		PlayerPrefs.SetInt("World" + worldNumber, 1);
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+		popUp.GetComponentInChildren<Text>().text = "You unlocked a new world and block pieces!";
 		showButtons();
 		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[0]);
 		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[1]);

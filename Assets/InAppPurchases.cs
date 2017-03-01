@@ -10,16 +10,6 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 	private static IExtensionProvider m_StoreExtensionProvider;
 	// The store-specific Purchasing subsystems.
 
-	// Product identifiers for all products capable of being purchased:
-	// "convenience" general identifiers for use with Purchasing, and their store-specific identifier
-	// counterparts for use with and outside of Unity Purchasing. Define store-specific identifiers
-	// also on each platform's publisher dashboard (iTunes Connect, Google Play Developer Console, etc.)
-
-	// General product identifiers for the consumable, non-consumable, and subscription products.
-	// Use these handles in the code to reference which product to purchase. Also use these values
-	// when defining the Product Identifiers on the store. Except, for illustration purposes, the
-	// kProductIDSubscription - it has custom Apple and Google identifiers. We declare their store-
-	// specific mapping to Unity Purchasing's AddProduct, below.
 	public static string kProductIDConsumable = "exp55555";
 	public static string kProductIDNonConsumableAll = "unlock_all_worlds_and_blocks";
 	public static string kProductIDNonConsumableWorld2 = "world_2_unlock";
@@ -228,19 +218,35 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 				PlayerPrefs.SetInt("World" + i, 1);
 			}
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			GetComponent<MainMenuInterface>().toWorldSelect();
+			if (GetComponent<MainMenuInterface>() != null) {
+				GetComponent<MainMenuInterface>().toWorldSelect();
+			} else if (GetComponent<EditorInterface>()) {
+				GetComponent<EditorInterface>().unlockedAllWorlds();
+			}
 		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld2, StringComparison.Ordinal)) {
 			PlayerPrefs.SetInt("World0", 1);
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			GetComponent<MainMenuInterface>().toWorldSelect();
+			if (GetComponent<MainMenuInterface>() != null) {
+				GetComponent<MainMenuInterface>().toWorldSelect();
+			} else if (GetComponent<EditorInterface>()) {
+				GetComponent<EditorInterface>().unlockedWorld();
+			}
 		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld3, StringComparison.Ordinal)) {
 			PlayerPrefs.SetInt("World1", 1);
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			GetComponent<MainMenuInterface>().toWorldSelect();
+			if (GetComponent<MainMenuInterface>() != null) {
+				GetComponent<MainMenuInterface>().toWorldSelect();
+			} else if (GetComponent<EditorInterface>()) {
+				GetComponent<EditorInterface>().unlockedWorld();
+			}
 		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld4, StringComparison.Ordinal)) {
 			PlayerPrefs.SetInt("World2", 1);
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			GetComponent<MainMenuInterface>().toWorldSelect();
+			if (GetComponent<MainMenuInterface>() != null) {
+				GetComponent<MainMenuInterface>().toWorldSelect();
+			} else if (GetComponent<EditorInterface>()) {
+				GetComponent<EditorInterface>().unlockedWorld();
+			}
 		}
 		// Or ... an unknown product has been purchased by this user. Fill in additional products here....
 		else {
