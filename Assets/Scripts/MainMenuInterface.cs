@@ -154,6 +154,13 @@ public class MainMenuInterface : MonoBehaviour {
 		interfaceMenu = 11;
 	}
 
+	public void boughtItem () {
+		if (interfaceMenu == 5) {
+			toWorldSelect();
+		} 
+		refreshStore();
+	}
+
 	public void refreshStore () {
 		store.GetComponentInChildren<Text>().text = "Unlocked!";
 		if (PlayerPrefs.GetInt(VariableManagement.world0) == 1) {
@@ -227,15 +234,18 @@ public class MainMenuInterface : MonoBehaviour {
 		} else {
 			if (world == 0) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world1Color);
+				levels.GetComponentInChildren<Text>().text = "Block World";
 			} else if (world == 1) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world2Color);
+				levels.GetComponentInChildren<Text>().text = "Multistep World";
 			} else if (world == 2) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world3Color);
+				levels.GetComponentInChildren<Text>().text = "Switch World";
 			} else if (world == 3) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world4Color);
+				levels.GetComponentInChildren<Text>().text = "Rotate World";
 			}
 			interfaceMenu = 2;
-			levels.GetComponentInChildren<Text>().text = "World " + (world + 1);
 			levelMultiplier = world * 16;
 			for (int i = 0; i < 16; i++) {
 				int levelNumber = (world * 16) + i;

@@ -188,41 +188,33 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 				PlayerPrefs.SetInt("World" + i, 1);
 			}
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			if (GetComponent<MainMenuInterface>() != null && PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
-				GetComponent<MainMenuInterface>().toWorldSelect();
-			} else if (GetComponent<MainMenuInterface>() != null) {
-				GetComponent<MainMenuInterface>().refreshStore();
-			} else if (GetComponent<EditorInterface>()) {
-				GetComponent<EditorInterface>().unlockedAllWorlds();
+			if (GetComponent<MainMenuInterface>() != null) {
+				GetComponent<MainMenuInterface>().boughtItem();
+			} else if (GetComponent<EditorInterface>() != null) {
+				GetComponent<EditorInterface>().unlockedWorld();
 			}
 		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld2, StringComparison.Ordinal)) {
 			PlayerPrefs.SetInt("World0", 1);
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			if (GetComponent<MainMenuInterface>() != null && PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
-				GetComponent<MainMenuInterface>().toWorldSelect();
-			} else if (GetComponent<MainMenuInterface>() != null) {
-				GetComponent<MainMenuInterface>().refreshStore();
-			} else if (GetComponent<EditorInterface>()) {
+			if (GetComponent<MainMenuInterface>() != null) {
+				GetComponent<MainMenuInterface>().boughtItem();
+			} else if (GetComponent<EditorInterface>() != null) {
 				GetComponent<EditorInterface>().unlockedWorld();
 			}
 		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld3, StringComparison.Ordinal)) {
 			PlayerPrefs.SetInt("World1", 1);
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			if (GetComponent<MainMenuInterface>() != null && PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
-				GetComponent<MainMenuInterface>().toWorldSelect();
-			} else if (GetComponent<MainMenuInterface>() != null) {
-				GetComponent<MainMenuInterface>().refreshStore();
-			} else if (GetComponent<EditorInterface>()) {
+			if (GetComponent<MainMenuInterface>() != null) {
+				GetComponent<MainMenuInterface>().boughtItem();
+			} else if (GetComponent<EditorInterface>() != null) {
 				GetComponent<EditorInterface>().unlockedWorld();
 			}
 		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld4, StringComparison.Ordinal)) {
 			PlayerPrefs.SetInt("World2", 1);
 			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			if (GetComponent<MainMenuInterface>() != null && PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
-				GetComponent<MainMenuInterface>().toWorldSelect();
-			} else if (GetComponent<MainMenuInterface>() != null) {
-				GetComponent<MainMenuInterface>().refreshStore();
-			} else if (GetComponent<EditorInterface>()) {
+			if (GetComponent<MainMenuInterface>() != null) {
+				GetComponent<MainMenuInterface>().boughtItem();
+			} else if (GetComponent<EditorInterface>() != null) {
 				GetComponent<EditorInterface>().unlockedWorld();
 			}
 		}
