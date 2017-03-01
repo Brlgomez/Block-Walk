@@ -15,7 +15,6 @@ public class EditorInterface : MonoBehaviour {
 	static int transitionLength = 1;
 	static float timeSpeed = 1.5f;
 	static float blockAlpha = 0.75f;
-	static float colorTimerLimit = 0.05f;
 
 	GameObject cubes, menuHolder, colorHolder, optionHolder, content, popUp, uiHolder, highlight;
 	GameObject r, g, b;
@@ -24,8 +23,9 @@ public class EditorInterface : MonoBehaviour {
 	Vector2 rGradient, gGradient, bGradient;
 	bool touchingRhandle, touchingGhandle, touchingBhandle, changingColor = false;
 
+	float colorTimerLimit = 0.05f;
+	float colorTimer = 1;
 	float gradientSize = 25;
-	float colorTimer = colorTimerLimit;
 	bool menuOn = true;
 	private string filePath;
 	bool transition;
@@ -52,6 +52,9 @@ public class EditorInterface : MonoBehaviour {
 		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 5.25f);
 		if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
 			uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
+		}
+		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
+			colorTimerLimit = 0.1f;
 		}
 		showButtons();
 	}
@@ -158,7 +161,6 @@ public class EditorInterface : MonoBehaviour {
 			if (GetComponent<LevelEditor>().getMouseDrag() && !movingSlider) {
 				GetComponent<LevelEditor>().mouseDrag();
 			}
-
 			if (Input.GetMouseButton(0) && transitionNum == 2) {
 				Vector2 mousePos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
 				if (rHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos) && !touchingGhandle && !touchingBhandle) {
@@ -215,6 +217,7 @@ public class EditorInterface : MonoBehaviour {
 				transition = false;
 				deltaTime = 0;
 				GetComponent<LevelEditor>().mouseUp();
+				uiHolder.GetComponent<Image>().color = new Color (1, 1, 1, 0.25f);
 			}
 		} else if (transitionNum == 1) {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
@@ -234,6 +237,7 @@ public class EditorInterface : MonoBehaviour {
 				transition = false;
 				deltaTime = 0;
 				GetComponent<LevelEditor>().mouseUp();
+				uiHolder.GetComponent<Image>().color = Color.clear;
 			}
 		} else if (transitionNum == 2) {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
@@ -252,6 +256,7 @@ public class EditorInterface : MonoBehaviour {
 				transition = false;
 				deltaTime = 0;
 				GetComponent<LevelEditor>().mouseUp();
+				uiHolder.GetComponent<Image>().color = Color.clear;
 			}
 		} else if (transitionNum == 3) {
 			menuHolder.transform.localScale = Vector3.Slerp(menuHolder.transform.localScale, new Vector3(1,0,1), deltaTime);
@@ -264,6 +269,7 @@ public class EditorInterface : MonoBehaviour {
 				transition = false;
 				deltaTime = 0;
 				GetComponent<LevelEditor>().mouseUp();
+				uiHolder.GetComponent<Image>().color = Color.clear;
 			}
 		}
 	}

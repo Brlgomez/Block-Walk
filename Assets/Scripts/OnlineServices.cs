@@ -77,13 +77,13 @@ public class OnlineServices: MonoBehaviour {
 			}
 			if (beatWorld) {
 				if (world == 0) {
-					Social.ReportProgress(GPGSIds.achievement_beat_world_1, 100.0f, (bool success) => { });
+					Social.ReportProgress(GPGSIds.achievement_beat_world_1, 100.0f, (bool success) => {});
 				} else if (world == 1) {
-					Social.ReportProgress(GPGSIds.achievement_beat_world_2, 100.0f, (bool success) => { });
+					Social.ReportProgress(GPGSIds.achievement_beat_world_2, 100.0f, (bool success) => {});
 				} else if (world == 2) {
-					Social.ReportProgress(GPGSIds.achievement_beat_world_3, 100.0f, (bool success) => { });
+					Social.ReportProgress(GPGSIds.achievement_beat_world_3, 100.0f, (bool success) => {});
 				} else if (world == 3) {
-					Social.ReportProgress(GPGSIds.achievement_beat_world_4, 100.0f, (bool success) => { });
+					Social.ReportProgress(GPGSIds.achievement_beat_world_4, 100.0f, (bool success) => {});
 				}
 			}
 		}

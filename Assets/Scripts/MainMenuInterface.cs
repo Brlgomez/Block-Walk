@@ -65,6 +65,7 @@ public class MainMenuInterface : MonoBehaviour {
 		PlayerPrefs.SetString(VariableManagement.lastMenu, ""); 
 		GetComponent<VariableManagement>().turnOffCameraShift();
 		updateFiles();
+		refreshStore();
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: Off";
 		} else {
@@ -148,8 +149,32 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void toStore () {
+		store.GetComponentInChildren<Text>().text = "Store";
 		gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, store, MenuColors.storeColor);
 		interfaceMenu = 11;
+	}
+
+	public void refreshStore () {
+		store.GetComponentInChildren<Text>().text = "Unlocked!";
+		if (PlayerPrefs.GetInt(VariableManagement.world0) == 1) {
+			turnOffStoreButton(store.GetComponentsInChildren<Button>()[0]);
+		}
+		if (PlayerPrefs.GetInt(VariableManagement.world1) == 1) {
+			turnOffStoreButton(store.GetComponentsInChildren<Button>()[1]);
+		}
+		if (PlayerPrefs.GetInt(VariableManagement.world2) == 1) {
+			turnOffStoreButton(store.GetComponentsInChildren<Button>()[2]);
+		}
+		bool unlockedAll = true;
+		for (int i = 0; i < 50; i++) {
+			if (PlayerPrefs.GetInt("World" + i) == 0) {
+				unlockedAll = false;
+				break;
+			}
+		}
+		if (unlockedAll) {
+			turnOffStoreButton(store.GetComponentsInChildren<Button>()[3]);
+		}
 	}
 		
 	public void toWorldSelect() {
@@ -710,6 +735,15 @@ public class MainMenuInterface : MonoBehaviour {
 		return temp;
 	}
 
+	void turnOffStoreButton (Button b) {
+		if (b.GetComponentInChildren<Text>() != null) {
+			b.GetComponentInChildren<Text>().color = Color.clear;
+			b.GetComponentInChildren<Text>().raycastTarget = false;
+		}
+		b.GetComponent<Image>().color = Color.black;
+		b.GetComponent<Image>().raycastTarget = false;
+	}
+
 	void turnOffButton (Button b) {
 		if (b.GetComponentInChildren<Text>() != null) {
 			b.GetComponentInChildren<Text>().color = Color.clear;
@@ -768,6 +802,16 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void unlockWorld () {
 		int world = (GetComponent<VariableManagement>().getWorldLevel() - 1) / 16;
+		if (world == 0) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld2();
+		} else if (world == 1) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld3();
+		} else if (world == 2) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld4();
+		}
+	}
+
+	public void unlockWorldByNum (int world) {
 		if (world == 0) {
 			GetComponent<InAppPurchases>().BuyNonConsumableWorld2();
 		} else if (world == 1) {
