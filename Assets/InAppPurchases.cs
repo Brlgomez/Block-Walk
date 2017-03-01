@@ -15,13 +15,6 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 	public static string kProductIDNonConsumableWorld2 = "world_2_unlock";
 	public static string kProductIDNonConsumableWorld3 = "world_3_unlock";
 	public static string kProductIDNonConsumableWorld4 = "world_4_unlock";
-	public static string kProductIDSubscription = "subscription";
-
-	// Apple App Store-specific product identifier for the subscription product.
-	private static string kProductNameAppleSubscription = "com.unity3d.subscription.new";
-
-	// Google Play Store-specific product identifier subscription product.
-	private static string kProductNameGooglePlaySubscription = "com.unity3d.subscription.original";
 
 	void Start () {
 		// If we haven't set up the Unity Purchasing reference
@@ -47,14 +40,8 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 		// Continue adding the non-consumable product.
 		builder.AddProduct (kProductIDNonConsumableAll, ProductType.NonConsumable);
 		builder.AddProduct (kProductIDNonConsumableWorld2, ProductType.NonConsumable);
-		// And finish adding the subscription product. Notice this uses store-specific IDs, illustrating
-		// if the Product ID was configured differently between Apple and Google stores. Also note that
-		// one uses the general kProductIDSubscription handle inside the game - the store-specific IDs 
-		// must only be referenced here. 
-		builder.AddProduct (kProductIDSubscription, ProductType.Subscription, new IDs () {
-			{ kProductNameAppleSubscription, AppleAppStore.Name },
-			{ kProductNameGooglePlaySubscription, GooglePlay.Name },
-		});
+		builder.AddProduct (kProductIDNonConsumableWorld3, ProductType.NonConsumable);
+		builder.AddProduct (kProductIDNonConsumableWorld4, ProductType.NonConsumable);
 
 		// Kick off the remainder of the set-up with an asynchrounous call, passing the configuration 
 		// and this class' instance. Expect a response either in OnInitialized or OnInitializeFailed.
@@ -89,15 +76,7 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 	public void BuyNonConsumableWorld4 () {
 		BuyProductID (kProductIDNonConsumableWorld4);
 	}
-
-	public void BuySubscription () {
-		// Buy the subscription product using its the general identifier. Expect a response either 
-		// through ProcessPurchase or OnPurchaseFailed asynchronously.
-		// Notice how we use the general product identifier in spite of this ID being mapped to
-		// custom store-specific identifiers above.
-		BuyProductID (kProductIDSubscription);
-	}
-
+		
 	void BuyProductID (string productId) {
 		// If Purchasing has been initialized ...
 		if (IsInitialized ()) {
