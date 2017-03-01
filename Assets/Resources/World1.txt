@@ -1,4 +1,4 @@
-Voyage
+Square Movement
 Brandon Gomez
 255,128,128
 0.1,0.3,0.5
@@ -18,7 +18,7 @@ Brandon Gomez
 --------
 --------
 --------
-*Voyage
+*Different Blues
 Brandon Gomez
 89,203,209
 0.1,0.4,0.5
@@ -38,7 +38,7 @@ Brandon Gomez
 --------
 --------
 --------
-*Voyage
+*Vibrant
 Brandon Gomez
 255,254,128
 0.4,0.4,0.3
@@ -58,7 +58,7 @@ Brandon Gomez
 --------
 --------
 --------
-*Voyage
+*Different Take
 Brandon Gomez
 192,229,203
 0.5,0.4,0.3
@@ -78,7 +78,7 @@ Brandon Gomez
 --------
 --------
 --------
-*Voyage
+*Ramping Up
 Brandon Gomez
 255,160,127
 0.5,0.4,0.4
@@ -98,7 +98,7 @@ Brandon Gomez
 --------
 --------
 --------
-*Voyage
+*Space Ship
 Brandon Gomez
 127,192,254
 0.2,0.4,0.5
@@ -118,7 +118,7 @@ Brandon Gomez
 --------
 --------
 --------
-*Voyage
+*Smile
 Brandon Gomez
 172,220,201
 0.1,0.45,0.45
@@ -138,7 +138,7 @@ CCCCCCC-
 --------
 --------
 --------
-*Voyage
+*Ice Cream Wishes
 Brandon Gomez
 255,160,160
 0.35,0.35,0.35
@@ -158,7 +158,7 @@ Brandon Gomez
 --------
 --------
 --------
-*Voyage
+*C
 Brandon Gomez
 161,254,222
 0.2,0.4,0.5
@@ -178,7 +178,7 @@ Brandon Gomez
 --------
 --------
 --------
-*Voyage
+*
 Brandon Gomez
 16,0,48
 0.25,0.335,0.445
@@ -198,7 +198,7 @@ CCCCCCCC
 --------
 --------
 --------
-*Voyage
+*
 Brandon Gomez
 255,192,208
 0.3,0.3,0.3
@@ -218,7 +218,7 @@ CCCCCCC-
 --------
 --------
 --------
-*Voyage
+*Universal Language
 Brandon Gomez
 172,122,155
 0.375,0.125,0.25
@@ -238,7 +238,7 @@ CCCCCCCC
 --------
 --------
 --------
-*Voyage
+*
 Brandon Gomez
 64,32,48
 0.25,0.335,0.4
@@ -258,7 +258,7 @@ Brandon Gomez
 -CCCCCCC
 --------
 --------
-*Voyage
+*Take This
 Brandon Gomez
 155,229,219
 0.392,0.387,0.453
@@ -278,7 +278,7 @@ CCCCCCCC
 CCCCCCCC
 --CCCC--
 --CCCC--
-*Voyage
+*
 Brandon Gomez
 234,222,212
 0.384,0.276,0.373
@@ -298,7 +298,7 @@ CCC--CCC
 CCCCCCCC
 C-CCCC-C
 CCCCCCCC
-*Voyage
+*
 Brandon Gomez
 255,254,160
 0.026,0.463,0.430
