@@ -11,18 +11,21 @@ public class EditorInterface : MonoBehaviour {
 	static int maxBlurSize = 10;
 	static int blurDownsample = 2;
 	static int minOrtho = 8;
-	static int maxOrtho = 17;
+	static int maxOrtho = 15;
 	static int transitionLength = 1;
 	static float timeSpeed = 1.5f;
 	static float blockAlpha = 0.75f;
+	static int gradientSize = 25;
+	static float colorTimerLimit = 0.05f;
 
-	GameObject cubes, menuHolder, colorHolder, optionHolder, content, popUp, uiHolder;
+	GameObject cubes, menuHolder, colorHolder, optionHolder, content, popUp, uiHolder, highlight;
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
-	GameObject rIncX, gIncX, bIncX;
-	GameObject rIncZ, gIncZ, bIncZ;
-	GameObject highlight;
+	GameObject rHandle, gHandle, bHandle;
+	Vector2 rGradient, gGradient, bGradient;
+	bool touchingRhandle, touchingGhandle, touchingBhandle = false;
 
+	float colorTimer = colorTimerLimit;
 	bool menuOn = true;
 	private string filePath;
 	bool transition;
@@ -47,12 +50,11 @@ public class EditorInterface : MonoBehaviour {
 		GetComponent<BlurOptimized>().downsample = blurDownsample;
 		GetComponent<BackgroundColorTransition>().levelStarting();
 		initialCamPos = transform.position;
-		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 4.75f);
+		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 5.5f);
 		if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
 			uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
 		}
 		showButtons();
-		showMain();
 	}
 
 	void showButtons () {
@@ -93,13 +95,59 @@ public class EditorInterface : MonoBehaviour {
 				GetComponent<LevelEditor>().mouseDown();
 			}
 			if (Input.GetMouseButtonUp(0)) {
+				if (touchingBhandle || touchingRhandle || touchingGhandle) {
+					changeBlockColors();
+				}
 				movingSlider = false;
+				touchingRhandle = false;
+				touchingGhandle = false;
+				touchingBhandle = false;
+				colorTimer = colorTimerLimit;
 				GetComponent<LevelEditor>().mouseUp();
 			}
 			if (GetComponent<LevelEditor>().getMouseDrag() && !movingSlider) {
 				GetComponent<LevelEditor>().mouseDrag();
 			}
+
+			if (Input.GetMouseButton(0) && transitionNum == 2) {
+				Vector2 mousePos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+				if (rHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+					touchingRhandle = true;
+				} else if (gHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+					touchingGhandle = true;
+				} else if (bHandle.GetComponentsInChildren<Image>()[1].GetComponent<BoxCollider2D>().OverlapPoint(mousePos)) {
+					touchingBhandle = true;
+				}
+				if (touchingRhandle) {
+					rGradient = gradientHandlePosition(Input.mousePosition.x, Input.mousePosition.y, rHandle);
+				} else if (touchingGhandle) {
+					gGradient = gradientHandlePosition(Input.mousePosition.x, Input.mousePosition.y, gHandle);
+				} else if (touchingBhandle) {
+					bGradient = gradientHandlePosition(Input.mousePosition.x, Input.mousePosition.y, bHandle);
+				}
+				if (touchingBhandle || touchingRhandle || touchingGhandle) {
+					colorTimer += Time.deltaTime;
+					if (colorTimer > colorTimerLimit) {
+						colorTimer = 0;
+						changeBlockColors();
+					}
+				}
+			}
 		}
+	}
+
+	Vector2 gradientHandlePosition (float x, float y, GameObject handle) {
+		Vector3 newPos = new Vector3(
+			Mathf.Clamp(x, handle.transform.position.x - gradientSize, handle.transform.position.x + gradientSize), 
+			Mathf.Clamp(y, handle.transform.position.y - gradientSize, handle.transform.position.y + gradientSize), 
+			0
+		);
+		handle.GetComponentsInChildren<Image>()[1].transform.position = newPos;
+		Vector2 handlePos = new Vector2(
+			(handle.GetComponentsInChildren<Image>()[1].transform.position.x - handle.transform.position.x) / (gradientSize * 10), 
+			(handle.GetComponentsInChildren<Image>()[1].transform.position.y - handle.transform.position.y) / (gradientSize * 10)
+		);
+		return handlePos;
 	}
 
 	public void ifMovingSlider () {
@@ -241,12 +289,9 @@ public class EditorInterface : MonoBehaviour {
 		rB = GameObject.Find("Block R");
 		gB = GameObject.Find("Block G");
 		bB = GameObject.Find("Block B");
-		rIncX = GameObject.Find("R Inc");
-		gIncX = GameObject.Find("G Inc");
-		bIncX = GameObject.Find("B Inc");
-		rIncZ = GameObject.Find("R Inc 2");
-		gIncZ = GameObject.Find("G Inc 2");
-		bIncZ = GameObject.Find("B Inc 2");
+		rHandle = GameObject.Find("R Area");
+		gHandle = GameObject.Find("G Area");
+		bHandle = GameObject.Find("B Area");
 
 		r.GetComponent<Slider>().value = (Camera.main.backgroundColor.r * 255);
 		g.GetComponent<Slider>().value = (Camera.main.backgroundColor.g * 255);
@@ -254,27 +299,32 @@ public class EditorInterface : MonoBehaviour {
 		rB.GetComponent<Slider>().value = sR;
 		gB.GetComponent<Slider>().value = sG;
 		bB.GetComponent<Slider>().value = sB;
-		rIncX.GetComponent<Slider>().value = sRInc;
-		gIncX.GetComponent<Slider>().value = sGInc;
-		bIncX.GetComponent<Slider>().value = sBInc;
-		rIncZ.GetComponent<Slider>().value = sRInc2;
-		gIncZ.GetComponent<Slider>().value = sGInc2;
-		bIncZ.GetComponent<Slider>().value = sBInc2;
 
+		rGradient = gradientHandlePosition(
+			rHandle.transform.position.x + sRInc * (gradientSize * 10), 
+			rHandle.transform.position.y + sRInc2 * (gradientSize * 10), 
+			rHandle
+		);
+		gGradient = gradientHandlePosition(
+			gHandle.transform.position.x + sGInc * (gradientSize * 10), 
+			gHandle.transform.position.y + sGInc2 * (gradientSize * 10), 
+			gHandle
+		);
+		bGradient = gradientHandlePosition(
+			bHandle.transform.position.x + sBInc * (gradientSize * 10), 
+			bHandle.transform.position.y + sBInc2 * (gradientSize * 10), 
+			bHandle
+		);
+	
 		r.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
 		g.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor();	});
 		b.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBackgroundColor(); });
 		rB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
 		gB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
 		bB.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
-		rIncX.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
-		gIncX.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
-		bIncX.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
-		rIncZ.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
-		gIncZ.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
-		bIncZ.GetComponent<Slider>().onValueChanged.AddListener(delegate { changeBlockColors(); });
 
 		changeBackgroundColor();
+		showMain();
 	}
 
 	public void showMain() {
@@ -396,9 +446,9 @@ public class EditorInterface : MonoBehaviour {
 		float tempR, tempG, tempB;
 		float blockX = block.transform.position.x - 3.5f;
 		float blockZ = block.transform.position.z - 6.5f;
-		tempR = rB.GetComponent<Slider>().value + ((rIncX.GetComponent<Slider>().value * blockX) + (rIncZ.GetComponent<Slider>().value * blockZ));
-		tempG = gB.GetComponent<Slider>().value + ((gIncX.GetComponent<Slider>().value * blockX) + (gIncZ.GetComponent<Slider>().value * blockZ));
-		tempB = bB.GetComponent<Slider>().value + ((bIncX.GetComponent<Slider>().value * blockX) + (bIncZ.GetComponent<Slider>().value * blockZ));
+		tempR = rB.GetComponent<Slider>().value + ((rGradient.x * blockX) + (rGradient.y * blockZ));
+		tempG = gB.GetComponent<Slider>().value + ((gGradient.x * blockX) + (gGradient.y * blockZ));
+		tempB = bB.GetComponent<Slider>().value + ((bGradient.x * blockX) + (bGradient.y * blockZ));
 		if (block.name == VariableManagement.multistepBlock + VariableManagement.clone) {
 			tempR = ((tempR + Camera.main.backgroundColor.r) / 2);
 			tempG = ((tempG + Camera.main.backgroundColor.g) / 2);
@@ -444,9 +494,9 @@ public class EditorInterface : MonoBehaviour {
 		File.AppendAllText(filePath, "\n");
 		File.AppendAllText(filePath, rB.GetComponent<Slider>().value + "," + gB.GetComponent<Slider>().value + "," + bB.GetComponent<Slider>().value);
 		File.AppendAllText(filePath, "\n");
-		File.AppendAllText(filePath, rIncX.GetComponent<Slider>().value + "," + gIncX.GetComponent<Slider>().value + "," + bIncX.GetComponent<Slider>().value);
+		File.AppendAllText(filePath, rGradient.x + "," + gGradient.x + "," + bGradient.x);
 		File.AppendAllText(filePath, "\n");
-		File.AppendAllText(filePath, rIncZ.GetComponent<Slider>().value + "," + gIncZ.GetComponent<Slider>().value + "," + bIncZ.GetComponent<Slider>().value);		
+		File.AppendAllText(filePath, rGradient.y + "," + gGradient.y + "," + bGradient.y);		
 		File.AppendAllText(filePath, "\n");
 		for (int i = 13; i >= 0; i--) {
 			for (int j = 0; j < 8; j++) { 
@@ -474,18 +524,27 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void randomColor() {
+		rGradient = gradientHandlePosition(
+			Random.Range(rHandle.transform.position.x - gradientSize, rHandle.transform.position.x + gradientSize), 
+			Random.Range(rHandle.transform.position.y - gradientSize, rHandle.transform.position.y + gradientSize), 
+			rHandle
+		);
+		gGradient = gradientHandlePosition(
+			Random.Range(gHandle.transform.position.x - gradientSize, gHandle.transform.position.x + gradientSize), 
+			Random.Range(gHandle.transform.position.y - gradientSize, gHandle.transform.position.y + gradientSize), 
+			gHandle
+		);
+		bGradient = gradientHandlePosition(
+			Random.Range(bHandle.transform.position.x - gradientSize, bHandle.transform.position.x + gradientSize), 
+			Random.Range(bHandle.transform.position.y - gradientSize, bHandle.transform.position.y + gradientSize), 
+			bHandle
+		);
 		r.GetComponent<Slider>().value = Random.Range(r.GetComponent<Slider>().minValue, r.GetComponent<Slider>().maxValue);
 		g.GetComponent<Slider>().value = Random.Range(g.GetComponent<Slider>().minValue, g.GetComponent<Slider>().maxValue);
 		b.GetComponent<Slider>().value = Random.Range(b.GetComponent<Slider>().minValue, b.GetComponent<Slider>().maxValue);
 		rB.GetComponent<Slider>().value = Random.Range(rB.GetComponent<Slider>().minValue, rB.GetComponent<Slider>().maxValue);
 		gB.GetComponent<Slider>().value = Random.Range(gB.GetComponent<Slider>().minValue, gB.GetComponent<Slider>().maxValue);
 		bB.GetComponent<Slider>().value = Random.Range(bB.GetComponent<Slider>().minValue, bB.GetComponent<Slider>().maxValue);
-		rIncX.GetComponent<Slider>().value = Random.Range(rIncX.GetComponent<Slider>().minValue, rIncX.GetComponent<Slider>().maxValue);
-		gIncX.GetComponent<Slider>().value = Random.Range(gIncX.GetComponent<Slider>().minValue, gIncX.GetComponent<Slider>().maxValue);
-		bIncX.GetComponent<Slider>().value = Random.Range(bIncX.GetComponent<Slider>().minValue, bIncX.GetComponent<Slider>().maxValue);
-		rIncZ.GetComponent<Slider>().value = Random.Range(rIncZ.GetComponent<Slider>().minValue, rIncZ.GetComponent<Slider>().maxValue);
-		gIncZ.GetComponent<Slider>().value = Random.Range(gIncZ.GetComponent<Slider>().minValue, gIncZ.GetComponent<Slider>().maxValue);
-		bIncZ.GetComponent<Slider>().value = Random.Range(bIncZ.GetComponent<Slider>().minValue, bIncZ.GetComponent<Slider>().maxValue);
 	}
 
 	public void deauthorizedLevel () {
