@@ -50,7 +50,7 @@ public class EditorInterface : MonoBehaviour {
 		GetComponent<BlurOptimized>().downsample = blurDownsample;
 		GetComponent<BackgroundColorTransition>().levelStarting();
 		initialCamPos = transform.position;
-		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 5.5f);
+		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 5.25f);
 		if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
 			uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
 		}
@@ -419,18 +419,18 @@ public class EditorInterface : MonoBehaviour {
 		byte backR = byte.Parse(r.GetComponent<Slider>().value.ToString());
 		byte backG = byte.Parse(g.GetComponent<Slider>().value.ToString());
 		byte backB = byte.Parse(b.GetComponent<Slider>().value.ToString());
-		r.GetComponentsInChildren<Image>()[2].color = new Color32(backR, 0, 0, 255);
-		g.GetComponentsInChildren<Image>()[2].color = new Color32(0, backG, 0, 255);
-		b.GetComponentsInChildren<Image>()[2].color = new Color32(0, 0, backB, 255);
+		r.GetComponentsInChildren<Image>()[1].color = new Color32(backR, 0, 0, 255);
+		g.GetComponentsInChildren<Image>()[1].color = new Color32(0, backG, 0, 255);
+		b.GetComponentsInChildren<Image>()[1].color = new Color32(0, 0, backB, 255);
 		Camera.main.backgroundColor = new Color32(backR, backG, backB, 255);
 		changeBlockColors();
 	}
 
 	public void changeBlockColors() {
 		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
-		rB.GetComponentsInChildren<Image>()[2].color = new Color(rB.GetComponent<Slider>().value * 2, 0, 0);
-		gB.GetComponentsInChildren<Image>()[2].color = new Color(0, gB.GetComponent<Slider>().value * 2, 0);
-		bB.GetComponentsInChildren<Image>()[2].color = new Color(0, 0, bB.GetComponent<Slider>().value * 2);
+		rB.GetComponentsInChildren<Image>()[1].color = new Color(rB.GetComponent<Slider>().value * 2, 0, 0);
+		gB.GetComponentsInChildren<Image>()[1].color = new Color(0, gB.GetComponent<Slider>().value * 2, 0);
+		bB.GetComponentsInChildren<Image>()[1].color = new Color(0, 0, bB.GetComponent<Slider>().value * 2);
 		if (blocks != null) {
 			for (int i = 0; i < 14; i++) {
 				for (int j = 0; j < 8; j++) { 
