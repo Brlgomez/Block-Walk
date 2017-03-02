@@ -422,55 +422,58 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void saveLevel() {
+		string levelData = "";
 		checkText();
 		optionHolder.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Saved";
 		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
+		File.Delete(filePath);
+		if (optionHolder.GetComponentInChildren<InputField>().text != "") {
+			levelData += optionHolder.GetComponentInChildren<InputField>().text;
+		} else {
+			levelData += "Untitled";
+		}
+		levelData += "\n";
+		if (PlayerPrefs.GetString(VariableManagement.userName) == "") {
+			levelData += "Unknown";
+		} else {
+			levelData += PlayerPrefs.GetString(VariableManagement.userName);
+		}
+		levelData += "\n";
+		levelData += r.GetComponent<Slider>().value + "," + g.GetComponent<Slider>().value + "," + b.GetComponent<Slider>().value + "\n";
+		levelData += rB.GetComponent<Slider>().value + "," + gB.GetComponent<Slider>().value + "," + bB.GetComponent<Slider>().value + "\n";
+		levelData += rGradient.x + "," + gGradient.x + "," + bGradient.x + "\n";
+		levelData += rGradient.y + "," + gGradient.y + "," + bGradient.y + "\n";
+		for (int i = 13; i >= 0; i--) {
+			for (int j = 0; j < 8; j++) { 
+				if (blocks[i][j] == null) {
+					levelData += VariableManagement.noBlockTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.standardBlock + VariableManagement.clone) {
+					levelData += VariableManagement.standardBlockTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.multistepBlock + VariableManagement.clone) {
+					levelData += VariableManagement.multistepBlockTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.switchBlock + VariableManagement.clone) {
+					levelData += VariableManagement.switchBlockTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.activeBlock + VariableManagement.clone) {
+					levelData += VariableManagement.activeBlockTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.inactiveBlock + VariableManagement.clone) {
+					levelData += VariableManagement.inactiveBlockTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.rotateRBlock + VariableManagement.clone) {
+					levelData += VariableManagement.rotateRBlockTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.rotateLBlock + VariableManagement.clone) {
+					levelData += VariableManagement.rotateLBlockTile.ToString();
+				}
+			}
+			levelData += "\n";
+		}
+		levelData += VariableManagement.levelDelimiter.ToString();
+		File.AppendAllText(filePath, levelData);
+		PlayerPrefs.SetString("Date" + GetComponent<VariableManagement>().getUserLevel(), System.DateTime.UtcNow.ToString());
+		PlayerPrefs.SetString("Data" + GetComponent<VariableManagement>().getUserLevel(), levelData);
 		if (deauthorize) {
 			GetComponent<OnlineServices>().createLevelUnlock();
 			GetComponent<VariableManagement>().setLevelAuthorization(0);
 			GetComponent<VariableManagement>().setLevelPostValue(0);
 		}
-		File.Delete(filePath);
-		PlayerPrefs.SetString("Date" + GetComponent<VariableManagement>().getUserLevel(), System.DateTime.UtcNow.ToString());
-		if (optionHolder.GetComponentInChildren<InputField>().text != "") {
-			File.AppendAllText(filePath, optionHolder.GetComponentInChildren<InputField>().text);
-		} else {
-			File.AppendAllText(filePath, "Untitled");
-		}
-		File.AppendAllText(filePath, "\n");
-		if (PlayerPrefs.GetString(VariableManagement.userName) == "") {
-			File.AppendAllText(filePath, "Unknown");
-		} else {
-			File.AppendAllText(filePath, PlayerPrefs.GetString(VariableManagement.userName));
-		}
-		File.AppendAllText(filePath, "\n");
-		File.AppendAllText(filePath, r.GetComponent<Slider>().value + "," + g.GetComponent<Slider>().value + "," + b.GetComponent<Slider>().value + "\n");
-		File.AppendAllText(filePath, rB.GetComponent<Slider>().value + "," + gB.GetComponent<Slider>().value + "," + bB.GetComponent<Slider>().value + "\n");
-		File.AppendAllText(filePath, rGradient.x + "," + gGradient.x + "," + bGradient.x + "\n");
-		File.AppendAllText(filePath, rGradient.y + "," + gGradient.y + "," + bGradient.y + "\n");		
-		for (int i = 13; i >= 0; i--) {
-			for (int j = 0; j < 8; j++) { 
-				if (blocks[i][j] == null) {
-					File.AppendAllText(filePath, VariableManagement.noBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.standardBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.standardBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.multistepBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.multistepBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.switchBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.switchBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.activeBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.activeBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.inactiveBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.inactiveBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.rotateRBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.rotateRBlockTile.ToString());
-				} else if (blocks[i][j].name == VariableManagement.rotateLBlock + VariableManagement.clone) {
-					File.AppendAllText(filePath, VariableManagement.rotateLBlockTile.ToString());
-				}
-			}
-			File.AppendAllText(filePath, "\n");
-		}
-		File.AppendAllText(filePath, VariableManagement.levelDelimiter.ToString());
 	}
 
 	/* -------------------------------------------------- Color Menu ------------------------------------------------ */

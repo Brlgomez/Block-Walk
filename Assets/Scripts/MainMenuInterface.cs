@@ -401,13 +401,11 @@ public class MainMenuInterface : MonoBehaviour {
 		} else if (!GetComponent<VariableManagement>().isOnlineCheck()) {
 			turnOnButton(userCreated.GetComponentsInChildren<Button>()[2]);
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Sign in to Post";
-		} else if (!GetComponent<VariableManagement>().isLevelAuthorized() && GetComponent<VariableManagement>().isOnlineCheck() && 
-			PlayerPrefs.GetString("Date" + GetComponent<VariableManagement>().getUserLevel()) == File.GetLastWriteTimeUtc(filePath).ToString()) {
+		} else if (PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel()) == 0 && GetComponent<VariableManagement>().isOnlineCheck()) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Play to Authorize";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
-		} else if (PlayerPrefs.GetString("Date" + GetComponent<VariableManagement>().getUserLevel()) != File.GetLastWriteTimeUtc(filePath).ToString()) {
-			GetComponent<VariableManagement>().setLevelAuthorization(0);
+		} else if (PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel()) == -1) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Save and Test Again";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
@@ -686,17 +684,14 @@ public class MainMenuInterface : MonoBehaviour {
 		string level = "";
 		string[] userLevel;
 		string[] lines;
+		string data;
 		filePath = Application.persistentDataPath + "/" + n + ".txt";
 		level += "Slot " + n + "\n";
 		destroyBlockChildren();
 		if (File.Exists(filePath)) {
-			if (PlayerPrefs.GetString("Date" + n) != File.GetLastWriteTimeUtc(filePath).ToString()) {
-				GetComponent<VariableManagement>().setLevelAuthorization(0);
-				userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Edit and Test Again";
-			}
-			StreamReader r;
-			r = File.OpenText(filePath);
-			userLevel = r.ReadToEnd().Split(VariableManagement.levelDelimiter.ToString()[0]);
+			StreamReader r = File.OpenText(filePath);
+			data = r.ReadToEnd();
+			userLevel = data.Split(VariableManagement.levelDelimiter.ToString()[0]);
 			lines = userLevel[0].Split("\n"[0]);
 			level += lines[0] + "\n";
 			level += "By: " + lines[1];
@@ -704,6 +699,10 @@ public class MainMenuInterface : MonoBehaviour {
 			userNameOfMap = lines[1];
 			dataOfUserMap = lines[2] + " " + lines[3] + " " + lines[4] + " " + lines[5];
 			createSpriteLevel(lines, 6, " ");
+			if (PlayerPrefs.GetString("Date" + n) != File.GetLastWriteTimeUtc(filePath).ToString() || PlayerPrefs.GetString("Data" + n) != data) {
+				GetComponent<VariableManagement>().setLevelAuthorization(-1);
+				userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Edit and Test Again";
+			}
 			enableButtons();
 		} else {
 			disableButtons();
