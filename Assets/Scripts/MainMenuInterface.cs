@@ -28,6 +28,7 @@ public class MainMenuInterface : MonoBehaviour {
 	public Material mat;
 	int lastDatabaseMenu = 0;
 	bool loadingDatabase = false;
+	string filePath;
 
 	void Start() {
 		//PlayerPrefs.DeleteAll();
@@ -285,9 +286,9 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void deleteLevel() {
-		string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
-		if (File.Exists(filePath)) {
-			File.Delete(filePath);
+		string path = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
+		if (File.Exists(path)) {
+			File.Delete(path);
 			userCreated.GetComponentInChildren<Text>().text = GetComponent<VariableManagement>().getUserLevel() + "\nEmpty";
 			destroyBlockChildren();
 			GetComponent<VariableManagement>().setLevelAuthorization(0);
@@ -313,7 +314,7 @@ public class MainMenuInterface : MonoBehaviour {
 		
 	public void loadUserLevel() {
 		interfaceMenu = 0;
-		string filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
+		filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 		if (File.Exists(filePath)) {		
 			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
 			gameObject.AddComponent<BackgroundColorTransition>();
@@ -383,7 +384,7 @@ public class MainMenuInterface : MonoBehaviour {
 		} else {
 			userCreated.GetComponentsInChildren<Image>()[0].color = Color.clear;
 		}
-		if (GetComponent<VariableManagement>().isLevelAuthorized() &&
+	 	if (GetComponent<VariableManagement>().isLevelAuthorized() &&
 				userNameOfMap == PlayerPrefs.GetString(VariableManagement.userName) &&
 				GetComponent<VariableManagement>().isOnlineCheck() &&
 				!GetComponent<VariableManagement>().isLevelPosted()) {
@@ -400,9 +401,16 @@ public class MainMenuInterface : MonoBehaviour {
 		} else if (!GetComponent<VariableManagement>().isOnlineCheck()) {
 			turnOnButton(userCreated.GetComponentsInChildren<Button>()[2]);
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Sign in to Post";
-		} else if (!GetComponent<VariableManagement>().isLevelAuthorized() && GetComponent<VariableManagement>().isOnlineCheck()) {
+		} else if (!GetComponent<VariableManagement>().isLevelAuthorized() && GetComponent<VariableManagement>().isOnlineCheck() && 
+			PlayerPrefs.GetString("Date" + GetComponent<VariableManagement>().getUserLevel()) == File.GetLastWriteTimeUtc(filePath).ToString()) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Play to Authorize";
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
+		} else if (PlayerPrefs.GetString("Date" + GetComponent<VariableManagement>().getUserLevel()) != File.GetLastWriteTimeUtc(filePath).ToString()) {
+			GetComponent<VariableManagement>().setLevelAuthorization(0);
+			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Save and Test Again";
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
 		}
 		turnOnButton(userCreated.GetComponentsInChildren<Button>()[0]);
@@ -641,12 +649,12 @@ public class MainMenuInterface : MonoBehaviour {
 	public void downloadLevel () {
 		bool saved = false;
 		for (int i = minAmountOfUserLevels; i < maxAmountOfUserLevels; i++) {
-			string filePath = Application.persistentDataPath + "/" + i + ".txt";
-			if (!File.Exists(filePath)) {
+			string path = Application.persistentDataPath + "/" + i + ".txt";
+			if (!File.Exists(path)) {
 				saved = true;
 				GetComponent<FirebaseDatabases>().incrementDownloadCount(idOfMap, mapDownloadCount);
 				worldLevels.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Saved In Slot " + i;
-				File.AppendAllText(filePath, dataOfUserMap);
+				File.AppendAllText(path, dataOfUserMap);
 				break;
 			}
 		}
@@ -677,10 +685,14 @@ public class MainMenuInterface : MonoBehaviour {
 		string level = "";
 		string[] userLevel;
 		string[] lines;
-		string filePath = Application.persistentDataPath + "/" + n + ".txt";
+		filePath = Application.persistentDataPath + "/" + n + ".txt";
 		level += "Slot " + n + "\n";
 		destroyBlockChildren();
 		if (File.Exists(filePath)) {
+			if (PlayerPrefs.GetString("Date" + n) != File.GetLastWriteTimeUtc(filePath).ToString()) {
+				GetComponent<VariableManagement>().setLevelAuthorization(0);
+				userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Edit and Test Again";
+			}
 			StreamReader r;
 			r = File.OpenText(filePath);
 			userLevel = r.ReadToEnd().Split(VariableManagement.levelDelimiter.ToString()[0]);
@@ -776,8 +788,8 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 		filePositions.Clear();
 		for (int i = minAmountOfUserLevels; i <= maxAmountOfUserLevels; i++) {
-			string filePath = Application.persistentDataPath + "/" + i + ".txt";
-			if (File.Exists(filePath)) {
+			string path = Application.persistentDataPath + "/" + i + ".txt";
+			if (File.Exists(path)) {
 				filePositions.Add(i * 0.15f);
 			}
 		}

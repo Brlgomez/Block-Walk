@@ -430,6 +430,7 @@ public class EditorInterface : MonoBehaviour {
 			GetComponent<VariableManagement>().setLevelPostValue(0);
 		}
 		File.Delete(filePath);
+		PlayerPrefs.SetString("Date" + GetComponent<VariableManagement>().getUserLevel(), System.DateTime.UtcNow.ToString());
 		if (optionHolder.GetComponentInChildren<InputField>().text != "") {
 			File.AppendAllText(filePath, optionHolder.GetComponentInChildren<InputField>().text);
 		} else {
