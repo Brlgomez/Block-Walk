@@ -653,6 +653,7 @@ public class MainMenuInterface : MonoBehaviour {
 			if (!File.Exists(path)) {
 				saved = true;
 				GetComponent<FirebaseDatabases>().incrementDownloadCount(idOfMap, mapDownloadCount);
+				GetComponent<OnlineServices>().downloadLevelUnlock();
 				worldLevels.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Saved In Slot " + i;
 				File.AppendAllText(path, dataOfUserMap);
 				break;

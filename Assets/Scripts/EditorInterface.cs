@@ -426,6 +426,7 @@ public class EditorInterface : MonoBehaviour {
 		optionHolder.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Saved";
 		List<List<GameObject>> blocks = GetComponent<LevelEditor>().getBlocks();
 		if (deauthorize) {
+			GetComponent<OnlineServices>().createLevelUnlock();
 			GetComponent<VariableManagement>().setLevelAuthorization(0);
 			GetComponent<VariableManagement>().setLevelPostValue(0);
 		}

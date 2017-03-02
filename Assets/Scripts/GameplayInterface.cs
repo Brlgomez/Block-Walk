@@ -175,16 +175,16 @@ public class GameplayInterface : MonoBehaviour {
 	}
 
 	public void winText() {
-		int currentLevel;
+		int currentLevel = GetComponent<VariableManagement>().getWorldLevel() - 1;
+		int world = currentLevel / 16;
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			GetComponent<BlurOptimized>().enabled = true;
 		}
 		handle.GetComponentsInChildren<Image>()[4].color = Color.white;
 		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
-			currentLevel = GetComponent<VariableManagement>().getWorldLevel() - 1;
+			GetComponent<OnlineServices>().beatLevel(world);
 			if (PlayerPrefs.GetInt((currentLevel).ToString(), 0) == 0) {
 				PlayerPrefs.SetInt((currentLevel).ToString(), 1);
-				int world = currentLevel / 16;
 				bool beatWorld = true;
 				for (int i = 0; i < 16; i++) {
 					int levelNumber = (world * 16) + i;

@@ -47,26 +47,29 @@ public class OnlineServices: MonoBehaviour {
 
 	public void createLevelUnlock () {
 		if (PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 0) {
-			Social.ReportProgress(GPGSIds.achievement_the_creator, 100.0f, (bool success) => {});
+			Debug.Log("UNLOCKED CREATE");
+			//Social.ReportProgress(GPGSIds.achievement_the_creator, 100.0f, (bool success) => {});
 		}
 	}
 
 	public void uploadLevelUnlock () {
 		if (PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 0) {
-			Social.ReportProgress(GPGSIds.achievement_sending_precious_cargo, 100.0f, (bool success) => {});
+			Debug.Log("UNLOCKED UPLOAD");
+			//Social.ReportProgress(GPGSIds.achievement_sending_precious_cargo, 100.0f, (bool success) => {});
 		}
 	}
 
 	public void downloadLevelUnlock () {
 		if (PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 0) {
-			Social.ReportProgress(GPGSIds.achievement_beyond_the_voyage, 100.0f, (bool success) => {});
+			Debug.Log("UNLOCKED DOWNLOAD");
+			//Social.ReportProgress(GPGSIds.achievement_beyond_the_voyage, 100.0f, (bool success) => {});
 		}
 	}
 
 	public void beatLevel (int world) {
 		if (PlayerPrefs.GetInt(VariableManagement.isOnline, 0) == 0) {
-			Social.ReportProgress(GPGSIds.achievement_welcome_to_the_voyage, 100.0f, (bool success) => {
-			});
+			Debug.Log("UNLOCKED WELCOME");
+			//Social.ReportProgress(GPGSIds.achievement_welcome_to_the_voyage, 100.0f, (bool success) => {});
 			bool beatWorld = true;
 			for (int i = 0; i < 16; i++) {
 				int levelNumber = (world * 16) + i;
@@ -77,13 +80,17 @@ public class OnlineServices: MonoBehaviour {
 			}
 			if (beatWorld) {
 				if (world == 0) {
-					Social.ReportProgress(GPGSIds.achievement_beat_world_1, 100.0f, (bool success) => {});
+					Debug.Log("UNLOCKED 1");
+					//Social.ReportProgress(GPGSIds.achievement_beat_world_1, 100.0f, (bool success) => {});
 				} else if (world == 1) {
-					Social.ReportProgress(GPGSIds.achievement_beat_world_2, 100.0f, (bool success) => {});
+					Debug.Log("UNLOCKED 2");
+					//Social.ReportProgress(GPGSIds.achievement_beat_world_2, 100.0f, (bool success) => {});
 				} else if (world == 2) {
-					Social.ReportProgress(GPGSIds.achievement_beat_world_3, 100.0f, (bool success) => {});
+					Debug.Log("UNLOCKED 3");
+					//Social.ReportProgress(GPGSIds.achievement_beat_world_3, 100.0f, (bool success) => {});
 				} else if (world == 3) {
-					Social.ReportProgress(GPGSIds.achievement_beat_world_4, 100.0f, (bool success) => {});
+					Debug.Log("UNLOCKED 4");
+					//Social.ReportProgress(GPGSIds.achievement_beat_world_4, 100.0f, (bool success) => {});
 				}
 			}
 		}

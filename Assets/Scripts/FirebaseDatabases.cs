@@ -232,6 +232,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			b.GetComponentInChildren<Text>().color = Color.white;
 			b.GetComponent<Image>().color = Color.clear;
 			GetComponent<VariableManagement>().setLevelPostValue(1);
+			GetComponent<OnlineServices>().uploadLevelUnlock();
 		} else {
 			b.GetComponentInChildren<Text>().text = "No Connection";
 		}
