@@ -66,6 +66,7 @@ public class VariableManagement : MonoBehaviour {
 	public static string userMapName = "User Map Name";
 	public static string savePower = "Save Power";
 	public static string playSounds = "Play Sounds";
+	public static string playMusic = "Play Music";
 
 	// last menus
 	public static string userLevelMenu = "User";

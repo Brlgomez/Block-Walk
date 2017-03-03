@@ -233,6 +233,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			b.GetComponent<Image>().color = Color.clear;
 			GetComponent<VariableManagement>().setLevelPostValue(1);
 			GetComponent<OnlineServices>().uploadLevelUnlock();
+			GetComponent<SoundsAndMusic>().playSuccessSound();
 		} else {
 			b.GetComponentInChildren<Text>().text = "No Connection";
 		}

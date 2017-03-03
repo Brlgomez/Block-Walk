@@ -67,6 +67,16 @@ public class MainMenuInterface : MonoBehaviour {
 		GetComponent<VariableManagement>().turnOffCameraShift();
 		updateFiles();
 		refreshStore();
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic, 0) == 0) {
+			settings.GetComponentsInChildren<Button>()[0].GetComponentInChildren<Text>().text = "Music: On";
+		} else {
+			settings.GetComponentsInChildren<Button>()[0].GetComponentInChildren<Text>().text = "Music: Off";
+		}
+		if (PlayerPrefs.GetInt(VariableManagement.playSounds, 0) == 0) {
+			settings.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Sounds: On";
+		} else {
+			settings.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Sounds: Off";
+		}
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: Off";
 		} else {
@@ -149,6 +159,28 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 	}
 
+	public void music () {
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic, 0) == 0) {
+			PlayerPrefs.SetInt(VariableManagement.playMusic, 1);
+			settings.GetComponentsInChildren<Button>()[0].GetComponentInChildren<Text>().text = "Music: Off";
+		} else {
+			PlayerPrefs.SetInt(VariableManagement.playMusic, 0);
+			settings.GetComponentsInChildren<Button>()[0].GetComponentInChildren<Text>().text = "Music: On";
+		}
+	}
+
+	public void sounds () {
+		if (PlayerPrefs.GetInt(VariableManagement.playSounds, 0) == 0) {
+			PlayerPrefs.SetInt(VariableManagement.playSounds, 1);
+			settings.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Sounds: Off";
+			GetComponent<SoundsAndMusic>().updatePlaySounds();
+		} else {
+			PlayerPrefs.SetInt(VariableManagement.playSounds, 0);
+			settings.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Sounds: On";
+			GetComponent<SoundsAndMusic>().updatePlaySounds();
+		}
+	}
+
 	public void toStore () {
 		store.GetComponentInChildren<Text>().text = "Store";
 		gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, store, MenuColors.storeColor);
@@ -158,7 +190,9 @@ public class MainMenuInterface : MonoBehaviour {
 	public void boughtItem () {
 		if (interfaceMenu == 5) {
 			toWorldSelect();
-		} 
+		} else {
+			GetComponent<SoundsAndMusic>().playUnlockSound();
+		}
 		refreshStore();
 	}
 
@@ -194,6 +228,7 @@ public class MainMenuInterface : MonoBehaviour {
 				gameObject.AddComponent<MenuTransitions>().setScreens(levels, popUp, MenuColors.worldColor);
 			}
 			interfaceMenu = 5;
+			GetComponent<SoundsAndMusic>().playUnlockSound();
 			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!\nYou unlocked a new world and blocks!";
 			turnOffButton(popUp.GetComponentsInChildren<Button>()[0]);
 			turnOffButton(popUp.GetComponentsInChildren<Button>()[1]);
@@ -293,6 +328,7 @@ public class MainMenuInterface : MonoBehaviour {
 			destroyBlockChildren();
 			GetComponent<VariableManagement>().setLevelAuthorization(0);
 			GetComponent<VariableManagement>().setLevelPostValue(0);
+			PlayerPrefs.SetString("Data" + GetComponent<VariableManagement>().getUserLevel(), "");
 			updateFiles();
 		}
 		toUserCreatedLevels();
@@ -407,7 +443,7 @@ public class MainMenuInterface : MonoBehaviour {
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
 		} else if (PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel()) == -1) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
-			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Save and Test Again";
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Resave and Test";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
 		}
@@ -699,7 +735,7 @@ public class MainMenuInterface : MonoBehaviour {
 			userNameOfMap = lines[1];
 			dataOfUserMap = lines[2] + " " + lines[3] + " " + lines[4] + " " + lines[5];
 			createSpriteLevel(lines, 6, " ");
-			if (PlayerPrefs.GetString("Date" + n) != File.GetLastWriteTimeUtc(filePath).ToString() || PlayerPrefs.GetString("Data" + n) != data) {
+			if (PlayerPrefs.GetString("Data" + n) != data) {
 				GetComponent<VariableManagement>().setLevelAuthorization(-1);
 				userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Edit and Test Again";
 			}

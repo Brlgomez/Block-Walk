@@ -467,7 +467,6 @@ public class EditorInterface : MonoBehaviour {
 		}
 		levelData += VariableManagement.levelDelimiter.ToString();
 		File.AppendAllText(filePath, levelData);
-		PlayerPrefs.SetString("Date" + GetComponent<VariableManagement>().getUserLevel(), System.DateTime.UtcNow.ToString());
 		PlayerPrefs.SetString("Data" + GetComponent<VariableManagement>().getUserLevel(), levelData);
 		if (deauthorize) {
 			GetComponent<OnlineServices>().createLevelUnlock();
