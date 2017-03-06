@@ -55,17 +55,22 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	void spawnObject(int x, int z) {
-		if (blockPos[z][x] == null && currentObject.name != VariableManagement.player) {
-			GetComponent<EditorInterface>().deauthorizedLevel();
-			createBlock(x, z);
+		if (blockPos[z][x] == null) {
+			if (currentObject.name != VariableManagement.player) {
+				GetComponent<EditorInterface>().deauthorizedLevel();
+				createBlock(x, z);
+				GetComponent<SoundsAndMusic>().playDropBlockSound();
+			}
 		} else {
 			if (currentObject.name == VariableManagement.player) {
 				GetComponent<EditorInterface>().deauthorizedLevel();
+				GetComponent<SoundsAndMusic>().playEraserSound();
 				Destroy(blockPos[z][x]);
 			} else if (blockPos[z][x].name != currentObject.name + VariableManagement.clone) {
 				GetComponent<EditorInterface>().deauthorizedLevel();
 				Destroy(blockPos[z][x]);
 				createBlock(x, z);
+				GetComponent<SoundsAndMusic>().playDropBlockSound();
 			}
 		}
 	}

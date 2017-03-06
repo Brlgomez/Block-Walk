@@ -302,6 +302,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void toUserCreatedLevels() {
 		userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Post";
+		userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
 		showLevel();
 		if (interfaceMenu == 0) {
 			gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, userCreated, MenuColors.editorColor);
@@ -427,29 +428,32 @@ public class MainMenuInterface : MonoBehaviour {
 				!GetComponent<VariableManagement>().isLevelPosted() && 
 				PlayerPrefs.GetString("Data" + GetComponent<VariableManagement>().getUserLevel()) == currentLevelData) {
 			turnOnButton(userCreated.GetComponentsInChildren<Button>()[2]);
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.white;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Post";
 		} else if (GetComponent<VariableManagement>().isLevelPosted()) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
-			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Posted";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Posted";
 		} else if (userNameOfMap != PlayerPrefs.GetString(VariableManagement.userName)) {
 			turnOffButton(userCreated.GetComponentsInChildren<Button>()[2]);
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "";
 		} else if (!GetComponent<VariableManagement>().isOnlineCheck()) {
 			turnOnButton(userCreated.GetComponentsInChildren<Button>()[2]);
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.white;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Sign in to Post";
 		} else if (PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel()) == 0 && 
 				GetComponent<VariableManagement>().isOnlineCheck() && 
 				PlayerPrefs.GetString("Data" + GetComponent<VariableManagement>().getUserLevel()) == currentLevelData) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
-			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Play to Authorize";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Play to Authorize";
 		} else if (PlayerPrefs.GetString("Data" + GetComponent<VariableManagement>().getUserLevel()) != currentLevelData) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
-			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Resave and Test";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Resave and Test";
 		}
 		turnOnButton(userCreated.GetComponentsInChildren<Button>()[0]);
 		turnOnButton(userCreated.GetComponentsInChildren<Button>()[1]);

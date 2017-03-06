@@ -377,6 +377,7 @@ public class EditorInterface : MonoBehaviour {
 		showButtons();
 		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[0]);
 		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[1]);
+		GetComponent<SoundsAndMusic>().playUnlockSound();
 	}
 
 	public void unlockedWorld () {
@@ -386,6 +387,7 @@ public class EditorInterface : MonoBehaviour {
 		showButtons();
 		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[0]);
 		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[1]);
+		GetComponent<SoundsAndMusic>().playUnlockSound();
 	}
 
 	public bool isMenuOn() {

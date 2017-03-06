@@ -10,6 +10,8 @@ public class SoundsAndMusic : MonoBehaviour {
 	public AudioClip trash;
 	public AudioClip success;
 	public AudioClip unlock;
+	public AudioClip eraser;
+	public AudioClip dropBlock;
 
 	private AudioSource source;
 
@@ -27,37 +29,57 @@ public class SoundsAndMusic : MonoBehaviour {
 
 	public void playButtonSound() {
 		if (playSoundEffects == 0) {
+			source.pitch = 1;
 			source.PlayOneShot (button);
 		}
 	}
 
 	public void playNextItemSound() {
 		if (playSoundEffects == 0) {
+			source.pitch = 1;
 			source.PlayOneShot (nextItem);
 		}
 	}
 
 	public void playWarningSound() {
 		if (playSoundEffects == 0) {
+			source.pitch = 1;
 			source.PlayOneShot (warning);
 		}
 	}
 
 	public void playTrashSound() {
 		if (playSoundEffects == 0) {
+			source.pitch = 1;
 			source.PlayOneShot (trash);
 		}
 	}
 
 	public void playSuccessSound() {
 		if (playSoundEffects == 0) {
+			source.pitch = 1;
 			source.PlayOneShot (success);
 		}
 	}
 
 	public void playUnlockSound() {
 		if (playSoundEffects == 0) {
+			source.pitch = 1;
 			source.PlayOneShot (unlock);
+		}
+	}
+
+	public void playEraserSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = Random.Range(0.75f, 1.25f);
+			source.PlayOneShot (eraser);
+		}
+	}
+
+	public void playDropBlockSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = Random.Range(0.5f, 1.5f);
+			source.PlayOneShot (dropBlock);
 		}
 	}
 }
