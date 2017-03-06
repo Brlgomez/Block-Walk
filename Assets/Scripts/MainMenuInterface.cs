@@ -29,6 +29,7 @@ public class MainMenuInterface : MonoBehaviour {
 	int lastDatabaseMenu = 0;
 	bool loadingDatabase = false;
 	string filePath;
+	string currentLevelData;
 
 	void Start() {
 		//PlayerPrefs.DeleteAll();
@@ -423,7 +424,8 @@ public class MainMenuInterface : MonoBehaviour {
 	 	if (GetComponent<VariableManagement>().isLevelAuthorized() &&
 				userNameOfMap == PlayerPrefs.GetString(VariableManagement.userName) &&
 				GetComponent<VariableManagement>().isOnlineCheck() &&
-				!GetComponent<VariableManagement>().isLevelPosted()) {
+				!GetComponent<VariableManagement>().isLevelPosted() && 
+				PlayerPrefs.GetString("Data" + GetComponent<VariableManagement>().getUserLevel()) == currentLevelData) {
 			turnOnButton(userCreated.GetComponentsInChildren<Button>()[2]);
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Post";
 		} else if (GetComponent<VariableManagement>().isLevelPosted()) {
@@ -437,11 +439,13 @@ public class MainMenuInterface : MonoBehaviour {
 		} else if (!GetComponent<VariableManagement>().isOnlineCheck()) {
 			turnOnButton(userCreated.GetComponentsInChildren<Button>()[2]);
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Sign in to Post";
-		} else if (PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel()) == 0 && GetComponent<VariableManagement>().isOnlineCheck()) {
+		} else if (PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel()) == 0 && 
+				GetComponent<VariableManagement>().isOnlineCheck() && 
+				PlayerPrefs.GetString("Data" + GetComponent<VariableManagement>().getUserLevel()) == currentLevelData) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Play to Authorize";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
-		} else if (PlayerPrefs.GetInt("User" + GetComponent<VariableManagement>().getUserLevel()) == -1) {
+		} else if (PlayerPrefs.GetString("Data" + GetComponent<VariableManagement>().getUserLevel()) != currentLevelData) {
 			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Resave and Test";
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
@@ -456,7 +460,8 @@ public class MainMenuInterface : MonoBehaviour {
 		if (dataOfUserMap != "" && GetComponent<VariableManagement>().isLevelAuthorized() && 
 				userNameOfMap == PlayerPrefs.GetString (VariableManagement.userName) && 
 				GetComponent<VariableManagement>().isOnlineCheck() && 
-				!GetComponent<VariableManagement>().isLevelPosted()) {
+				!GetComponent<VariableManagement>().isLevelPosted() && 
+				PlayerPrefs.GetString("Data" + GetComponent<VariableManagement>().getUserLevel()) == currentLevelData) {
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Posting...";
 			if (!loadingDatabase) {
 				StartCoroutine(postLevelCoroutine());
@@ -727,6 +732,7 @@ public class MainMenuInterface : MonoBehaviour {
 		if (File.Exists(filePath)) {
 			StreamReader r = File.OpenText(filePath);
 			data = r.ReadToEnd();
+			currentLevelData = data;
 			userLevel = data.Split(VariableManagement.levelDelimiter.ToString()[0]);
 			lines = userLevel[0].Split("\n"[0]);
 			level += lines[0] + "\n";
@@ -735,8 +741,8 @@ public class MainMenuInterface : MonoBehaviour {
 			userNameOfMap = lines[1];
 			dataOfUserMap = lines[2] + " " + lines[3] + " " + lines[4] + " " + lines[5];
 			createSpriteLevel(lines, 6, " ");
-			if (PlayerPrefs.GetString("Data" + n) != data) {
-				GetComponent<VariableManagement>().setLevelAuthorization(-1);
+			if (PlayerPrefs.GetString("Data" + n) != currentLevelData) {
+				GetComponent<VariableManagement>().setLevelAuthorization(0);
 				userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Edit and Test Again";
 			}
 			enableButtons();
