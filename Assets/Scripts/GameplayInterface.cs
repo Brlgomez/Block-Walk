@@ -108,6 +108,7 @@ public class GameplayInterface : MonoBehaviour {
 			towards = bottomOfScreen;
 		}
 		if (timer < lengthOfTap) {
+			GetComponent<SoundsAndMusic>().playButtonSound();
 			if (towards == bottomOfScreen) {
 				towards = topOfScreen;
 			} else {
@@ -137,6 +138,7 @@ public class GameplayInterface : MonoBehaviour {
 		PlayerPrefs.SetInt(VariableManagement.worldLevel, GetComponent<VariableManagement>().getWorldLevel());
 		gameObject.AddComponent<BackgroundColorTransition>();
 		GetComponent<BackgroundColorTransition>().transition(VariableManagement.restartOrNextLevel);
+		GetComponent<SoundsAndMusic>().playButtonSound();
 	}
 
 	public void nextLevelClick() {
@@ -145,10 +147,12 @@ public class GameplayInterface : MonoBehaviour {
 		PlayerPrefs.SetInt(VariableManagement.worldLevel, GetComponent<VariableManagement>().getWorldLevel() + 1);
 		gameObject.AddComponent<BackgroundColorTransition>();
 		GetComponent<BackgroundColorTransition>().transition(VariableManagement.restartOrNextLevel);
+		GetComponent<SoundsAndMusic>().playButtonSound();
 	}
 
 	public void mainMenuClick() {
 		sliderMoving = false;
+		GetComponent<SoundsAndMusic>().playButtonSound();
 		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu ||
 		    GetComponent<VariableManagement>().getLastMenu() == VariableManagement.userLevelMenu) {
 			gameObject.AddComponent<BackgroundColorTransition>();
@@ -209,6 +213,7 @@ public class GameplayInterface : MonoBehaviour {
 		} else if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.userLevelMenu || GetComponent<VariableManagement>().getLastMenu() == VariableManagement.editorMenu) {
 			GetComponent<VariableManagement>().setLevelAuthorization(1);
 		}
+		GetComponent<SoundsAndMusic>().playBeatLevelSound();
 		gameStatus.GetComponent<Text>().text = "Success";
 		timer = 0;
 		sliderMoving = true;
@@ -219,6 +224,7 @@ public class GameplayInterface : MonoBehaviour {
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			GetComponent<BlurOptimized>().enabled = true;
 		}
+		GetComponent<SoundsAndMusic>().playLoseLevelSound();
 		gameStatus.GetComponent<Text>().text = "Stuck!";
 		timer = 0;
 		sliderMoving = true;

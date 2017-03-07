@@ -12,6 +12,10 @@ public class SoundsAndMusic : MonoBehaviour {
 	public AudioClip unlock;
 	public AudioClip eraser;
 	public AudioClip dropBlock;
+	public AudioClip beatLevel;
+	public AudioClip loseLevel;
+	public AudioClip onSwitch;
+	public AudioClip offSwitch;
 
 	private AudioSource source;
 
@@ -80,6 +84,34 @@ public class SoundsAndMusic : MonoBehaviour {
 		if (playSoundEffects == 0) {
 			source.pitch = Random.Range(0.5f, 1.5f);
 			source.PlayOneShot (dropBlock);
+		}
+	}
+
+	public void playBeatLevelSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = 1;
+			source.PlayOneShot (beatLevel);
+		}
+	}
+
+	public void playLoseLevelSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = 1;
+			source.PlayOneShot (loseLevel);
+		}
+	}
+
+	public void playOnSwitchSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = 1;
+			source.PlayOneShot (onSwitch);
+		}
+	}
+
+	public void playOffSwitchSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = 1;
+			source.PlayOneShot (offSwitch);
 		}
 	}
 }

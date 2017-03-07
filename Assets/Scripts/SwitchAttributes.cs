@@ -6,6 +6,7 @@ public class SwitchAttributes : MonoBehaviour {
 
 	bool redBlocksActive = true;
 	bool redActiveSavedState = true;
+	bool playSound = false;
 
 	void Start () {
 		buttonPress ();
@@ -15,6 +16,7 @@ public class SwitchAttributes : MonoBehaviour {
 	public void buttonPress () {
 		redBlocksActive = !redBlocksActive;
 		changeBlockSizes ();
+		playSound = true;
 	}
 
 	public void saveState () {
@@ -33,6 +35,13 @@ public class SwitchAttributes : MonoBehaviour {
 	void changeBlockSizes () {
 		List<GameObject> redBlocks = GetComponent<LevelBuilder>().getRedBlocks();
 		List<GameObject> blueBlocks = GetComponent<LevelBuilder>().getBlueBlocks();
+		if (playSound) {
+			if (redBlocksActive) {
+				GetComponent<SoundsAndMusic>().playOnSwitchSound();
+			} else {
+				GetComponent<SoundsAndMusic>().playOffSwitchSound();
+			}
+		}
 		for (int i = 0; i < redBlocks.Count; i++) {
 			if (redBlocks [i].GetComponent<FallingBlock> () == null) {
 				if (redBlocksActive) {
