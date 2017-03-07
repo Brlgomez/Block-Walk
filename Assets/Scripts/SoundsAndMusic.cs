@@ -16,6 +16,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public AudioClip loseLevel;
 	public AudioClip onSwitch;
 	public AudioClip offSwitch;
+	public AudioClip blockWalk;
 
 	private AudioSource source;
 
@@ -112,6 +113,13 @@ public class SoundsAndMusic : MonoBehaviour {
 		if (playSoundEffects == 0) {
 			source.pitch = 1;
 			source.PlayOneShot (offSwitch);
+		}
+	}
+
+	public void playBlockWalkSound(float pitch) {
+		if (playSoundEffects == 0) {
+			source.pitch = pitch;
+			source.PlayOneShot (blockWalk);
 		}
 	}
 }
