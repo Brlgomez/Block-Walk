@@ -18,6 +18,8 @@ public class SoundsAndMusic : MonoBehaviour {
 	public AudioClip offSwitch;
 	public AudioClip blockWalk;
 	public AudioClip multistepBlock;
+	public AudioClip rotateRight;
+	public AudioClip rotateLeft;
 
 	private AudioSource source;
 
@@ -132,6 +134,20 @@ public class SoundsAndMusic : MonoBehaviour {
 			source.Stop();
 			source.pitch = pitch + Random.Range(-0.01f, 0.01f);
 			source.PlayOneShot (multistepBlock);
+		}
+	}
+
+	public void playRotateRightSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = 1;
+			source.PlayOneShot (rotateRight);
+		}
+	}
+
+	public void playRotateLeftSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = 1;
+			source.PlayOneShot (rotateLeft);
 		}
 	}
 }

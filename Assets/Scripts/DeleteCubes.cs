@@ -24,8 +24,10 @@ public class DeleteCubes : MonoBehaviour {
 			Camera.main.GetComponent<SwitchAttributes>().buttonPress();
 			Camera.main.GetComponent<SwitchAttributes>().saveState();
 		} else if (other.transform.tag == "RotatorR") {
+			Camera.main.GetComponent<SoundsAndMusic>().playRotateRightSound();
 			GetComponent<Rotator>().rotateAt(other.transform.position, 1);
 		} else if (other.transform.tag == "RotatorL") {
+			Camera.main.GetComponent<SoundsAndMusic>().playRotateLeftSound();
 			GetComponent<Rotator>().rotateAt(other.transform.position, -1);
 		} else {
 			float pitch = (
