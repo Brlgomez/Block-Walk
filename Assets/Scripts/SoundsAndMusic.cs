@@ -17,6 +17,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public AudioClip onSwitch;
 	public AudioClip offSwitch;
 	public AudioClip blockWalk;
+	public AudioClip multistepBlock;
 
 	private AudioSource source;
 
@@ -76,6 +77,7 @@ public class SoundsAndMusic : MonoBehaviour {
 
 	public void playEraserSound() {
 		if (playSoundEffects == 0) {
+			source.Stop();
 			source.pitch = Random.Range(0.75f, 1.25f);
 			source.PlayOneShot (eraser);
 		}
@@ -83,6 +85,7 @@ public class SoundsAndMusic : MonoBehaviour {
 
 	public void playDropBlockSound() {
 		if (playSoundEffects == 0) {
+			source.Stop();
 			source.pitch = Random.Range(0.5f, 1.5f);
 			source.PlayOneShot (dropBlock);
 		}
@@ -118,8 +121,17 @@ public class SoundsAndMusic : MonoBehaviour {
 
 	public void playBlockWalkSound(float pitch) {
 		if (playSoundEffects == 0) {
-			source.pitch = pitch;
+			source.Stop();
+			source.pitch = pitch + Random.Range(-0.01f, 0.01f);
 			source.PlayOneShot (blockWalk);
+		}
+	}
+
+	public void playMultiStepSound(float pitch) {
+		if (playSoundEffects == 0) {
+			source.Stop();
+			source.pitch = pitch + Random.Range(-0.01f, 0.01f);
+			source.PlayOneShot (multistepBlock);
 		}
 	}
 }
