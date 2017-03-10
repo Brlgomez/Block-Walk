@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 public class DeleteCubes : MonoBehaviour {
 
+	Material standardBlock;
+
+	void Start () {
+		standardBlock = (Material)Resources.Load("Materials/Block", typeof(Material));
+	}
+
 	public void exitBlock (GameObject other) {
 		// regular, multi step, redAndBlue block
 		if (other.transform.tag == "Block" || other.transform.tag == "RedBlock" || other.transform.tag == "BlueBlock") {
@@ -46,5 +52,9 @@ public class DeleteCubes : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public Material getStandard () {
+		return standardBlock;
 	}
 }

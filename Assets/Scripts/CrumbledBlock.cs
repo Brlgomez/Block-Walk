@@ -21,8 +21,9 @@ public class CrumbledBlock : MonoBehaviour {
 
 	public void decreaseSteps () {
 		Renderer renderer = GetComponent<Renderer> ();
-		Material mat = renderer.material;
 		if (numberOfSteps > 1) {
+			GetComponent<Renderer>().material = Camera.main.GetComponent<DeleteCubes>().getStandard();
+			Material mat = renderer.material;
 			mat.color = new Color (r, g, b, 1);
 		}
 		numberOfSteps--;
