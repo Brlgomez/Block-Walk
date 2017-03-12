@@ -41,7 +41,7 @@ public class DeleteCubes : MonoBehaviour {
 				other.GetComponent<Renderer>().material.color.g +
 				other.GetComponent<Renderer>().material.color.b
 			);
-			pitch = Mathf.Clamp(pitch, 0.5f, 3);
+			pitch = Mathf.Clamp(pitch, 0.25f, 3);
 			if (other.GetComponent<CrumbledBlock>() == null) {
 				Camera.main.GetComponent<SoundsAndMusic>().playBlockWalkSound(pitch, other.transform.position);
 			} else {

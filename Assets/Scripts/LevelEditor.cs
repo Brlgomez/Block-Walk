@@ -59,7 +59,6 @@ public class LevelEditor : MonoBehaviour {
 			if (currentObject.name != VariableManagement.player) {
 				GetComponent<EditorInterface>().deauthorizedLevel();
 				createBlock(x, z);
-				GetComponent<SoundsAndMusic>().playDropBlockSound(new Vector3(x, 0, z));
 			}
 		} else {
 			if (currentObject.name == VariableManagement.player) {
@@ -70,7 +69,6 @@ public class LevelEditor : MonoBehaviour {
 				GetComponent<EditorInterface>().deauthorizedLevel();
 				Destroy(blockPos[z][x]);
 				createBlock(x, z);
-				GetComponent<SoundsAndMusic>().playDropBlockSound(new Vector3(x, 0, z));
 			}
 		}
 	}
@@ -81,6 +79,9 @@ public class LevelEditor : MonoBehaviour {
 		GetComponent<EditorInterface>().changeBlockColor(temp);
 		temp.transform.SetParent(cubes.transform);
 		blockPos[z][x] = temp;
+		float pitch = temp.GetComponent<Renderer>().material.color.r + temp.GetComponent<Renderer>().material.color.g + temp.GetComponent<Renderer>().material.color.b;
+		pitch = Mathf.Clamp(pitch, 0.25f, 3);
+		GetComponent<SoundsAndMusic>().playDropBlockSound(new Vector3(x, 0, z), pitch, temp.name);
 	}
 
 	public void changeBlock(GameObject block) {

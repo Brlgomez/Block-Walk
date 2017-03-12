@@ -84,10 +84,15 @@ public class SoundsAndMusic : MonoBehaviour {
 		}
 	}
 
-	public void playDropBlockSound(Vector3 blockPos) {
+	public void playDropBlockSound(Vector3 blockPos, float pitch, string name) {
 		if (playSoundEffects == 0) {
-			AudioSource sound = playClipAt(dropBlock, blockPos);
-			sound.pitch = Random.Range(0.5f, 1.5f);
+			AudioSource sound;
+			if (name == VariableManagement.multistepBlock + VariableManagement.clone) {
+				sound = playClipAt(multistepBlock, blockPos);
+			} else {
+				sound = playClipAt(blockWalk, blockPos);
+			}
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
@@ -122,14 +127,14 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playBlockWalkSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(blockWalk, blockPos);
-			sound.pitch = pitch + Random.Range(-0.01f, 0.01f);
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
 	public void playMultiStepSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(multistepBlock, blockPos);
-			sound.pitch = pitch + Random.Range(-0.01f, 0.01f);
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
