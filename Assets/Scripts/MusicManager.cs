@@ -8,18 +8,22 @@ public class MusicManager : MonoBehaviour {
 	static bool AudioBegin = false; 
 
 	void Awake() {
-		musicSource = GetComponent<AudioSource>();
-		if (!AudioBegin) {
-			musicSource.Play ();
-			DontDestroyOnLoad (gameObject);
-			AudioBegin = true;
-		} 
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
+			musicSource = GetComponent<AudioSource>();
+			if (!AudioBegin) {
+				musicSource.Play();
+				DontDestroyOnLoad(gameObject);
+				AudioBegin = true;
+			} 
+		}
 	}
 
 	public void destroy () {
-		musicSource.Stop();
-		AudioBegin = false;
-		Destroy(gameObject);
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
+			musicSource.Stop();
+			AudioBegin = false;
+			Destroy(gameObject);
+		}
 	}
 }
 

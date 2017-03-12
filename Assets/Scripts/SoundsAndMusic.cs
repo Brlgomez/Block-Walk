@@ -77,19 +77,17 @@ public class SoundsAndMusic : MonoBehaviour {
 		}
 	}
 
-	public void playEraserSound() {
+	public void playEraserSound(Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.Stop();
-			source.pitch = Random.Range(0.75f, 1.25f);
-			source.PlayOneShot (eraser);
+			AudioSource sound = playClipAt(eraser, blockPos);
+			sound.pitch = Random.Range(0.75f, 1.25f);
 		}
 	}
 
-	public void playDropBlockSound() {
+	public void playDropBlockSound(Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.Stop();
-			source.pitch = Random.Range(0.5f, 1.5f);
-			source.PlayOneShot (dropBlock);
+			AudioSource sound = playClipAt(dropBlock, blockPos);
+			sound.pitch = Random.Range(0.5f, 1.5f);
 		}
 	}
 
@@ -121,19 +119,17 @@ public class SoundsAndMusic : MonoBehaviour {
 		}
 	}
 
-	public void playBlockWalkSound(float pitch) {
+	public void playBlockWalkSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.Stop();
-			source.pitch = pitch + Random.Range(-0.01f, 0.01f);
-			source.PlayOneShot (blockWalk);
+			AudioSource sound = playClipAt(blockWalk, blockPos);
+			sound.pitch = pitch + Random.Range(-0.01f, 0.01f);
 		}
 	}
 
-	public void playMultiStepSound(float pitch) {
+	public void playMultiStepSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.Stop();
-			source.pitch = pitch + Random.Range(-0.01f, 0.01f);
-			source.PlayOneShot (multistepBlock);
+			AudioSource sound = playClipAt(multistepBlock, blockPos);
+			sound.pitch = pitch + Random.Range(-0.01f, 0.01f);
 		}
 	}
 
@@ -149,5 +145,16 @@ public class SoundsAndMusic : MonoBehaviour {
 			source.pitch = 1;
 			source.PlayOneShot (rotateLeft);
 		}
+	}
+
+	AudioSource playClipAt(AudioClip clip, Vector3 pos) {
+		GameObject tempGO = new GameObject("TempAudio");
+		tempGO.transform.position = pos;
+		tempGO.AddComponent<AudioSource>();
+		AudioSource aSource = tempGO.GetComponent<AudioSource>();
+		aSource.clip = clip;
+		aSource.Play();
+		Destroy(tempGO, clip.length); 
+		return aSource; 
 	}
 }

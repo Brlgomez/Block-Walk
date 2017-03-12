@@ -43,12 +43,12 @@ public class DeleteCubes : MonoBehaviour {
 			);
 			pitch = Mathf.Clamp(pitch, 0.5f, 3);
 			if (other.GetComponent<CrumbledBlock>() == null) {
-				Camera.main.GetComponent<SoundsAndMusic>().playBlockWalkSound(pitch);
+				Camera.main.GetComponent<SoundsAndMusic>().playBlockWalkSound(pitch, other.transform.position);
 			} else {
 				if (other.GetComponent<CrumbledBlock>().getSteps() <= 1) {
-					Camera.main.GetComponent<SoundsAndMusic>().playBlockWalkSound(pitch);
+					Camera.main.GetComponent<SoundsAndMusic>().playBlockWalkSound(pitch, other.transform.position);
 				} else { 
-					Camera.main.GetComponent<SoundsAndMusic>().playMultiStepSound(pitch);
+					Camera.main.GetComponent<SoundsAndMusic>().playMultiStepSound(pitch, other.transform.position);
 				}
 			}
 		}

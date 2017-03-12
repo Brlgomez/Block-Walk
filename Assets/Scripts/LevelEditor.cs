@@ -59,18 +59,18 @@ public class LevelEditor : MonoBehaviour {
 			if (currentObject.name != VariableManagement.player) {
 				GetComponent<EditorInterface>().deauthorizedLevel();
 				createBlock(x, z);
-				GetComponent<SoundsAndMusic>().playDropBlockSound();
+				GetComponent<SoundsAndMusic>().playDropBlockSound(new Vector3(x, 0, z));
 			}
 		} else {
 			if (currentObject.name == VariableManagement.player) {
 				GetComponent<EditorInterface>().deauthorizedLevel();
-				GetComponent<SoundsAndMusic>().playEraserSound();
+				GetComponent<SoundsAndMusic>().playEraserSound(new Vector3(x, 0, z));
 				Destroy(blockPos[z][x]);
 			} else if (blockPos[z][x].name != currentObject.name + VariableManagement.clone) {
 				GetComponent<EditorInterface>().deauthorizedLevel();
 				Destroy(blockPos[z][x]);
 				createBlock(x, z);
-				GetComponent<SoundsAndMusic>().playDropBlockSound();
+				GetComponent<SoundsAndMusic>().playDropBlockSound(new Vector3(x, 0, z));
 			}
 		}
 	}

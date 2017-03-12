@@ -168,7 +168,7 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 
 	public void OnInitialized (IStoreController controller, IExtensionProvider extensions) {
 		// Purchasing has succeeded initializing. Collect our Purchasing references.
-		Debug.Log ("OnInitialized: PASS");
+		//Debug.Log ("OnInitialized: PASS");
 
 		// Overall Purchasing system, configured with products for this application.
 		m_StoreController = controller;
