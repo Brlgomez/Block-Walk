@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
 
@@ -37,8 +38,10 @@ public class BackgroundColorTransition : MonoBehaviour {
 		if (levelStart) {
 			music.GetComponent<MusicManager>().increaseVolume();
 			timer += Time.deltaTime;
-			ui.position = Vector3.Lerp(ui.position, uiPosition, timer * uiSpeed);
-			cubes.position = Vector3.Lerp(cubes.position, positionOfCubes, timer * cubesSpeed);
+			if (SceneManager.GetActiveScene().name != "Main Menu") {
+				ui.position = Vector3.Lerp(ui.position, uiPosition, timer * uiSpeed);
+				cubes.position = Vector3.Lerp(cubes.position, positionOfCubes, timer * cubesSpeed);
+			}
 			if (Vector3.Distance(cubes.position, positionOfCubes) < minCubeDistance || PlayerPrefs.GetInt(VariableManagement.savePower) == 1) {
 				cubes.position = positionOfCubes;
 				ui.position = uiPosition;
@@ -95,8 +98,10 @@ public class BackgroundColorTransition : MonoBehaviour {
 	}
 
 	public void levelStarting() {
-		ui.transform.position = new Vector3(-Screen.width / 2, ui.position.y, 0);
-		cubes.position = Vector3.left * cubeDistance;
+		if (SceneManager.GetActiveScene().name != "Main Menu") {
+			ui.transform.position = new Vector3(-Screen.width / 2, ui.position.y, 0);
+			cubes.position = Vector3.left * cubeDistance;
+		}
 		levelStart = true;
 	}
 
