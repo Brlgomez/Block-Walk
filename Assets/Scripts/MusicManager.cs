@@ -28,11 +28,15 @@ public class MusicManager : MonoBehaviour {
 	}
 
 	public void increaseVolume () {
-		musicSource.volume += 0.02f;
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
+			musicSource.volume += 0.02f;
+		}
 	}
 
 	public void decreaseVolume () {
-		musicSource.volume -= 0.02f;
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
+			musicSource.volume -= 0.02f;
+		}
 	}
 }
 
