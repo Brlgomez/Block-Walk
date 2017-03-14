@@ -19,6 +19,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 	Color32 newColor;
 	Transform ui;
 	Transform cubes;
+	GameObject music;
 	Vector3 positionOfCubes;
 	Vector3 endPosOfUi;
 	Vector3 uiPosition;
@@ -26,6 +27,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 	void Awake() {
 		ui = GameObject.Find("Floor").transform;
 		cubes = GameObject.Find("Cubes").transform;
+		music = GameObject.Find("Music");
 		positionOfCubes = cubes.position;
 		uiPosition = ui.transform.position;
 		endPosOfUi = new Vector3(-Screen.width / 2, ui.position.y, ui.position.z);
@@ -33,6 +35,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 
 	void Update() {
 		if (levelStart) {
+			music.GetComponent<MusicManager>().increaseVolume();
 			timer += Time.deltaTime;
 			ui.position = Vector3.Lerp(ui.position, uiPosition, timer * uiSpeed);
 			cubes.position = Vector3.Lerp(cubes.position, positionOfCubes, timer * cubesSpeed);
@@ -46,6 +49,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 			}
 		}
 		if (transitionToColor) {
+			music.GetComponent<MusicManager>().decreaseVolume();
 			timer += Time.deltaTime;
 			if (timer < transitionLength - 0.1f && PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
 				Camera.main.backgroundColor = Color32.Lerp(Camera.main.backgroundColor, newColor, timer * colorSpeed);
@@ -62,18 +66,24 @@ public class BackgroundColorTransition : MonoBehaviour {
 
 	void goingToNextScene() {
 		if (nextScene == VariableManagement.levelFromMain) {
+			music.GetComponent<MusicManager>().destroy();
 			GetComponent<MainMenuInterface>().nextScene(VariableManagement.level);
 		} else if (nextScene == VariableManagement.toMainFromLevel) {
+			music.GetComponent<MusicManager>().destroy();
 			GetComponent<GameplayInterface>().nextScene(VariableManagement.mainMenu);
 		} else if (nextScene == VariableManagement.restartOrNextLevel) {
 			GetComponent<GameplayInterface>().nextScene(VariableManagement.level);
 		} else if (nextScene == VariableManagement.toEditorFromMain) {
+			music.GetComponent<MusicManager>().destroy();
 			GetComponent<MainMenuInterface>().nextScene(VariableManagement.editor);
 		} else if (nextScene == VariableManagement.toEditorFromTest) {
+			music.GetComponent<MusicManager>().destroy();
 			GetComponent<GameplayInterface>().nextScene(VariableManagement.editor);
 		} else if (nextScene == VariableManagement.toMainFromEditor) {
+			music.GetComponent<MusicManager>().destroy();
 			GetComponent<EditorInterface>().nextScene(VariableManagement.mainMenu);
 		} else if (nextScene == VariableManagement.toTestFromEditor) {
+			music.GetComponent<MusicManager>().destroy();
 			GetComponent<EditorInterface>().nextScene(VariableManagement.level);
 		}
 	}

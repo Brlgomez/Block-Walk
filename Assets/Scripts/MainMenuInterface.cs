@@ -83,6 +83,7 @@ public class MainMenuInterface : MonoBehaviour {
 		} else {
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: On";
 		}
+		gameObject.AddComponent<BackgroundColorTransition>().levelStarting();
 	}
 
 	void goToLastMenu () {

@@ -152,7 +152,6 @@ public class GameplayInterface : MonoBehaviour {
 
 	public void mainMenuClick() {
 		sliderMoving = false;
-		GameObject.Find("Music").GetComponent<MusicManager>().destroy();
 		GetComponent<SoundsAndMusic>().playButtonSound();
 		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu ||
 		    GetComponent<VariableManagement>().getLastMenu() == VariableManagement.userLevelMenu) {
