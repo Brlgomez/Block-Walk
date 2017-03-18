@@ -14,7 +14,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	bool loading = false;
 	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database;
-	GameObject publicConfirmation, search, settings, store;
+	GameObject publicConfirmation, search, settings, store, musicObj;
 	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock;
 	List<Sprite> levelImages;
 	int levelMultiplier = 1;
@@ -35,6 +35,7 @@ public class MainMenuInterface : MonoBehaviour {
 		//PlayerPrefs.DeleteAll();
 		blockHolder = GameObject.Find("Block Holder");
 		particles = GameObject.Find("Sprite Holder");
+		musicObj = GameObject.Find("Music");
 		mainMenu = findAndSetUi("Menu");
 		worlds = findAndSetUi("Worlds");
 		levels = findAndSetUi("Levels");
@@ -163,11 +164,11 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void music () {
 		if (PlayerPrefs.GetInt(VariableManagement.playMusic, 0) == 0) {
-			PlayerPrefs.SetInt(VariableManagement.playMusic, 1);
 			settings.GetComponentsInChildren<Button>()[0].GetComponentInChildren<Text>().text = "Music: Off";
+			musicObj.GetComponent<MusicManager>().turnOffOnMusic();
 		} else {
-			PlayerPrefs.SetInt(VariableManagement.playMusic, 0);
 			settings.GetComponentsInChildren<Button>()[0].GetComponentInChildren<Text>().text = "Music: On";
+			musicObj.GetComponent<MusicManager>().turnOffOnMusic();
 		}
 	}
 
@@ -181,6 +182,10 @@ public class MainMenuInterface : MonoBehaviour {
 			settings.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Text>().text = "Sounds: On";
 			GetComponent<SoundsAndMusic>().updatePlaySounds();
 		}
+	}
+
+	public void restorePurchases () {
+		GetComponent<InAppPurchases>().RestorePurchases();
 	}
 
 	public void toStore () {

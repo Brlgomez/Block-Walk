@@ -8,6 +8,10 @@ public class MusicManager : MonoBehaviour {
 	static bool AudioBegin = false; 
 
 	void Awake() {
+		setMusic();
+	}
+
+	void setMusic () {
 		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
 			musicSource = GetComponent<AudioSource>();
 			if (!AudioBegin) {
@@ -24,6 +28,23 @@ public class MusicManager : MonoBehaviour {
 			musicSource.Stop();
 			AudioBegin = false;
 			Destroy(gameObject);
+		}
+	}
+
+	public void turnOffOnMusic () {
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
+			if (AudioBegin) {
+				musicSource.Stop();
+			}
+			PlayerPrefs.SetInt(VariableManagement.playMusic, 1);
+		} else {
+			PlayerPrefs.SetInt(VariableManagement.playMusic, 0);
+			if (AudioBegin) {
+				musicSource.Play();
+			} else {
+				setMusic();
+			}
+			musicSource.volume = 1;
 		}
 	}
 

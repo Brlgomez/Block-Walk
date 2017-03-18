@@ -46,6 +46,10 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 		// Kick off the remainder of the set-up with an asynchrounous call, passing the configuration 
 		// and this class' instance. Expect a response either in OnInitialized or OnInitializeFailed.
 		UnityPurchasing.Initialize (this, builder);
+
+		if (Application.platform == RuntimePlatform.Android) {
+			checkReceipts();
+		}
 	}
 
 	private bool IsInitialized () {
@@ -76,7 +80,7 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 	void BuyProductID (string productId) {
 		// If Purchasing has been initialized ...
 		if (IsInitialized ()) {
-			// ... look up the Product reference with the general product identifier and the Purchasing 
+						// ... look up the Product reference with the general product identifier and the Purchasing 
 			// system's products collection.
 			Product product = m_StoreController.products.WithID (productId);
 
