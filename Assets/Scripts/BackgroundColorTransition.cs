@@ -40,8 +40,8 @@ public class BackgroundColorTransition : MonoBehaviour {
 			timer += Time.deltaTime;
 			if (SceneManager.GetActiveScene().name != "Main Menu") {
 				ui.position = Vector3.Lerp(ui.position, uiPosition, timer * uiSpeed);
-				cubes.position = Vector3.Lerp(cubes.position, positionOfCubes, timer * cubesSpeed);
 			}
+			cubes.position = Vector3.Lerp(cubes.position, positionOfCubes, timer * cubesSpeed);
 			if (Vector3.Distance(cubes.position, positionOfCubes) < minCubeDistance || PlayerPrefs.GetInt(VariableManagement.savePower) == 1) {
 				cubes.position = positionOfCubes;
 				ui.position = uiPosition;
@@ -100,8 +100,8 @@ public class BackgroundColorTransition : MonoBehaviour {
 	public void levelStarting() {
 		if (SceneManager.GetActiveScene().name != "Main Menu") {
 			ui.transform.position = new Vector3(-Screen.width / 2, ui.position.y, 0);
-			cubes.position = Vector3.left * cubeDistance;
 		}
+		cubes.position = Vector3.left * cubeDistance;
 		levelStart = true;
 	}
 

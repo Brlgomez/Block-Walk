@@ -30,6 +30,7 @@ public class MenuTransitions : MonoBehaviour {
 				if (itemsLeaving[i].GetComponent<Button>() != null) {
 					itemsLeaving[i].GetComponent<Button>().enabled = false;
 					itemsLeaving[i].GetComponent<Button>().interactable = false;
+					//Debug.Log(itemsLeaving[i].transform.parent.transform.parent.name);
 				}
 				itemsLeaving[i].transform.position = newPosForLeaving[i];
 			}

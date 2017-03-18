@@ -33,9 +33,21 @@ public class MusicManager : MonoBehaviour {
 		}
 	}
 
+	public void setMaxVolume () {
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
+			musicSource.volume = 1;
+		}
+	}
+
 	public void decreaseVolume () {
 		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
 			musicSource.volume -= 0.02f;
+		}
+	}
+
+	public void setMinVolume () {
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
+			musicSource.volume = 0;
 		}
 	}
 }
