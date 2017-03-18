@@ -16,6 +16,7 @@ public class MusicManager : MonoBehaviour {
 			musicSource = GetComponent<AudioSource>();
 			if (!AudioBegin) {
 				musicSource.volume = 0;
+				musicSource.time = Random.Range(0, musicSource.clip.length);
 				musicSource.Play();
 				DontDestroyOnLoad(gameObject);
 				AudioBegin = true;
