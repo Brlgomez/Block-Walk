@@ -52,7 +52,9 @@ public class BackgroundColorTransition : MonoBehaviour {
 			}
 		}
 		if (transitionToColor) {
-			music.GetComponent<MusicManager>().decreaseVolume();
+			if (nextScene != VariableManagement.restartOrNextLevel) {
+				music.GetComponent<MusicManager>().decreaseVolume();
+			}
 			timer += Time.deltaTime;
 			if (timer < transitionLength - 0.1f && PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
 				Camera.main.backgroundColor = Color32.Lerp(Camera.main.backgroundColor, newColor, timer * colorSpeed);
