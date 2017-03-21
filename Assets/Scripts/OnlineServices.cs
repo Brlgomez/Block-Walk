@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using GooglePlayGames;
+//using GooglePlayGames;
 using UnityEngine.SocialPlatforms;
 
 public class OnlineServices: MonoBehaviour {
@@ -12,13 +12,14 @@ public class OnlineServices: MonoBehaviour {
 		PlayerPrefs.SetString(VariableManagement.userId, "143");
 		*/
 		if (PlayerPrefs.GetInt (VariableManagement.isOnline, 0) == 0) {
-			PlayGamesPlatform.DebugLogEnabled = false;
-			PlayGamesPlatform.Activate ();
+			//PlayGamesPlatform.DebugLogEnabled = false;
+			//PlayGamesPlatform.Activate ();
 			logIn ();
 		}
 	}
 
 	public void logIn() {
+		/*
 		Social.localUser.Authenticate ((bool success) => {
 			if (success) {
 				PlayerPrefs.SetInt (VariableManagement.isOnline, 0);
@@ -29,7 +30,7 @@ public class OnlineServices: MonoBehaviour {
 				PlayerPrefs.SetInt (VariableManagement.isOnline, 1);
 				PlayerPrefs.Save ();
 			}
-		});
+		});*/
 	}
 
 	public void activateAchievements() {
