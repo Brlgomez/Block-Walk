@@ -28,3 +28,4 @@ sysinfo.txt
 *.unitypackage
 user.keystore
 google-services.json
+GoogleService-Info.plist

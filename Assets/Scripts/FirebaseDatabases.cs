@@ -38,7 +38,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
 			app.SetEditorDatabaseUrl(url);
 
-			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").LimitToLast(24).
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").LimitToLast(50).
 			GetValueAsync().ContinueWith(task => {
 				if (task.IsFaulted) {
 					text.text = "Error, please try again";
@@ -67,7 +67,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			FirebaseApp app = FirebaseApp.DefaultInstance;
 			app.SetEditorDatabaseUrl(url);
 
-			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Downloads").LimitToLast(24).
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Downloads").LimitToLast(50).
 			GetValueAsync().ContinueWith(task => {
 				if (task.IsFaulted) {
 					text.text = "Error, please try again";
@@ -100,7 +100,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("User ID").
-			EqualTo(PlayerPrefs.GetString(VariableManagement.userId)).LimitToLast(24).GetValueAsync().
+			EqualTo(PlayerPrefs.GetString(VariableManagement.userId)).GetValueAsync().
 			ContinueWith(task => {
 				if (task.IsFaulted) {
 					text.text = "Error, please try again";
@@ -133,7 +133,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Username Lower").
-			EqualTo(usernameLower).LimitToLast(24).GetValueAsync().ContinueWith(task => {
+			EqualTo(usernameLower).LimitToLast(50).GetValueAsync().ContinueWith(task => {
 				if (task.IsFaulted) {
 					text.text = "Error, please try again";
 					return;
@@ -166,7 +166,7 @@ public class FirebaseDatabases : MonoBehaviour {
 			app.SetEditorDatabaseUrl(url);
 
 			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Name Lower").
-			EqualTo(mapNameLower).LimitToLast(24).GetValueAsync().ContinueWith(task => {
+			EqualTo(mapNameLower).LimitToLast(50).GetValueAsync().ContinueWith(task => {
 				if (task.IsFaulted) {
 					text.text = "Error, please try again";
 					return;

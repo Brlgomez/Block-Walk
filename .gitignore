@@ -29,3 +29,5 @@ sysinfo.txt
 user.keystore
 google-services.json
 GoogleService-Info.plist
+GCIds.cs
+GPGSIds.cs
