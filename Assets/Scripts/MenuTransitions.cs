@@ -15,7 +15,7 @@ public class MenuTransitions : MonoBehaviour {
 	Color32 backgroundColor;
 
 	void Update () {
-		timer += Time.deltaTime * 1.5f;
+		timer += Time.deltaTime * 1.551f;
 		if (timer < timerLimit && PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
 			Camera.main.backgroundColor = Color32.Lerp(Camera.main.backgroundColor, backgroundColor, timer);
 			for (int i = 0; i < itemsLeaving.Count; i++) {
@@ -30,7 +30,8 @@ public class MenuTransitions : MonoBehaviour {
 				if (itemsLeaving[i].GetComponent<Button>() != null) {
 					itemsLeaving[i].GetComponent<Button>().enabled = false;
 					itemsLeaving[i].GetComponent<Button>().interactable = false;
-					//Debug.Log(itemsLeaving[i].transform.parent.transform.parent.name);
+					itemsLeaving[i].transform.parent.transform.parent.transform.parent.GetComponent<GraphicRaycaster>().enabled = false;
+					itemsLeaving[i].transform.parent.transform.parent.transform.parent.GetComponent<Canvas>().enabled = false;
 				}
 				itemsLeaving[i].transform.position = newPosForLeaving[i];
 			}
@@ -79,6 +80,8 @@ public class MenuTransitions : MonoBehaviour {
 					if (child.GetComponent<Button>() != null) {
 						child.GetComponent<Button>().enabled = false;
 						child.GetComponent<Button>().interactable = true;
+						child.transform.parent.transform.parent.transform.parent.GetComponent<GraphicRaycaster>().enabled = true;
+						child.transform.parent.transform.parent.transform.parent.GetComponent<Canvas>().enabled = true;
 					}
 				}
 			}

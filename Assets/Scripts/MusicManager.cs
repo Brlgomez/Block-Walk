@@ -60,5 +60,11 @@ public class MusicManager : MonoBehaviour {
 			musicSource.volume -= 0.02f;
 		}
 	}
+
+	public void setMaxVolume () {
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
+			musicSource.volume = 1;
+		}
+	}
 }
 

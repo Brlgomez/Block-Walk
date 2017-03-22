@@ -81,8 +81,10 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: Off";
+			Application.targetFrameRate = 60;
 		} else {
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: On";
+			Application.targetFrameRate = 30;
 		}
 		gameObject.AddComponent<BackgroundColorTransition>().levelStarting();
 	}
@@ -156,9 +158,11 @@ public class MainMenuInterface : MonoBehaviour {
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			PlayerPrefs.SetInt(VariableManagement.savePower, 1);
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: On";
+			Application.targetFrameRate = 30;
 		} else {
 			PlayerPrefs.SetInt(VariableManagement.savePower, 0);
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: Off";
+			Application.targetFrameRate = 60;
 		}
 	}
 
@@ -351,6 +355,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void openEditor() {
 		interfaceMenu = 0;
+		destroyBlockChildren();
 		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
 		gameObject.AddComponent<BackgroundColorTransition>();
 		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toEditorFromMain);
@@ -358,6 +363,7 @@ public class MainMenuInterface : MonoBehaviour {
 		
 	public void loadUserLevel() {
 		interfaceMenu = 0;
+		destroyBlockChildren();
 		filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
 		if (File.Exists(filePath)) {		
 			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
@@ -752,7 +758,7 @@ public class MainMenuInterface : MonoBehaviour {
 			dataOfUserMap = lines[2] + " " + lines[3] + " " + lines[4] + " " + lines[5];
 			createSpriteLevel(lines, 6, " ");
 			if (PlayerPrefs.GetString("Data" + n) != currentLevelData) {
-				GetComponent<VariableManagement>().setLevelAuthorization(0);
+				GetComponent<VariableManagement>().setLevelPostValue(0);
 				userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Edit and Test Again";
 			}
 			enableButtons();
