@@ -41,6 +41,8 @@ public class OnlineServices: MonoBehaviour {
 		Social.localUser.Authenticate((bool success) => {
 			if (success) {
 				PlayerPrefs.SetInt (VariableManagement.isOnline, 0);
+				PlayerPrefs.SetString(VariableManagement.userName, Social.localUser.userName);
+				PlayerPrefs.SetString(VariableManagement.userId, Social.localUser.id);
 				PlayerPrefs.Save ();
 				Social.ShowAchievementsUI();
 			} else {
