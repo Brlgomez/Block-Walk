@@ -178,7 +178,7 @@ Brandon Gomez
 --------
 --------
 --------
-*
+*The Ball
 Brandon Gomez
 16,0,48
 0.25,0.335,0.445
@@ -198,7 +198,7 @@ CCCCCCCC
 --------
 --------
 --------
-*
+*Abstract
 Brandon Gomez
 255,192,208
 0.3,0.3,0.3
@@ -238,7 +238,7 @@ CCCCCCCC
 --------
 --------
 --------
-*
+*Hunt for the Path
 Brandon Gomez
 64,32,48
 0.25,0.335,0.4
@@ -278,7 +278,7 @@ CCCCCCCC
 CCCCCCCC
 --CCCC--
 --CCCC--
-*
+*Red & Blue
 Brandon Gomez
 234,222,212
 0.384,0.276,0.373
@@ -298,7 +298,7 @@ CCC--CCC
 CCCCCCCC
 C-CCCC-C
 CCCCCCCC
-*
+*Green & Blue
 Brandon Gomez
 255,254,160
 0.026,0.463,0.430
