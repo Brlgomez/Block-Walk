@@ -94,7 +94,6 @@ public class EditorInterface : MonoBehaviour {
 		if (title != "Untitled") {
 			optionHolder.GetComponentInChildren<InputField>().text = title;
 		}
-
 		r = GameObject.Find("R");
 		g = GameObject.Find("G");
 		b = GameObject.Find("B");
@@ -105,7 +104,9 @@ public class EditorInterface : MonoBehaviour {
 		gHandle = GameObject.Find("G Area");
 		bHandle = GameObject.Find("B Area");
 		colorHolder = GameObject.Find("Color Holder");
-		gradientSize = Screen.width * 0.11f;
+		Vector3[] corners = new Vector3[4];
+		rHandle.GetComponent<RectTransform>().GetWorldCorners(corners);
+		gradientSize = (corners[2].y - corners[0].y) * 0.38f;
 		r.GetComponent<Slider>().value = (Camera.main.backgroundColor.r * 255);
 		g.GetComponent<Slider>().value = (Camera.main.backgroundColor.g * 255);
 		b.GetComponent<Slider>().value = (Camera.main.backgroundColor.b * 255);
