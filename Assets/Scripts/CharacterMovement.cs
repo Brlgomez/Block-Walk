@@ -119,6 +119,8 @@ public class CharacterMovement : MonoBehaviour {
 				player.transform.localScale = Vector3.one;
 				player.transform.position = new Vector3 (path [0].transform.position.x, 0, path [0].transform.position.z);
 				playerFirstMoved = true;
+				Behaviour halo = (Behaviour)player.transform.GetChild (0).GetComponent ("Halo");
+				halo.enabled = true;
 				Camera.main.GetComponent<DeleteCubes> ().enterBlock (path [0]);
 			}
 		}
