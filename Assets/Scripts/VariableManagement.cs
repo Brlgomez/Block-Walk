@@ -114,7 +114,6 @@ public class VariableManagement : MonoBehaviour {
 		return (PlayerPrefs.GetInt(isOnline, 0) == 0 && Social.localUser.id != "1000" && Social.localUser.id != "0" && 
 			PlayerPrefs.GetString(VariableManagement.userName) != "" &&
 			PlayerPrefs.GetString(VariableManagement.userId) != "");
-		//return true;
 	}
 
 	public void setLevelPostValue (int n) {

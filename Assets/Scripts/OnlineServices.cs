@@ -7,11 +7,6 @@ using UnityEngine.SocialPlatforms.GameCenter;
 public class OnlineServices: MonoBehaviour {
 
 	void Start () {
-		/*
-		PlayerPrefs.SetInt (VariableManagement.isOnline, 0);
-		PlayerPrefs.SetString(VariableManagement.userName, "Chellywashere");
-		PlayerPrefs.SetString(VariableManagement.userId, "143");
-		*/
 		if (PlayerPrefs.GetInt (VariableManagement.isOnline, 0) == 0) {
 			if (Application.platform == RuntimePlatform.Android) {
 				//PlayGamesPlatform.DebugLogEnabled = false;

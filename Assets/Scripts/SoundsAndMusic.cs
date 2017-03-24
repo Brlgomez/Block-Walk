@@ -98,15 +98,15 @@ public class SoundsAndMusic : MonoBehaviour {
 
 	public void playBeatLevelSound() {
 		if (playSoundEffects == 0) {
-			source.pitch = 1;
-			source.PlayOneShot (beatLevel);
+			AudioSource sound = playClipAt(beatLevel, transform.position);
+			sound.pitch = Random.Range(0.9f, 1.1f);
 		}
 	}
 
 	public void playLoseLevelSound() {
 		if (playSoundEffects == 0) {
-			source.pitch = 1;
-			source.PlayOneShot (loseLevel);
+			AudioSource sound = playClipAt(loseLevel, transform.position);
+			sound.pitch = Random.Range(0.9f, 1.1f);;
 		}
 	}
 
