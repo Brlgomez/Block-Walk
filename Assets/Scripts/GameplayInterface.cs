@@ -12,7 +12,7 @@ public class GameplayInterface : MonoBehaviour {
 	static float lengthOfTap = 0.2f;
 	static int blurDownsample = 2;
 	static int maxBlur = 10;
-	static int lastLevel = 64;
+	static int lastLevel = 80;
 
 	GameObject restartButton;
 	GameObject gameStatus;

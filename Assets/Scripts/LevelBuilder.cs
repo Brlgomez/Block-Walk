@@ -55,6 +55,8 @@ public class LevelBuilder : MonoBehaviour {
 				t = Resources.Load(VariableManagement.world3) as TextAsset;
 			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 3) {
 				t = Resources.Load(VariableManagement.world4) as TextAsset;
+			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 4) {
+				t = Resources.Load(VariableManagement.world5) as TextAsset;
 			}
 			level = t.text.Split(VariableManagement.levelDelimiter.ToString()[0]);
 			return level[(GetComponent<VariableManagement>().getWorldLevel() - 1) % 16].Split("\n"[0]);

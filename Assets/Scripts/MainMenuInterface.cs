@@ -101,6 +101,8 @@ public class MainMenuInterface : MonoBehaviour {
 				Camera.main.backgroundColor = MenuColors.world3Color;
 			} else if (((GetComponent<VariableManagement>().getWorldLevel()) / 16) == 3) {
 				Camera.main.backgroundColor = MenuColors.world4Color;
+			} else if (((GetComponent<VariableManagement>().getWorldLevel()) / 16) == 4) {
+				Camera.main.backgroundColor = MenuColors.world5Color;
 			}
 		} else if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.userLevelMenu) {
 			interfaceMenu = 3;
@@ -253,7 +255,7 @@ public class MainMenuInterface : MonoBehaviour {
 			}
 			interfaceMenu = 1;
 		}
-		for (int i = 1; i < 4; i++) {
+		for (int i = 1; i < 5; i++) {
 			if (PlayerPrefs.GetInt(("World" + (i - 1)).ToString(), 0) == 0) {
 				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Image>().color = Color.black;
 				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Text>().color = Color.clear;
@@ -291,6 +293,9 @@ public class MainMenuInterface : MonoBehaviour {
 			} else if (world == 3) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world4Color);
 				levels.GetComponentInChildren<Text>().text = "Rotate World";
+			} else if (world == 4) {
+				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world5Color);
+				levels.GetComponentInChildren<Text>().text = "Bomb World";
 			}
 			interfaceMenu = 2;
 			levelMultiplier = world * 16;

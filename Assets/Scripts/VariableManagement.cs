@@ -51,6 +51,7 @@ public class VariableManagement : MonoBehaviour {
 	public static string world2 = "World2";
 	public static string world3 = "World3";
 	public static string world4 = "World4";
+	public static string world5 = "World5";
 
 	// scene number
 	public static int mainMenu = 0;

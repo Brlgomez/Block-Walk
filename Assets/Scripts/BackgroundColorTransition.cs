@@ -135,6 +135,8 @@ public class BackgroundColorTransition : MonoBehaviour {
 				return MenuColors.world3Color;
 			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 3) {
 				return MenuColors.world4Color;
+			}  else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 4) {
+				return MenuColors.world5Color;
 			}
 			return MenuColors.menuColor;
 		} else if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
@@ -146,6 +148,8 @@ public class BackgroundColorTransition : MonoBehaviour {
 				t = Resources.Load(VariableManagement.world3) as TextAsset;
 			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 3) {
 				t = Resources.Load(VariableManagement.world4) as TextAsset;
+			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 4) {
+				t = Resources.Load(VariableManagement.world5) as TextAsset;
 			} 
 			level = t.text.Split(VariableManagement.levelDelimiter.ToString()[0]);
 			lines = level[(GetComponent<VariableManagement>().getWorldLevel() - 1) % 16].Split("\n"[0]);
