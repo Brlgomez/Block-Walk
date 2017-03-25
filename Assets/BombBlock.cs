@@ -53,6 +53,9 @@ public class BombBlock : MonoBehaviour {
 				destroy(currentBlocks[i]);
 			}
 		}
+		if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
+			gameObject.GetComponent<ParticleSystem>().Play();
+		}
 		destroy(gameObject);
 		for (int i = 0; i < bombBlocks.Count; i++) {
 			bombBlocks[i].GetComponent<BombBlock>().bombAdjacent();
