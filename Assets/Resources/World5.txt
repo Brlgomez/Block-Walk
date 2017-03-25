@@ -8,11 +8,11 @@ Brandon Gomez
 --------
 --------
 --------
---OCCCO-
---CEEEC-
---CEEEC-
---CEEEC-
---OCCCO-
+--CCCCC-
+--CCOCO-
+--CCOOC-
+--COCCO-
+--OCCCC-
 --------
 --------
 --------

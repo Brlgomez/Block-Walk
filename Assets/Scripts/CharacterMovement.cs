@@ -404,7 +404,7 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	public void lost (string text) {
-		GetComponent<GameplayInterface> ().loseText ("Stuck!");
+		GetComponent<GameplayInterface> ().loseText (text);
 		Destroy (GetComponent<CharacterMovement> ());
 	}
 

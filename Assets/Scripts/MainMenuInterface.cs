@@ -61,7 +61,7 @@ public class MainMenuInterface : MonoBehaviour {
 			PlayerPrefs.SetInt(VariableManagement.userLevel, minAmountOfUserLevels);
 		}
 		levelImages = new List<Sprite>();
-		for (int i = 0; i < 64; i++) {
+		for (int i = 0; i < 80; i++) {
 			levelImages.Add(Resources.Load<Sprite>("Levels/" + (((i/16) + 1) + "-" + ((i%16) + 1))));
 		}
 		goToLastMenu();
