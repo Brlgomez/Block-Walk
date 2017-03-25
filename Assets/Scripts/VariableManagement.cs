@@ -20,6 +20,7 @@ public class VariableManagement : MonoBehaviour {
 	public static string switchTag = "Switch";
 	public static string rotateR = "RotatorR";
 	public static string rotateL = "RotatorL";
+	public static string bomb = "Bomb";
 
 	// block names
 	public static string clone = "(Clone)";
@@ -30,6 +31,7 @@ public class VariableManagement : MonoBehaviour {
 	public static string switchBlock = "Switch Block";
 	public static string rotateRBlock = "Rotate Block R";
 	public static string rotateLBlock = "Rotate Block L";
+	public static string bombBlock = "Bomb Block";
 
 	// block tiles from text files
 	public static char levelDelimiter = '*';
@@ -41,6 +43,7 @@ public class VariableManagement : MonoBehaviour {
 	public static char inactiveBlockTile = 'B';
 	public static char rotateRBlockTile = 'E';
 	public static char rotateLBlockTile = 'W';
+	public static char bombBlockTile = 'O';
 
 	// text files
 	public static string world0 = "World0";

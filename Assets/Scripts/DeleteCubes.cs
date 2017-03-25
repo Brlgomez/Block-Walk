@@ -11,8 +11,13 @@ public class DeleteCubes : MonoBehaviour {
 	}
 
 	public void exitBlock (GameObject other) {
+		if (GetComponent<LevelBuilder>().getBombBlocks().Count > 0) {
+			for (int i = 0; i < GetComponent<LevelBuilder>().getBombBlocks().Count; i++) {
+				GetComponent<LevelBuilder>().getBombBlocks()[i].GetComponent<BombBlock>().decreaseBombSteps();
+			}
+		}
 		// regular, multi step, redAndBlue block
-		if (other.transform.tag == "Block" || other.transform.tag == "RedBlock" || other.transform.tag == "BlueBlock") {
+		if (other.transform.tag == VariableManagement.block || other.transform.tag == VariableManagement.active || other.transform.tag == VariableManagement.inactive) {
 			if (other.GetComponent<CrumbledBlock> () != null) {
 				other.GetComponent<CrumbledBlock> ().decreaseSteps ();
 				if (other.GetComponent<CrumbledBlock> ().getSteps () <= 0) {
@@ -21,7 +26,7 @@ public class DeleteCubes : MonoBehaviour {
 			} else {
 				other.gameObject.AddComponent<FallingBlock> ();
 			}
-		} 
+		}
 	}
 
 	public void enterBlock (GameObject other) {
@@ -35,6 +40,8 @@ public class DeleteCubes : MonoBehaviour {
 		} else if (other.transform.tag == "RotatorL") {
 			Camera.main.GetComponent<SoundsAndMusic>().playRotateLeftSound();
 			GetComponent<Rotator>().rotateAt(other.transform.position, -1);
+		} else if (other.transform.tag == VariableManagement.bomb) {
+			other.GetComponent<BombBlock>().activateBomb();
 		} else {
 			float pitch = (
 				other.GetComponent<Renderer>().material.color.r +

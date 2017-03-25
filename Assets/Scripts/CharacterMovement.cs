@@ -57,7 +57,7 @@ public class CharacterMovement : MonoBehaviour {
 			}
 		}
 		if (moveCharacter) {
-			movePlayer ();
+			movePlayer();
 		}
 		if (checkForSolution && canPlayerMove) {
 			timerForSolution += Time.deltaTime;
@@ -287,7 +287,9 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void removeFromPath (int pos) {
-		path.RemoveAt (pos);
+		if (path.Count > 0) {
+			path.RemoveAt(pos);
+		}
 	}
 
 	public List <GameObject> getPath () {
@@ -296,6 +298,21 @@ public class CharacterMovement : MonoBehaviour {
 		} else {
 			path = new List <GameObject> ();
 			return path;
+		}
+	}
+
+	public void deletePath (GameObject block) {
+		List<GameObject> tempPath = new List<GameObject>();
+		for (int i = 0; i < path.Count; i++) {
+			if (path[i] == block) {
+				break;
+			}
+			tempPath.Add(path[i]);
+		}
+		path.Clear();
+		path = tempPath;
+		if (tempPath.Count > 1) {
+			playerOn = tempPath[tempPath.Count - 1];
 		}
 	}
 
@@ -310,7 +327,9 @@ public class CharacterMovement : MonoBehaviour {
 			if (path.Count > 1) {
 				Camera.main.GetComponent<DeleteCubes> ().exitBlock (path [0]);
 				removeFromPath (0);
-				Camera.main.GetComponent<DeleteCubes> ().enterBlock (path [0]);
+				if (path.Count > 1) {
+					Camera.main.GetComponent<DeleteCubes>().enterBlock(path[0]);
+				}
 			} else {
 				moveCharacter = false;
 				checkForSolution = true;
@@ -379,10 +398,14 @@ public class CharacterMovement : MonoBehaviour {
 				}
 			}
 			if (lose) {
-				GetComponent<GameplayInterface> ().loseText ();
-				Destroy (GetComponent<CharacterMovement> ());
+				lost("Stuck!");
 			}
 		}
+	}
+
+	public void lost (string text) {
+		GetComponent<GameplayInterface> ().loseText ("Stuck!");
+		Destroy (GetComponent<CharacterMovement> ());
 	}
 
 	public void setIfPlayerCanMove (bool b) {

@@ -16,6 +16,8 @@ public class FallingBlock : MonoBehaviour {
 			Camera.main.GetComponent<LevelBuilder>().removeRedBlock(gameObject);
 		} else if (tag == VariableManagement.inactive) {
 			Camera.main.GetComponent<LevelBuilder>().removeBlueBlock(gameObject);
+		} else if (tag == VariableManagement.bomb) {
+			Camera.main.GetComponent<LevelBuilder>().removeBombBlock(gameObject);
 		}
 	}
 

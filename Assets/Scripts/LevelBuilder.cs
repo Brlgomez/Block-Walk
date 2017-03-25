@@ -14,6 +14,7 @@ public class LevelBuilder : MonoBehaviour {
 	List<GameObject> blocks = new List<GameObject>();
 	List<GameObject> redBlocks = new List<GameObject>();
 	List<GameObject> blueBlocks = new List<GameObject>();
+	List<GameObject> bombBlocks = new List<GameObject>();
 	float r, g, b;
 	float rIncX, gIncX, bIncX;
 	float rIncZ, gIncZ, bIncZ;
@@ -27,7 +28,7 @@ public class LevelBuilder : MonoBehaviour {
 	float leftMost = 100;
 	float topMost = -100;
 	float bottomMost = 100;
-	GameObject cubes, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotatorR, rotatorL;
+	GameObject cubes, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotatorR, rotatorL, bombBlock;
 
 	void Awake() {
 		cubes = GameObject.Find("Cubes");
@@ -38,6 +39,7 @@ public class LevelBuilder : MonoBehaviour {
 		rotatorL = GameObject.Find(VariableManagement.rotateLBlock);
 		redBlock = GameObject.Find(VariableManagement.activeBlock);
 		blueBlock = GameObject.Find(VariableManagement.inactiveBlock);
+		bombBlock = GameObject.Find(VariableManagement.bombBlock);
 		builder(parseFile());
 	}
 
@@ -137,6 +139,9 @@ public class LevelBuilder : MonoBehaviour {
 					createBlock(rotatorR, j, i).tag = VariableManagement.rotateR;
 				} else if (lines[i][j] == VariableManagement.rotateLBlockTile) {
 					createBlock(rotatorL, j, i).tag = VariableManagement.rotateL;
+				} else if (lines[i][j] == VariableManagement.bombBlockTile) {
+					numberOfBlocks++;
+					createBlock(bombBlock, j, i).tag = VariableManagement.bomb;
 				} 
 			}
 		}
@@ -265,6 +270,8 @@ public class LevelBuilder : MonoBehaviour {
 			addSpecialBlock(redBlocks, b);
 		} else if (b.name == VariableManagement.inactiveBlock + VariableManagement.clone) {
 			addSpecialBlock(blueBlocks, b);
+		} else if (b.name == VariableManagement.bombBlock + VariableManagement.clone) {
+			addSpecialBlock(bombBlocks, b);
 		}
 	}
 
@@ -285,12 +292,20 @@ public class LevelBuilder : MonoBehaviour {
 		blueBlocks.Remove(b);
 	}
 
+	public void removeBombBlock(GameObject b) {
+		bombBlocks.Remove(b);
+	}
+
 	public List<GameObject> getRedBlocks() {
 		return redBlocks;
 	}
 
 	public List<GameObject> getBlueBlocks() {
 		return blueBlocks;
+	}
+
+	public List<GameObject> getBombBlocks() {
+		return bombBlocks;
 	}
 
 	public int getNumberOfBlocks() {

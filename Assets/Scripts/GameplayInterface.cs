@@ -220,12 +220,12 @@ public class GameplayInterface : MonoBehaviour {
 		towards = topOfScreen;
 	}
 
-	public void loseText() {
+	public void loseText(string text) {
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			GetComponent<BlurOptimized>().enabled = true;
 		}
 		GetComponent<SoundsAndMusic>().playLoseLevelSound();
-		gameStatus.GetComponent<Text>().text = "Stuck!";
+		gameStatus.GetComponent<Text>().text = text;
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;
