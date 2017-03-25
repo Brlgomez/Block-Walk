@@ -283,7 +283,9 @@ public class LevelBuilder : MonoBehaviour {
 
 	public void removeBlock(GameObject b) {
 		blocks.Remove(b);
-		numberOfBlocks--;
+		if (b.tag == VariableManagement.block || b.tag == VariableManagement.active || b.tag == VariableManagement.inactive || b.tag == VariableManagement.bomb) {
+			numberOfBlocks--;
+		}
 	}
 
 	public void removeRedBlock(GameObject b) {

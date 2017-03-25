@@ -327,7 +327,7 @@ public class CharacterMovement : MonoBehaviour {
 			if (path.Count > 1) {
 				Camera.main.GetComponent<DeleteCubes> ().exitBlock (path [0]);
 				removeFromPath (0);
-				if (path.Count > 1) {
+				if (path.Count > 0) {
 					Camera.main.GetComponent<DeleteCubes>().enterBlock(path[0]);
 				}
 			} else {
