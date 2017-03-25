@@ -15,7 +15,7 @@ public class MainMenuInterface : MonoBehaviour {
 	bool loading = false;
 	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database;
 	GameObject publicConfirmation, search, settings, store, musicObj;
-	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock;
+	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock, bombBlock;
 	List<Sprite> levelImages;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
@@ -56,6 +56,7 @@ public class MainMenuInterface : MonoBehaviour {
 		blueBlock = GameObject.Find(VariableManagement.inactiveBlock);
 		rotateRBlock = GameObject.Find(VariableManagement.rotateRBlock);
 		rotateLBlock = GameObject.Find(VariableManagement.rotateLBlock);
+		bombBlock = GameObject.Find(VariableManagement.bombBlock);
 		if (GetComponent<VariableManagement>().getUserLevel() < minAmountOfUserLevels ||
 		    GetComponent<VariableManagement>().getUserLevel() > maxAmountOfUserLevels) {
 			PlayerPrefs.SetInt(VariableManagement.userLevel, minAmountOfUserLevels);
@@ -792,6 +793,8 @@ public class MainMenuInterface : MonoBehaviour {
 					displayBlockImage(i - num, j, rotateRBlock);
 				} else if (lines[i][j] == VariableManagement.rotateLBlockTile) {
 					displayBlockImage(i - num, j, rotateLBlock);
+				} else if (lines[i][j] == VariableManagement.bombBlockTile) {
+					displayBlockImage(i - num, j, bombBlock);
 				}
 			}
 		}

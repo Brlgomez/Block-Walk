@@ -8,16 +8,16 @@ Brandon Gomez
 --------
 --------
 --------
---CCCCC-
---CCOCO-
---CCOOC-
---COCCO-
---OCCCC-
---------
---------
---------
---------
---------
+--CCCCCC
+--CCOCOC
+--CCOOCC
+--COCCOC
+--OCCCCC
+--OOOOOC
+--CCOCCC
+--OOOOOC
+--OCCOCO
+--OCOCCO
 *Different Blues
 Brandon Gomez
 89,203,209

@@ -317,24 +317,29 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	void movePlayer () {
-		player.transform.position = Vector3.MoveTowards (
-			player.transform.position,
-			path [0].transform.position, 
-			Time.deltaTime * playerSpeed
-		);
-		if (Vector3.Distance (player.transform.position, path [0].transform.position) < 0.2f) {
-			player.transform.position = path [0].transform.position;
-			if (path.Count > 1) {
-				Camera.main.GetComponent<DeleteCubes> ().exitBlock (path [0]);
-				removeFromPath (0);
-				if (path.Count > 0) {
-					Camera.main.GetComponent<DeleteCubes>().enterBlock(path[0]);
+		if (path.Count < 1) {
+			lost("Destroyed");
+			Destroy(player);
+		} else {
+			player.transform.position = Vector3.MoveTowards(
+				player.transform.position,
+				path[0].transform.position, 
+				Time.deltaTime * playerSpeed
+			);
+			if (Vector3.Distance(player.transform.position, path[0].transform.position) < 0.2f) {
+				player.transform.position = path[0].transform.position;
+				if (path.Count > 1) {
+					Camera.main.GetComponent<DeleteCubes>().exitBlock(path[0]);
+					removeFromPath(0);
+					if (path.Count > 0) {
+						Camera.main.GetComponent<DeleteCubes>().enterBlock(path[0]);
+					}
+				} else {
+					moveCharacter = false;
+					checkForSolution = true;
+					timerForSolution = 0;
+					path.Clear();
 				}
-			} else {
-				moveCharacter = false;
-				checkForSolution = true;
-				timerForSolution = 0;
-				path.Clear ();
 			}
 		}
 	}

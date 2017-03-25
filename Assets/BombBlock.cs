@@ -12,6 +12,7 @@ public class BombBlock : MonoBehaviour {
 	public void decreaseBombSteps () {
 		if (active) {
 			numberOfSteps--;
+			gameObject.transform.localScale *= 1.33f;
 			if (numberOfSteps <= 0) {
 				bombAdjacent();
 			}
@@ -26,21 +27,29 @@ public class BombBlock : MonoBehaviour {
 		currentBlocks = Camera.main.GetComponent<LevelBuilder>().getBlocks();
 		int direction = 1;
 		for (int i = 0; i < currentBlocks.Count; i++) {
-			if (gameObject.transform.position.x == currentBlocks[i].transform.position.x && gameObject.transform.position.z == currentBlocks[i].transform.position.z + direction) {
+			if (gameObject.transform.position.x == currentBlocks[i].transform.position.x && 
+				gameObject.transform.position.z == currentBlocks[i].transform.position.z + direction) {
 				destroy(currentBlocks[i]);
-			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x + direction && gameObject.transform.position.z == currentBlocks[i].transform.position.z + direction) {
+			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x + direction && 
+				gameObject.transform.position.z == currentBlocks[i].transform.position.z + direction) {
 				destroy(currentBlocks[i]);
-			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x + direction && gameObject.transform.position.z == currentBlocks[i].transform.position.z) {
+			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x + direction && 
+				gameObject.transform.position.z == currentBlocks[i].transform.position.z) {
 				destroy(currentBlocks[i]);
-			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x + direction && gameObject.transform.position.z == currentBlocks[i].transform.position.z - direction) {
+			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x + direction && 
+				gameObject.transform.position.z == currentBlocks[i].transform.position.z - direction) {
 				destroy(currentBlocks[i]);
-			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x && gameObject.transform.position.z == currentBlocks[i].transform.position.z - direction) {
+			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x && 
+				gameObject.transform.position.z == currentBlocks[i].transform.position.z - direction) {
 				destroy(currentBlocks[i]);
-			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x - direction && gameObject.transform.position.z == currentBlocks[i].transform.position.z - direction) {
+			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x - direction && 
+				gameObject.transform.position.z == currentBlocks[i].transform.position.z - direction) {
 				destroy(currentBlocks[i]);
-			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x - direction && gameObject.transform.position.z == currentBlocks[i].transform.position.z) {
+			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x - direction && 
+				gameObject.transform.position.z == currentBlocks[i].transform.position.z) {
 				destroy(currentBlocks[i]);
-			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x - direction && gameObject.transform.position.z == currentBlocks[i].transform.position.z + direction) {
+			} else if (gameObject.transform.position.x == currentBlocks[i].transform.position.x - direction && 
+				gameObject.transform.position.z == currentBlocks[i].transform.position.z + direction) {
 				destroy(currentBlocks[i]);
 			}
 		}
@@ -65,7 +74,7 @@ public class BombBlock : MonoBehaviour {
 				}
 			}
 			if (player.transform.position == block.transform.position) {
-				player.transform.localScale = Vector3.zero;
+				Destroy(player);
 				Camera.main.GetComponent<CharacterMovement>().lost("Destroyed!");
 			}
 			block.AddComponent<FallingBlock>();

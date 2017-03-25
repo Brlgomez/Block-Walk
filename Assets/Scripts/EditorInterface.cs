@@ -464,6 +464,8 @@ public class EditorInterface : MonoBehaviour {
 					levelData += VariableManagement.rotateRBlockTile.ToString();
 				} else if (blocks[i][j].name == VariableManagement.rotateLBlock + VariableManagement.clone) {
 					levelData += VariableManagement.rotateLBlockTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.bombBlock + VariableManagement.clone) {
+					levelData += VariableManagement.bombBlockTile.ToString();
 				}
 			}
 			levelData += "\n";
