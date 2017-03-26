@@ -221,6 +221,9 @@ public class MainMenuInterface : MonoBehaviour {
 		if (PlayerPrefs.GetInt(VariableManagement.world2) == 1) {
 			turnOffStoreButton(store.GetComponentsInChildren<Button>()[2]);
 		}
+		if (PlayerPrefs.GetInt(VariableManagement.world3) == 1) {
+			turnOffStoreButton(store.GetComponentsInChildren<Button>()[3]);
+		}
 		bool unlockedAll = true;
 		for (int i = 0; i < 50; i++) {
 			if (PlayerPrefs.GetInt("World" + i) == 0) {
@@ -229,7 +232,7 @@ public class MainMenuInterface : MonoBehaviour {
 			}
 		}
 		if (unlockedAll) {
-			turnOffStoreButton(store.GetComponentsInChildren<Button>()[3]);
+			turnOffStoreButton(store.GetComponentsInChildren<Button>()[4]);
 		}
 	}
 		
@@ -896,6 +899,8 @@ public class MainMenuInterface : MonoBehaviour {
 			GetComponent<InAppPurchases>().BuyNonConsumableWorld3();
 		} else if (world == 2) {
 			GetComponent<InAppPurchases>().BuyNonConsumableWorld4();
+		} else if (world == 3) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld5();
 		}
 	}
 
@@ -906,6 +911,8 @@ public class MainMenuInterface : MonoBehaviour {
 			GetComponent<InAppPurchases>().BuyNonConsumableWorld3();
 		} else if (world == 2) {
 			GetComponent<InAppPurchases>().BuyNonConsumableWorld4();
+		} else if (world == 3) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld5();
 		}
 	}
 

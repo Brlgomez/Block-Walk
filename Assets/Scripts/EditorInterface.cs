@@ -66,6 +66,7 @@ public class EditorInterface : MonoBehaviour {
 		content.GetComponentsInChildren<Button>()[5].onClick.RemoveAllListeners();
 		content.GetComponentsInChildren<Button>()[6].onClick.RemoveAllListeners();
 		content.GetComponentsInChildren<Button>()[7].onClick.RemoveAllListeners();
+		content.GetComponentsInChildren<Button>()[8].onClick.RemoveAllListeners();
 		if (PlayerPrefs.GetInt(VariableManagement.world0, 0) == 1) {
 			turnOnButton(content.GetComponentsInChildren<Button>()[2], GameObject.Find("Multistep Block"));
 		} else {
@@ -86,6 +87,11 @@ public class EditorInterface : MonoBehaviour {
 		} else {
 			turnOffButton(content.GetComponentsInChildren<Button>()[6], 2);
 			turnOffButton(content.GetComponentsInChildren<Button>()[7], 2);
+		}
+		if (PlayerPrefs.GetInt(VariableManagement.world3, 0) == 1) {
+			turnOnButton(content.GetComponentsInChildren<Button>()[8], GameObject.Find("Bomb Block"));
+		} else {
+			turnOffButton(content.GetComponentsInChildren<Button>()[8], 3);
 		}
 	}
 
@@ -362,6 +368,8 @@ public class EditorInterface : MonoBehaviour {
 			GetComponent<InAppPurchases>().BuyNonConsumableWorld3();
 		} else if (worldNumber == 2) {
 			GetComponent<InAppPurchases>().BuyNonConsumableWorld4();
+		} else if (worldNumber == 3) {
+			GetComponent<InAppPurchases>().BuyNonConsumableWorld5();
 		}
 	}
 

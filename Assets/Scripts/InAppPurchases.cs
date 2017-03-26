@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Purchasing;
+using UnityEngine.SceneManagement;
 
 // Deriving the Purchaser class from IStoreListener enables it to receive messages from Unity Purchasing.
 public class InAppPurchases : MonoBehaviour, IStoreListener {
@@ -15,6 +16,7 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 	public static string kProductIDNonConsumableWorld2 = "world_2_unlock";
 	public static string kProductIDNonConsumableWorld3 = "world_3_unlock";
 	public static string kProductIDNonConsumableWorld4 = "world_4_unlock";
+	public static string kProductIDNonConsumableWorld5 = "world_5_unlock";
 
 	void Start () {
 		// If we haven't set up the Unity Purchasing reference
@@ -42,14 +44,11 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 		builder.AddProduct (kProductIDNonConsumableWorld2, ProductType.NonConsumable);
 		builder.AddProduct (kProductIDNonConsumableWorld3, ProductType.NonConsumable);
 		builder.AddProduct (kProductIDNonConsumableWorld4, ProductType.NonConsumable);
+		builder.AddProduct (kProductIDNonConsumableWorld5, ProductType.NonConsumable);
 
 		// Kick off the remainder of the set-up with an asynchrounous call, passing the configuration 
 		// and this class' instance. Expect a response either in OnInitialized or OnInitializeFailed.
 		UnityPurchasing.Initialize (this, builder);
-
-		if (Application.platform == RuntimePlatform.Android) {
-			checkReceipts();
-		}
 	}
 
 	private bool IsInitialized () {
@@ -75,6 +74,10 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 
 	public void BuyNonConsumableWorld4 () {
 		BuyProductID (kProductIDNonConsumableWorld4);
+	}
+
+	public void BuyNonConsumableWorld5 () {
+		BuyProductID (kProductIDNonConsumableWorld5);
 	}
 		
 	void BuyProductID (string productId) {
@@ -111,6 +114,7 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 			Product world2 = m_StoreController.products.WithID (kProductIDNonConsumableWorld2);
 			Product world3 = m_StoreController.products.WithID (kProductIDNonConsumableWorld3);
 			Product world4 = m_StoreController.products.WithID (kProductIDNonConsumableWorld4);
+			Product world5 = m_StoreController.products.WithID (kProductIDNonConsumableWorld5);
 
 			if (allWorlds != null && allWorlds.hasReceipt) {
 				for (int i = 0; i < 50; i++) {
@@ -128,6 +132,10 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 			}
 			if (world4 != null && world4.hasReceipt) {
 				PlayerPrefs.SetInt("World2", 1);
+				PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+			}
+			if (world5 != null && world5.hasReceipt) {
+				PlayerPrefs.SetInt("World3", 1);
 				PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
 			}
 		}
@@ -191,36 +199,19 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 			for (int i = 0; i < 50; i++) {
 				PlayerPrefs.SetInt("World" + i, 1);
 			}
-			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			if (GetComponent<MainMenuInterface>() != null) {
-				GetComponent<MainMenuInterface>().boughtItem();
-			} else if (GetComponent<EditorInterface>() != null) {
-				GetComponent<EditorInterface>().unlockedWorld();
-			}
+			boughtItem();
 		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld2, StringComparison.Ordinal)) {
 			PlayerPrefs.SetInt("World0", 1);
-			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			if (GetComponent<MainMenuInterface>() != null) {
-				GetComponent<MainMenuInterface>().boughtItem();
-			} else if (GetComponent<EditorInterface>() != null) {
-				GetComponent<EditorInterface>().unlockedWorld();
-			}
+			boughtItem();
 		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld3, StringComparison.Ordinal)) {
 			PlayerPrefs.SetInt("World1", 1);
-			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			if (GetComponent<MainMenuInterface>() != null) {
-				GetComponent<MainMenuInterface>().boughtItem();
-			} else if (GetComponent<EditorInterface>() != null) {
-				GetComponent<EditorInterface>().unlockedWorld();
-			}
+			boughtItem();
 		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld4, StringComparison.Ordinal)) {
 			PlayerPrefs.SetInt("World2", 1);
-			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-			if (GetComponent<MainMenuInterface>() != null) {
-				GetComponent<MainMenuInterface>().boughtItem();
-			} else if (GetComponent<EditorInterface>() != null) {
-				GetComponent<EditorInterface>().unlockedWorld();
-			}
+			boughtItem();
+		} else if (String.Equals(args.purchasedProduct.definition.id, kProductIDNonConsumableWorld5, StringComparison.Ordinal)) {
+			PlayerPrefs.SetInt("World3", 1);
+			boughtItem();
 		}
 		// Or ... an unknown product has been purchased by this user. Fill in additional products here....
 		else {
@@ -233,6 +224,15 @@ public class InAppPurchases : MonoBehaviour, IStoreListener {
 		return PurchaseProcessingResult.Complete;
 	}
 
+	void boughtItem () {
+		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
+		if (SceneManager.GetActiveScene().buildIndex == 0) {
+			Camera.main.GetComponent<MainMenuInterface>().boughtItem();
+		} else {
+			Camera.main.GetComponent<EditorInterface>().unlockedWorld();
+		}
+		PlayerPrefs.Save();
+	}
 
 	public void OnPurchaseFailed (Product product, PurchaseFailureReason failureReason) {
 		// A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing 
