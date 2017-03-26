@@ -117,6 +117,12 @@ public class OnlineServices: MonoBehaviour {
 					} else if (Application.platform == RuntimePlatform.IPhonePlayer) {
 						//Social.ReportProgress(GCIds.achievement_beat_rotate_world, 100.0f, (bool success) => {});
 					}
+				} else if (world == 4) {
+					if (Application.platform == RuntimePlatform.Android) {
+
+					} else if (Application.platform == RuntimePlatform.IPhonePlayer) {
+
+					}
 				}
 			}
 		}
