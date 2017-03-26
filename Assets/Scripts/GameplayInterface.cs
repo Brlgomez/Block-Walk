@@ -214,7 +214,7 @@ public class GameplayInterface : MonoBehaviour {
 			GetComponent<VariableManagement>().setLevelAuthorization(1);
 		}
 		GetComponent<SoundsAndMusic>().playBeatLevelSound();
-		gameStatus.GetComponent<Text>().text = "Success";
+		gameStatus.GetComponent<Text>().text = "Success!";
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;
@@ -229,6 +229,15 @@ public class GameplayInterface : MonoBehaviour {
 		timer = 0;
 		sliderMoving = true;
 		towards = topOfScreen;
+	}
+
+	public void destroyed () {
+		StartCoroutine(loseByDestroyed());
+	}
+
+	IEnumerator loseByDestroyed () {
+		yield return new WaitForSeconds(1);
+		loseText("Destroyed!");
 	}
 
 	public bool isMenuOn() {

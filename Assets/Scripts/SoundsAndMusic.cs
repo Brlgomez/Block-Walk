@@ -20,6 +20,8 @@ public class SoundsAndMusic : MonoBehaviour {
 	public AudioClip multistepBlock;
 	public AudioClip rotateRight;
 	public AudioClip rotateLeft;
+	public AudioClip explosion;
+	public AudioClip fuse;
 
 	private AudioSource source;
 
@@ -149,6 +151,20 @@ public class SoundsAndMusic : MonoBehaviour {
 		if (playSoundEffects == 0) {
 			source.pitch = 1;
 			source.PlayOneShot (rotateLeft);
+		}
+	}
+
+	public void playExplosionSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = 1;
+			source.PlayOneShot(explosion);
+		}
+	}
+
+	public void playFuseSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = 1;
+			source.PlayOneShot(fuse);
 		}
 	}
 

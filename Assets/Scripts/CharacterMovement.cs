@@ -413,6 +413,12 @@ public class CharacterMovement : MonoBehaviour {
 		Destroy (GetComponent<CharacterMovement> ());
 	}
 
+	public void blownUp () {
+		Destroy(player);
+		GetComponent<GameplayInterface>().destroyed();
+		Destroy (GetComponent<CharacterMovement> ());
+	}
+
 	public void setIfPlayerCanMove (bool b) {
 		canPlayerMove = b;
 	}

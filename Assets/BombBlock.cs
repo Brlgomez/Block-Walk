@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class BombBlock : MonoBehaviour {
 
-	int numberOfSteps = 3;
+	int numberOfSteps = 4;
 	bool active = false;
 	List<GameObject> currentBlocks = new List<GameObject>();
 	List<GameObject> bombBlocks = new List<GameObject>();
@@ -12,18 +12,21 @@ public class BombBlock : MonoBehaviour {
 	public void decreaseBombSteps () {
 		if (active) {
 			numberOfSteps--;
-			gameObject.transform.localScale *= 1.33f;
+			gameObject.transform.localScale *= 1.25f;
 			if (numberOfSteps <= 0) {
-				bombAdjacent();
+				bombAdjacent(true);
 			}
 		}
 	}
 
 	public void activateBomb () {
-		active = true;
+		if (!active) {
+			Camera.main.GetComponent<SoundsAndMusic>().playFuseSound();
+			active = true;
+		}
 	}
 		
-	public void bombAdjacent () {
+	public void bombAdjacent (bool sound) {
 		currentBlocks = Camera.main.GetComponent<LevelBuilder>().getBlocks();
 		int direction = 1;
 		for (int i = 0; i < currentBlocks.Count; i++) {
@@ -55,10 +58,13 @@ public class BombBlock : MonoBehaviour {
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
 			gameObject.GetComponent<ParticleSystem>().Play();
+			if (sound) { 
+				Camera.main.GetComponent<SoundsAndMusic>().playExplosionSound();
+			}
 		}
 		destroy(gameObject);
 		for (int i = 0; i < bombBlocks.Count; i++) {
-			bombBlocks[i].GetComponent<BombBlock>().bombAdjacent();
+			bombBlocks[i].GetComponent<BombBlock>().bombAdjacent(false);
 		}
 	}
 
@@ -77,8 +83,7 @@ public class BombBlock : MonoBehaviour {
 				}
 			}
 			if (player.transform.position == block.transform.position) {
-				Destroy(player);
-				Camera.main.GetComponent<CharacterMovement>().lost("Destroyed!");
+				Camera.main.GetComponent<CharacterMovement>().blownUp();
 			}
 			block.AddComponent<FallingBlock>();
 		}
