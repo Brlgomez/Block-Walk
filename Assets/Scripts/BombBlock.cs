@@ -73,7 +73,6 @@ public class BombBlock : MonoBehaviour {
 			if (block.tag == VariableManagement.bomb && block != gameObject) {
 				bombBlocks.Add(block);
 			}
-			GameObject player = GameObject.FindGameObjectWithTag (VariableManagement.player);
 			List<GameObject> path = new List<GameObject>();
 			path = Camera.main.GetComponent<CharacterMovement>().getPath();
 			for (int i = 0; i < path.Count; i++) {
@@ -82,7 +81,7 @@ public class BombBlock : MonoBehaviour {
 					break;
 				}
 			}
-			if (player.transform.position == block.transform.position) {
+			if (Camera.main.GetComponent<CharacterMovement>().getPlayerPos() == block.transform.position) {
 				Camera.main.GetComponent<CharacterMovement>().blownUp();
 			}
 			block.AddComponent<FallingBlock>();

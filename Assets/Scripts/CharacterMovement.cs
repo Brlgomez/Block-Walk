@@ -28,6 +28,7 @@ public class CharacterMovement : MonoBehaviour {
 	float initialOrthoSize;
 	GameObject playerOn;
 	bool canPlayerMove = false;
+	Vector3 playerPos;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag (VariableManagement.player);
@@ -302,24 +303,25 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	public void deletePath (GameObject block) {
-		List<GameObject> tempPath = new List<GameObject>();
-		for (int i = 0; i < path.Count; i++) {
-			if (path[i] == block) {
-				break;
+		if (path.Count > 2) {
+			List<GameObject> tempPath = new List<GameObject>();
+			for (int i = 0; i < path.Count; i++) {
+				if (path[i] == block) {
+					break;
+				}
+				tempPath.Add(path[i]);
 			}
-			tempPath.Add(path[i]);
+			path.Clear();
+			path = tempPath;
 		}
-		path.Clear();
-		path = tempPath;
-		if (tempPath.Count > 1) {
-			playerOn = tempPath[tempPath.Count - 1];
+		if (path.Count > 1) {
+			playerOn = path[path.Count - 1];
 		}
 	}
 
 	void movePlayer () {
 		if (path.Count < 1) {
-			lost("Destroyed");
-			Destroy(player);
+			blownUp();
 		} else {
 			player.transform.position = Vector3.MoveTowards(
 				player.transform.position,
@@ -329,12 +331,14 @@ public class CharacterMovement : MonoBehaviour {
 			if (Vector3.Distance(player.transform.position, path[0].transform.position) < 0.2f) {
 				player.transform.position = path[0].transform.position;
 				if (path.Count > 1) {
+					playerPos = path[1].transform.position;
 					Camera.main.GetComponent<DeleteCubes>().exitBlock(path[0]);
 					removeFromPath(0);
 					if (path.Count > 0) {
 						Camera.main.GetComponent<DeleteCubes>().enterBlock(path[0]);
 					}
 				} else {
+					playerPos = path[0].transform.position;
 					moveCharacter = false;
 					checkForSolution = true;
 					timerForSolution = 0;
@@ -421,5 +425,9 @@ public class CharacterMovement : MonoBehaviour {
 
 	public void setIfPlayerCanMove (bool b) {
 		canPlayerMove = b;
+	}
+
+	public Vector3 getPlayerPos () {
+		return playerPos;
 	}
 }
