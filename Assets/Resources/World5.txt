@@ -1,4 +1,4 @@
-
+The Bomb
 Brandon Gomez
 190,255,217
 0.495788,0.2635559,0.250533
@@ -38,7 +38,7 @@ Brandon Gomez
 --------
 --------
 --------
-*
+*Chain Reaction
 Brandon Gomez
 0,107,91
 0.1327302,0.2522508,0.5
@@ -78,7 +78,7 @@ OMMMMMMO
 --------
 --------
 --------
-*
+*Sending a Package
 Brandon Gomez
 195,171,165
 0.441451,0.4132056,0.3140259
@@ -258,7 +258,7 @@ CCEEECC-
 -SCSCS--
 --------
 --------
-*Flower Power
+*Neon Flower
 Brandon Gomez
 86,77,243
 0.4436508,0.3974264,0.386339
@@ -298,7 +298,7 @@ Brandon Gomez
 --------
 --------
 --------
-*
+*Losing Ground
 Brandon Gomez
 242,170,225
 0.2890754,0,0.4119625
