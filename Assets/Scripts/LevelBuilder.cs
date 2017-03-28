@@ -213,7 +213,9 @@ public class LevelBuilder : MonoBehaviour {
 		}
 		if (Vector3.Distance(newCenter, center) > 0.2f) {
 			center = newCenter;
-			GetComponent<CharacterMovement>().setPan();
+			if (GetComponent<CharacterMovement>() != null) {
+				GetComponent<CharacterMovement>().setPan();
+			}
 		}
 	}
 

@@ -19,7 +19,9 @@ public class RotateBlock : MonoBehaviour {
 			transform.position = Vector3.Slerp(transform.position, point, timer);
 		} else {
 			transform.position = point;
-			Camera.main.GetComponent<CharacterMovement>().setIfPlayerCanMove(true);
+			if (Camera.main.GetComponent<CharacterMovement>() != null) {
+				Camera.main.GetComponent<CharacterMovement>().setIfPlayerCanMove(true);
+			}
 			if (firstBlock) {
 				Camera.main.GetComponent<LevelBuilder>().recalculateBlocks();
 			}
