@@ -96,9 +96,12 @@ public class SwitchScaling : MonoBehaviour {
 					}
 				}
 			}
-			for (int i = 0; i < GetComponent<CharacterMovement> ().getPath ().Count; i++) {
-				if (GetComponent<CharacterMovement> ().getPath () [i].GetComponent<BoxCollider>().size == Vector3.zero) {
-					GetComponent<CharacterMovement> ().getPath () [i].GetComponent<BoxCollider> ().size = Vector3.one * 4;
+
+			if (GetComponent<CharacterMovement>() != null) {
+				for (int i = 0; i < GetComponent<CharacterMovement>().getPath().Count; i++) {
+					if (GetComponent<CharacterMovement>().getPath()[i].GetComponent<BoxCollider>().size == Vector3.zero) {
+						GetComponent<CharacterMovement>().getPath()[i].GetComponent<BoxCollider>().size = Vector3.one * 4;
+					}
 				}
 			}
 			Destroy(GetComponent<SwitchScaling>());
