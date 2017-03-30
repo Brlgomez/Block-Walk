@@ -874,22 +874,22 @@ public class MainMenuInterface : MonoBehaviour {
 			mat.SetPass(0);
 			GL.Begin(GL.QUADS);
 			GL.Color(Color.gray);
-			GL.Vertex3((0.075f) - 7.5f, 0, 11.475f);
-			GL.Vertex3((0.075f) - 7.5f, 0, 11.325f);
-			GL.Vertex3(((15) - 0.075f) - 7.5f, 0, 11.325f);
-			GL.Vertex3(((15) - 0.075f) - 7.5f, 0, 11.475f);
+			GL.Vertex3((0.075f) - 7.5f, 0, 10.975f);
+			GL.Vertex3((0.075f) - 7.5f, 0, 10.825f);
+			GL.Vertex3(((15) - 0.075f) - 7.5f, 0, 10.825f);
+			GL.Vertex3(((15) - 0.075f) - 7.5f, 0, 10.975f);
 			GL.Color(Color.white);
 			for (int i = 0; i < filePositions.Count; i++) {
-				GL.Vertex3((filePositions[i] + 0.075f) - 7.5f, 0, 11.475f);
-				GL.Vertex3((filePositions[i] + 0.075f) - 7.5f, 0, 11.325f);
-				GL.Vertex3((filePositions[i] - 0.075f) - 7.5f, 0, 11.325f);
-				GL.Vertex3((filePositions[i] - 0.075f) - 7.5f, 0, 11.475f);
+				GL.Vertex3((filePositions[i] + 0.075f) - 7.5f, 0, 10.975f);
+				GL.Vertex3((filePositions[i] + 0.075f) - 7.5f, 0, 10.825f);
+				GL.Vertex3((filePositions[i] - 0.075f) - 7.5f, 0, 10.825f);
+				GL.Vertex3((filePositions[i] - 0.075f) - 7.5f, 0, 10.975f);
 			}
 			GL.Color(Color.red);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) + 0.075f) - 7.5f, 0, 11.475f);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) + 0.075f) - 7.5f, 0, 11.325f);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) - 0.075f) - 7.5f, 0, 11.325f);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) - 0.075f) - 7.5f, 0, 11.475f);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) + 0.075f) - 7.5f, 0, 10.975f);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) + 0.075f) - 7.5f, 0, 10.825f);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) - 0.075f) - 7.5f, 0, 10.825f);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * 0.15f) - 0.075f) - 7.5f, 0, 10.975f);
 			GL.End();
 			GL.PopMatrix();
 		}
