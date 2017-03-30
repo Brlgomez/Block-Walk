@@ -19,6 +19,7 @@ public class GameplayInterface : MonoBehaviour {
 	GameObject nextLevel;
 	GameObject mainMenu;
 	GameObject handle;
+	GameObject particles;
 	bool loading = false;
 	float timer;
 	bool sliderMoving = false;
@@ -34,6 +35,7 @@ public class GameplayInterface : MonoBehaviour {
 		nextLevel = GameObject.Find("Next Level");
 		mainMenu = GameObject.Find("Main Menu");
 		handle = GameObject.Find("Floor");
+		particles = GameObject.Find("Particles");
 		gameStatus.GetComponent<Text>().text = PlayerPrefs.GetString(VariableManagement.userMapName);
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
@@ -50,6 +52,9 @@ public class GameplayInterface : MonoBehaviour {
 			if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
 				handle.GetComponentsInChildren<Image>()[4].color = Color.clear;
 			}
+		}
+		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
+			particles.GetComponent<ParticleSystem>().Play();
 		}
 	}
 
