@@ -220,8 +220,8 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	void setCamera() {
-		float yHeight1 = Mathf.Abs(xMin - xMax);
-		float yHeight2 = Mathf.Abs(zMin - zMax);
+		float yHeight1 = Mathf.Abs(xMin - xMax) + ((Screen.height/Screen.width) * 0.5f);
+		float yHeight2 = Mathf.Abs(zMin - zMax) + ((Screen.height/Screen.width) * 0.5f);
 		Camera.main.orthographicSize = ((rightMost - leftMost) - (rightMost - leftMost) / 4.5f);
 		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, startOrthoMin, startOrthoMax);
 		if ((yHeight2 / yHeight1) < 1.625f) {

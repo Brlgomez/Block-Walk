@@ -20,6 +20,7 @@ public class EditorInterface : MonoBehaviour {
 	GameObject r, g, b;
 	GameObject rB, gB, bB;
 	GameObject rHandle, gHandle, bHandle;
+	GameObject changeColors, options, scroll, authorized;
 	Vector2 rGradient, gGradient, bGradient;
 	bool touchingRhandle, touchingGhandle, touchingBhandle, changingColor = false;
 
@@ -46,6 +47,14 @@ public class EditorInterface : MonoBehaviour {
 		content = GameObject.Find("Content");
 		popUp = GameObject.Find("Pop Up");
 		uiHolder = GameObject.Find("Floor");
+		changeColors = GameObject.Find("Change Colors");
+		options = GameObject.Find("Options");
+		scroll = GameObject.Find("Scroll View");
+		authorized = GameObject.Find("Authorized");
+		changeColors.transform.SetParent(menuHolder.transform);
+		options.transform.SetParent(menuHolder.transform);
+		scroll.transform.SetParent(menuHolder.transform);
+		authorized.transform.SetParent(menuHolder.transform);
 		GetComponent<BlurOptimized>().downsample = blurDownsample;
 		GetComponent<BackgroundColorTransition>().levelStarting();
 		initialCamPos = transform.position;

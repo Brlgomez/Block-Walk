@@ -19,6 +19,7 @@ public class GameplayInterface : MonoBehaviour {
 	GameObject nextLevel;
 	GameObject mainMenu;
 	GameObject handle;
+	GameObject authorized;
 	GameObject particles;
 	bool loading = false;
 	float timer;
@@ -35,6 +36,7 @@ public class GameplayInterface : MonoBehaviour {
 		nextLevel = GameObject.Find("Next Level");
 		mainMenu = GameObject.Find("Main Menu");
 		handle = GameObject.Find("Floor");
+		authorized = GameObject.Find("Authorized");
 		particles = GameObject.Find("Particles");
 		gameStatus.GetComponent<Text>().text = PlayerPrefs.GetString(VariableManagement.userMapName);
 		middleWidth = Screen.width / 2;
@@ -43,14 +45,16 @@ public class GameplayInterface : MonoBehaviour {
 		bottomOfScreen = new Vector3(middleWidth, handleHeight, 0);
 		topOfScreen = new Vector3(middleWidth, height - handleHeight, 0);
 		GetComponent<BlurOptimized>().downsample = blurDownsample;
+		authorized.transform.SetParent(handle.transform);
+		gameStatus.transform.SetParent(handle.transform);
 		GetComponent<BackgroundColorTransition>().levelStarting();
 		if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
 			if (PlayerPrefs.GetInt((GetComponent<VariableManagement>().getWorldLevel() - 1).ToString(), 0) == 0) {
-				handle.GetComponentsInChildren<Image>()[4].color = Color.clear;
+				authorized.GetComponent<Image>().color = Color.clear;
 			}
 		} else {
 			if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
-				handle.GetComponentsInChildren<Image>()[4].color = Color.clear;
+				authorized.GetComponent<Image>().color = Color.clear;
 			}
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
@@ -189,7 +193,7 @@ public class GameplayInterface : MonoBehaviour {
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			GetComponent<BlurOptimized>().enabled = true;
 		}
-		handle.GetComponentsInChildren<Image>()[4].color = Color.white;
+		authorized.GetComponent<Image>().color = Color.white;
 		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
 			GetComponent<OnlineServices>().beatLevel(world);
 			if (PlayerPrefs.GetInt((currentLevel).ToString(), 0) == 0) {
