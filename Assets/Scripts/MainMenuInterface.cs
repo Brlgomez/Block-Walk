@@ -356,10 +356,12 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void LoadLevel(int level) {
-		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.worldMenu);
-		PlayerPrefs.SetInt(VariableManagement.worldLevel, level + levelMultiplier);
-		gameObject.AddComponent<BackgroundColorTransition>();
-		GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);
+		if (gameObject.GetComponent<MenuTransitions>() == null) {
+			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.worldMenu);
+			PlayerPrefs.SetInt(VariableManagement.worldLevel, level + levelMultiplier);
+			gameObject.AddComponent<BackgroundColorTransition>();
+			GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);
+		}
 	}
 
 	public void openEditor() {
@@ -371,13 +373,15 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 		
 	public void loadUserLevel() {
-		interfaceMenu = 0;
-		destroyBlockChildren();
-		filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
-		if (File.Exists(filePath)) {		
-			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
-			gameObject.AddComponent<BackgroundColorTransition>();
-			GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);
+		if (gameObject.GetComponent<MenuTransitions>() == null) {
+			interfaceMenu = 0;
+			destroyBlockChildren();
+			filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
+			if (File.Exists(filePath)) {		
+				PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
+				gameObject.AddComponent<BackgroundColorTransition>();
+				GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);
+			}
 		}
 	}
 
