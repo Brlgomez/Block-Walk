@@ -29,6 +29,7 @@ public class CharacterMovement : MonoBehaviour {
 	GameObject playerOn;
 	bool canPlayerMove = false;
 	Vector3 playerPos;
+	GameObject instructions;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag (VariableManagement.player);
@@ -36,6 +37,7 @@ public class CharacterMovement : MonoBehaviour {
 		path = new List<GameObject> ();
 		camRotateTarget = Quaternion.Euler (90, 0, 0);
 		initialOrthoSize = Camera.main.orthographicSize;
+		instructions = GameObject.Find("Instruction Particles");
 		if (GetComponent<VariableManagement>().getCameraShift() == 1) {
 			setCameraFinalPosition ();
 		}
@@ -96,6 +98,14 @@ public class CharacterMovement : MonoBehaviour {
 		Camera.main.orthographicSize = center.y;
 		cameraFixed = true;
 		GetComponent<VariableManagement>().turnOnCameraShift();
+		if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
+			if (GetComponent<VariableManagement>().getWorldLevel() == 1) {
+				instructions.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+				instructions.transform.GetChild(1).GetComponent<ParticleSystem>().Play();
+				instructions.transform.GetChild(2).GetComponent<ParticleSystem>().Play();
+				instructions.transform.GetChild(3).GetComponent<ParticleSystem>().Play();			
+			}
+		}
 	}
 
 	public void setPan () {

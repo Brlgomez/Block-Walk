@@ -437,15 +437,15 @@ public class MainMenuInterface : MonoBehaviour {
 		turnOffButton(userCreated.GetComponentsInChildren<Button>()[0]);
 		turnOffButton(userCreated.GetComponentsInChildren<Button>()[1]);
 		turnOffButton(userCreated.GetComponentsInChildren<Button>()[2]);
-		userCreated.GetComponentsInChildren<Image>()[0].color = Color.clear;
+		userCreated.GetComponentsInChildren<Image>()[1].color = Color.clear;
 		userCreated.GetComponentsInChildren<Button>()[5].GetComponentInChildren<Text>().text = "Create";
 	}
 
 	void enableButtons() {
 		if (GetComponent<VariableManagement>().isLevelAuthorized()) {
-			userCreated.GetComponentsInChildren<Image>()[0].color = Color.white;
+			userCreated.GetComponentsInChildren<Image>()[1].color = Color.white;
 		} else {
-			userCreated.GetComponentsInChildren<Image>()[0].color = Color.clear;
+			userCreated.GetComponentsInChildren<Image>()[1].color = Color.clear;
 		}
 	 	if (GetComponent<VariableManagement>().isLevelAuthorized() &&
 				userNameOfMap == PlayerPrefs.GetString(VariableManagement.userName) &&

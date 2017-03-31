@@ -94,6 +94,43 @@ public class FirebaseDatabases : MonoBehaviour {
 		}
 	}
 
+	public void fireBaseMostDownloadedRecent (Text text) {
+		if (isConnected()) {
+			FirebaseApp app = FirebaseApp.DefaultInstance;
+			app.SetEditorDatabaseUrl(url);
+
+			DateTime epochStart = new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
+			long curtime = (long)(System.DateTime.UtcNow - epochStart).TotalSeconds;
+			curtime -= 604800;
+			curtime *= 1000;
+
+			FirebaseDatabase.DefaultInstance.GetReference("Levels").OrderByChild("Date").StartAt(curtime).LimitToLast(50).
+			GetValueAsync().ContinueWith(task => {
+				if (task.IsFaulted) {
+					text.text = "Error, please try again";
+					return;
+				}
+				else if (task.IsCompleted) {
+					if (task.Result.ChildrenCount > 0) {
+						setList(task.Result.Children);
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 6 ||
+							GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
+							GetComponent<MainMenuInterface>().toPublicLevels();
+						}
+					} else {
+						text.text = "No Posts";
+						if (GetComponent<MainMenuInterface>().getInterfaceNumber() == 8) {
+							GetComponent<MainMenuInterface>().toDatabase();
+						}
+					}
+				}
+			});
+			app.Dispose();
+		} else {
+			text.text = "No Connection";
+		}
+	}
+
 	public void getYourLevels (Text text) {
 		if (isConnected()) {
 			FirebaseApp app = FirebaseApp.DefaultInstance;

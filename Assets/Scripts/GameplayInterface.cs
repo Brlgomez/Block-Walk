@@ -21,6 +21,8 @@ public class GameplayInterface : MonoBehaviour {
 	GameObject handle;
 	GameObject authorized;
 	GameObject particles;
+	GameObject instructions;
+
 	bool loading = false;
 	float timer;
 	bool sliderMoving = false;
@@ -38,6 +40,7 @@ public class GameplayInterface : MonoBehaviour {
 		handle = GameObject.Find("Floor");
 		authorized = GameObject.Find("Authorized");
 		particles = GameObject.Find("Particles");
+		instructions = GameObject.Find("Instruction Particles");
 		gameStatus.GetComponent<Text>().text = PlayerPrefs.GetString(VariableManagement.userMapName);
 		middleWidth = Screen.width / 2;
 		height = Screen.height;
@@ -192,6 +195,14 @@ public class GameplayInterface : MonoBehaviour {
 		int world = currentLevel / 16;
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
 			GetComponent<BlurOptimized>().enabled = true;
+		}
+		if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.worldMenu) {
+			if (GetComponent<VariableManagement>().getWorldLevel() == 1) {
+				instructions.transform.GetChild(0).GetComponent<ParticleSystem>().Stop();
+				instructions.transform.GetChild(1).GetComponent<ParticleSystem>().Stop();
+				instructions.transform.GetChild(2).GetComponent<ParticleSystem>().Stop();
+				instructions.transform.GetChild(3).GetComponent<ParticleSystem>().Stop();
+			}
 		}
 		authorized.GetComponent<Image>().color = Color.white;
 		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
