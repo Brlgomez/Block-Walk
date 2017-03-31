@@ -13,7 +13,7 @@ public class MainMenuInterface : MonoBehaviour {
 	static int minAmountOfUserLevels = 1;
 
 	bool loading = false;
-	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database;
+	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database, floor;
 	GameObject publicConfirmation, search, settings, store, musicObj;
 	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock, bombBlock;
 	List<Sprite> levelImages;
@@ -35,6 +35,8 @@ public class MainMenuInterface : MonoBehaviour {
 
 	void Start() {
 		//PlayerPrefs.DeleteAll();
+		floor = GameObject.Find("Floor");
+		floor.transform.position = new Vector3 (Screen.width, 0, 0);
 		blockHolder = GameObject.Find("Block Holder");
 		particles = GameObject.Find("Sprite Holder");
 		musicObj = GameObject.Find("Music");

@@ -49,6 +49,7 @@ public class MenuTransitions : MonoBehaviour {
 	public void setScreens (GameObject screenLeaving, GameObject screenEntering, Color32 c) {
 		backgroundColor = c;
 		itemsLeaving = new List<Transform>();
+		itemsEntering = new List<Transform>();
 
 		if (screenLeaving != null) {
 			Transform[] childrenLeaving = screenLeaving.GetComponentsInChildren<Transform>();
@@ -72,7 +73,6 @@ public class MenuTransitions : MonoBehaviour {
 		}
 			
 		if (screenEntering != null) {
-			itemsEntering = new List<Transform>();
 			Transform[] childrenEntering = screenEntering.GetComponentsInChildren<Transform>();
 			foreach (Transform child in childrenEntering) {
 				if (child.parent == screenEntering.transform) {
