@@ -66,24 +66,23 @@ public class LevelBuilder : MonoBehaviour {
 			if (File.Exists(filePath)) {
 				r = File.OpenText(filePath);
 			} else {
-				if (PlayerPrefs.GetString(VariableManagement.userName) == "") {
-					File.AppendAllText(
-						filePath, "Untitled\nUnknown\n" + 
-						MenuColors.editorInterface.r + "," + MenuColors.editorInterface.g + "," + MenuColors.editorInterface.b + 
-						"\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n"
-					);
+				string dataTemp = "";
+				if (PlayerPrefs.GetString(VariableManagement.userName) == "") { 
+					dataTemp += "Untitled\nUnknown\n" +
+						MenuColors.editorInterface.r + "," + MenuColors.editorInterface.g + "," + MenuColors.editorInterface.b +
+						"\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n";
 				} else {
-					File.AppendAllText(
-						filePath, "Untitled\n" + PlayerPrefs.GetString(VariableManagement.userName) + "\n" + 
-						MenuColors.editorInterface.r + "," + MenuColors.editorInterface.g + "," + MenuColors.editorInterface.b + 
-						"\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n"
-					);
+					dataTemp += "Untitled\n" + PlayerPrefs.GetString(VariableManagement.userName) + "\n" +
+						MenuColors.editorInterface.r + "," + MenuColors.editorInterface.g + "," + MenuColors.editorInterface.b +
+						"\n0.1,0.2,0.3\n0.05,0,0\n0,0.03,0.015\n";
 				}
 				for (int i = 0; i < 14; i++) {
-					File.AppendAllText(filePath, "--------\n");
+					dataTemp += "--------\n";
 				}
-				File.AppendAllText(filePath, VariableManagement.levelDelimiter.ToString());
+				dataTemp += VariableManagement.levelDelimiter.ToString();
+				File.AppendAllText(filePath, dataTemp);
 				r = File.OpenText(filePath);
+				PlayerPrefs.SetString("Data" + GetComponent<VariableManagement>().getUserLevel(), dataTemp);
 			}
 			level = r.ReadToEnd().Split(VariableManagement.levelDelimiter.ToString()[0]);
 			return level[0].Split("\n"[0]);

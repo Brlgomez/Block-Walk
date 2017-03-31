@@ -60,7 +60,7 @@ public class EditorInterface : MonoBehaviour {
 		initialCamPos = transform.position;
 		colorMenuCamPos = new Vector3(transform.position.x, transform.position.y, 5.25f);
 		if (!GetComponent<VariableManagement>().isLevelAuthorized()) {
-			uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
+			authorized.GetComponent<Image>().color = Color.clear;
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 1) {
 			colorTimerLimit = 0.1f;
@@ -417,7 +417,7 @@ public class EditorInterface : MonoBehaviour {
 	}
 
 	public void deauthorizedLevel () {
-		uiHolder.GetComponentsInChildren<Image>()[1].color = Color.clear;
+		authorized.GetComponent<Image>().color = Color.clear;
 		deauthorize = true;
 	}
 
