@@ -58,9 +58,9 @@ public class BombBlock : MonoBehaviour {
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
 			gameObject.GetComponent<ParticleSystem>().Play();
-			if (sound) { 
-				Camera.main.GetComponent<SoundsAndMusic>().playExplosionSound();
-			}
+		}
+		if (sound) { 
+			Camera.main.GetComponent<SoundsAndMusic>().playExplosionSound();
 		}
 		destroy(gameObject);
 		for (int i = 0; i < bombBlocks.Count; i++) {

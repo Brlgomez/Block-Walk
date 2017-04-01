@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
-//using GooglePlayGames;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.SocialPlatforms.GameCenter;
+//using GooglePlayGames;
 
 public class OnlineServices: MonoBehaviour {
 
