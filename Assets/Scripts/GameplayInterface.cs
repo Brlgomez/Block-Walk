@@ -217,6 +217,7 @@ public class GameplayInterface : MonoBehaviour {
 				}
 			}
 			if (beatWorld) {
+				PlayerPrefs.SetInt("Beat World" + world.ToString(), 1);
 				if (PlayerPrefs.GetInt("World" + world.ToString(), 0) == 0) {
 					PlayerPrefs.SetInt("World" + world.ToString(), 1);
 					PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, world + 1);

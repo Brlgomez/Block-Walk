@@ -253,7 +253,7 @@ public class MainMenuInterface : MonoBehaviour {
 			}
 			interfaceMenu = 5;
 			GetComponent<SoundsAndMusic>().playUnlockSound();
-			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!\nYou unlocked a new world and blocks!";
+			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!\nNew Unlocks!";
 			turnOffButton(popUp.GetComponentsInChildren<Button>()[0]);
 			turnOffButton(popUp.GetComponentsInChildren<Button>()[1]);
 		} else {
@@ -273,6 +273,9 @@ public class MainMenuInterface : MonoBehaviour {
 			} else {
 				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Image>().color = Color.white;
 				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Text>().color = Color.white;
+				if (PlayerPrefs.GetInt("Beat World" + (i - 1).ToString(), 0) == 1) {
+					worlds.GetComponentsInChildren<Button>()[i - 1].GetComponentsInChildren<Image>()[1].enabled = true;
+				}
 			}
 		}
 	}
