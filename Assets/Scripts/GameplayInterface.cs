@@ -206,25 +206,23 @@ public class GameplayInterface : MonoBehaviour {
 		}
 		authorized.GetComponent<Image>().color = Color.white;
 		if (GetComponent<VariableManagement>().getLastMenu() == VariableManagement.worldMenu) {
+			PlayerPrefs.SetInt((currentLevel).ToString(), 1);
 			GetComponent<OnlineServices>().beatLevel(world);
-			if (PlayerPrefs.GetInt((currentLevel).ToString(), 0) == 0) {
-				PlayerPrefs.SetInt((currentLevel).ToString(), 1);
-				bool beatWorld = true;
-				for (int i = 0; i < 16; i++) {
-					int levelNumber = (world * 16) + i;
-					if (PlayerPrefs.GetInt(levelNumber.ToString(), 0) == 0) {
-						beatWorld = false;
-						break;
-					}
+			bool beatWorld = true;
+			for (int i = 0; i < 16; i++) {
+				int levelNumber = (world * 16) + i;
+				if (PlayerPrefs.GetInt(levelNumber.ToString(), 0) == 0) {
+					beatWorld = false;
+					break;
 				}
-				if (beatWorld) {
-					if (PlayerPrefs.GetInt("World" + world.ToString(), 0) == 0) {
-						PlayerPrefs.SetInt("World" + world.ToString(), 1);
-						PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, world + 1);
-					}
-				}
-				PlayerPrefs.Save();
 			}
+			if (beatWorld) {
+				if (PlayerPrefs.GetInt("World" + world.ToString(), 0) == 0) {
+					PlayerPrefs.SetInt("World" + world.ToString(), 1);
+					PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, world + 1);
+				}
+			}
+			PlayerPrefs.Save();
 			if (GetComponent<VariableManagement>().getWorldLevel() + 1 <= lastLevel && ((currentLevel + 1) % 16) != 0) { 
 				nextLevel.GetComponent<Button>().enabled = true;
 				nextLevel.GetComponent<Button>().image.color = Color.white;
