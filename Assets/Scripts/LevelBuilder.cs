@@ -202,8 +202,8 @@ public class LevelBuilder : MonoBehaviour {
 				zMax = blocks[i].transform.localPosition.z;
 			}
 		}
-		float yHeight1 = Mathf.Abs(xMin - xMax);
-		float yHeight2 = Mathf.Abs(zMin - zMax);
+		float yHeight1 = Mathf.Abs(xMin - xMax) + ((Screen.height/Screen.width) * 0.5f);
+		float yHeight2 = Mathf.Abs(zMin - zMax) + ((Screen.height/Screen.width) * 0.5f);
 		Vector3 newCenter;
 		if ((yHeight2 / yHeight1) < 1.625f) {
 			newCenter = new Vector3((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, endOrthoMin, endOrthoMax * 2), (zMin + zMax) / 2);
@@ -283,9 +283,11 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	public void removeBlock(GameObject b) {
-		blocks.Remove(b);
-		if (b.tag == VariableManagement.block || b.tag == VariableManagement.active || b.tag == VariableManagement.inactive || b.tag == VariableManagement.bomb) {
-			numberOfBlocks--;
+		if (blocks.Contains(b)) {
+			blocks.Remove(b);
+			if (b.tag == VariableManagement.block || b.tag == VariableManagement.active || b.tag == VariableManagement.inactive || b.tag == VariableManagement.bomb) {
+				numberOfBlocks--;
+			}
 		}
 	}
 

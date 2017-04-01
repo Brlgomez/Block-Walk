@@ -6,7 +6,6 @@ public class FallingBlock : MonoBehaviour {
 	private int speed = 4;
 	private float timerLimit = 0.75f;
 	private float timerSpeed = 1.25f;
-	float initialSize = 0;
 
 	float timer = 0;
 
@@ -20,13 +19,12 @@ public class FallingBlock : MonoBehaviour {
 		} else if (tag == VariableManagement.bomb) {
 			Camera.main.GetComponent<LevelBuilder>().removeBombBlock(gameObject);
 		}
-		initialSize = transform.localScale.x;
 	}
 
 	void Update() {
 		float deltaTime = Time.deltaTime * timerSpeed;
 		timer += deltaTime;
-		transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, deltaTime * speed * initialSize);
+		transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, deltaTime * speed);
 		if (timer > timerLimit || PlayerPrefs.GetInt(VariableManagement.savePower) == 1) {
 			Destroy(gameObject);
 		}

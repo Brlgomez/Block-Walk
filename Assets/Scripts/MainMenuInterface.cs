@@ -32,6 +32,7 @@ public class MainMenuInterface : MonoBehaviour {
 	string currentLevelData;
 	float guiBoxLength;
 	float guiStart;
+	float guiHeight = 15.5f;
 
 	void Start() {
 		//PlayerPrefs.DeleteAll();
@@ -65,7 +66,7 @@ public class MainMenuInterface : MonoBehaviour {
 		    GetComponent<VariableManagement>().getUserLevel() > maxAmountOfUserLevels) {
 			PlayerPrefs.SetInt(VariableManagement.userLevel, minAmountOfUserLevels);
 		}
-		guiBoxLength = ((float)Screen.width/(float)Screen.height) * 0.275f;
+		guiBoxLength = ((float)Screen.width/(float)Screen.height) * 0.2725f;
 		guiStart = guiBoxLength * (maxAmountOfUserLevels/2);
 		levelImages = new List<Sprite>();
 		for (int i = 0; i < 80; i++) {
@@ -880,22 +881,22 @@ public class MainMenuInterface : MonoBehaviour {
 			mat.SetPass(0);
 			GL.Begin(GL.QUADS);
 			GL.Color(Color.gray);
-			GL.Vertex3((guiBoxLength/2) - guiStart, 0, -10.175f);
-			GL.Vertex3((guiBoxLength/2) - guiStart, 0, -10.025f);
-			GL.Vertex3(((guiBoxLength * maxAmountOfUserLevels) - guiBoxLength/2) - guiStart, 0, -10.025f);
-			GL.Vertex3(((guiBoxLength * maxAmountOfUserLevels) - guiBoxLength/2) - guiStart, 0, -10.175f);
+			GL.Vertex3((guiBoxLength/2) - guiStart, 0, guiHeight - guiBoxLength);
+			GL.Vertex3((guiBoxLength/2) - guiStart, 0, guiHeight);
+			GL.Vertex3(((guiBoxLength * maxAmountOfUserLevels) - guiBoxLength/2) - guiStart, 0, guiHeight);
+			GL.Vertex3(((guiBoxLength * maxAmountOfUserLevels) - guiBoxLength/2) - guiStart, 0, guiHeight - guiBoxLength);
 			GL.Color(Color.white);
 			for (int i = 0; i < filePositions.Count; i++) {
-				GL.Vertex3((filePositions[i] + (guiBoxLength/2)) - guiStart, 0, -10.175f);
-				GL.Vertex3((filePositions[i] + (guiBoxLength/2)) - guiStart, 0, -10.025f);
-				GL.Vertex3((filePositions[i] - (guiBoxLength/2)) - guiStart, 0, -10.025f);
-				GL.Vertex3((filePositions[i] - (guiBoxLength/2)) - guiStart, 0, -10.175f);
+				GL.Vertex3((filePositions[i] + (guiBoxLength/2)) - guiStart, 0, guiHeight - guiBoxLength);
+				GL.Vertex3((filePositions[i] + (guiBoxLength/2)) - guiStart, 0, guiHeight);
+				GL.Vertex3((filePositions[i] - (guiBoxLength/2)) - guiStart, 0, guiHeight);
+				GL.Vertex3((filePositions[i] - (guiBoxLength/2)) - guiStart, 0, guiHeight - guiBoxLength);
 			}
 			GL.Color(Color.red);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * guiBoxLength) + (guiBoxLength/2)) - guiStart, 0, -10.175f);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * guiBoxLength) + (guiBoxLength/2)) - guiStart, 0, -10.025f);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * guiBoxLength) - (guiBoxLength/2)) - guiStart, 0, -10.025f);
-			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * guiBoxLength) - (guiBoxLength/2)) - guiStart, 0, -10.175f);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * guiBoxLength) + (guiBoxLength/2)) - guiStart, 0, guiHeight - guiBoxLength);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * guiBoxLength) + (guiBoxLength/2)) - guiStart, 0, guiHeight);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * guiBoxLength) - (guiBoxLength/2)) - guiStart, 0, guiHeight);
+			GL.Vertex3(((GetComponent<VariableManagement>().getUserLevel() * guiBoxLength) - (guiBoxLength/2)) - guiStart, 0, guiHeight - guiBoxLength);
 			GL.End();
 			GL.PopMatrix();
 		}

@@ -428,6 +428,10 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	public void blownUp () {
+		if (PlayerPrefs.GetInt(VariableManagement.savePower, 0) == 0) {
+			GameObject.Find("Blown Up").transform.position = player.transform.position;
+			GameObject.Find("Blown Up").GetComponent<ParticleSystem>().Play();
+		}
 		Destroy(player);
 		GetComponent<GameplayInterface>().destroyed();
 		Destroy (GetComponent<CharacterMovement> ());
