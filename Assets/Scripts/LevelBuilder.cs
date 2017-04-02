@@ -202,8 +202,8 @@ public class LevelBuilder : MonoBehaviour {
 				zMax = blocks[i].transform.localPosition.z;
 			}
 		}
-		float yHeight1 = Mathf.Abs(xMin - xMax) + ((Screen.height/Screen.width) * 0.5f);
-		float yHeight2 = Mathf.Abs(zMin - zMax) + ((Screen.height/Screen.width) * 0.5f);
+		float yHeight1 = Mathf.Abs(xMin - xMax) + (((float)Screen.height / (float)Screen.width) * 0.5f);
+		float yHeight2 = Mathf.Abs(zMin - zMax) + (((float)Screen.height / (float)Screen.width) * 0.5f);
 		Vector3 newCenter;
 		if ((yHeight2 / yHeight1) < 1.625f) {
 			newCenter = new Vector3((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, endOrthoMin, endOrthoMax * 2), (zMin + zMax) / 2);
@@ -221,8 +221,8 @@ public class LevelBuilder : MonoBehaviour {
 	void setCamera() {
 		float yHeight1 = Mathf.Abs(xMin - xMax) + ((Screen.height/Screen.width) * 0.5f);
 		float yHeight2 = Mathf.Abs(zMin - zMax) + ((Screen.height/Screen.width) * 0.5f);
-		Camera.main.orthographicSize = ((rightMost - leftMost) - (rightMost - leftMost) / 4.5f) + (Screen.height/Screen.width);
-		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, startOrthoMin, startOrthoMax);
+		Camera.main.orthographicSize = ((rightMost - leftMost) - (rightMost - leftMost) / 4.5f) + ((float)Screen.height / (float)Screen.width);
+		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, startOrthoMin, startOrthoMax + ((float)Screen.height / (float)Screen.width));
 		if ((yHeight2 / yHeight1) < 1.625f) {
 			center = new Vector3((xMin + xMax) / 2, Mathf.Clamp(yHeight1 + 0.5f, endOrthoMin, endOrthoMax), (zMin + zMax) / 2);
 		} else {
