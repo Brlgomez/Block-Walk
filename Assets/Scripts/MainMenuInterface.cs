@@ -15,7 +15,7 @@ public class MainMenuInterface : MonoBehaviour {
 	bool loading = false;
 	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database, floor;
 	GameObject publicConfirmation, search, settings, store, musicObj;
-	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock, bombBlock;
+	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock, bombBlock, unknownBlock;
 	List<Sprite> levelImages;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
@@ -33,6 +33,7 @@ public class MainMenuInterface : MonoBehaviour {
 	float guiBoxLength;
 	float guiStart;
 	float guiHeight = 15.5f;
+	bool validLevel = false;
 
 	void Start() {
 		//PlayerPrefs.DeleteAll();
@@ -62,6 +63,7 @@ public class MainMenuInterface : MonoBehaviour {
 		rotateRBlock = GameObject.Find(VariableManagement.rotateRBlock);
 		rotateLBlock = GameObject.Find(VariableManagement.rotateLBlock);
 		bombBlock = GameObject.Find(VariableManagement.bombBlock);
+		unknownBlock = GameObject.Find("Unknown Block");
 		if (GetComponent<VariableManagement>().getUserLevel() < minAmountOfUserLevels ||
 		    GetComponent<VariableManagement>().getUserLevel() > maxAmountOfUserLevels) {
 			PlayerPrefs.SetInt(VariableManagement.userLevel, minAmountOfUserLevels);
@@ -452,12 +454,26 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	void enableButtons() {
+		turnOnButton(userCreated.GetComponentsInChildren<Button>()[0]);
+		turnOnButton(userCreated.GetComponentsInChildren<Button>()[1]);
+		turnOnButton(userCreated.GetComponentsInChildren<Button>()[5]);
+		userCreated.GetComponentsInChildren<Button>()[5].GetComponentInChildren<Text>().text = "Edit";
 		if (GetComponent<VariableManagement>().isLevelAuthorized()) {
 			userCreated.GetComponentsInChildren<Image>()[1].color = Color.white;
 		} else {
 			userCreated.GetComponentsInChildren<Image>()[1].color = Color.clear;
 		}
-	 	if (GetComponent<VariableManagement>().isLevelAuthorized() &&
+		if (!validLevel) {
+			userCreated.GetComponentsInChildren<Button>()[1].interactable = false;
+			userCreated.GetComponentsInChildren<Button>()[1].GetComponentInChildren<Image>().color = Color.clear;
+			userCreated.GetComponentsInChildren<Button>()[2].interactable = false;
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Unknown Block!";
+			userCreated.GetComponentsInChildren<Button>()[5].interactable = false;
+			userCreated.GetComponentsInChildren<Button>()[5].GetComponentInChildren<Image>().color = Color.clear;
+			userCreated.GetComponentsInChildren<Button>()[5].GetComponentInChildren<Text>().text = "Update may be needed";
+		} else if (GetComponent<VariableManagement>().isLevelAuthorized() &&
 				userNameOfMap == PlayerPrefs.GetString(VariableManagement.userName) &&
 				GetComponent<VariableManagement>().isOnlineCheck() &&
 				!GetComponent<VariableManagement>().isLevelPosted() && 
@@ -490,9 +506,6 @@ public class MainMenuInterface : MonoBehaviour {
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().color = Color.white;
 			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Resave and Test";
 		}
-		turnOnButton(userCreated.GetComponentsInChildren<Button>()[0]);
-		turnOnButton(userCreated.GetComponentsInChildren<Button>()[1]);
-		userCreated.GetComponentsInChildren<Button>()[5].GetComponentInChildren<Text>().text = "Edit";
 	}
 
 	public void postLevel () {
@@ -793,6 +806,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void createSpriteLevel (string[] lines, int num, string delimeter) {
+		validLevel = true;
 		for (int i = num; i < lines.Length; i++) {
 			dataOfUserMap += (delimeter + lines[i]);
 			for (int j = 0; j < lines[i].Length; j++) {
@@ -812,6 +826,11 @@ public class MainMenuInterface : MonoBehaviour {
 					displayBlockImage(i - num, j, rotateLBlock);
 				} else if (lines[i][j] == VariableManagement.bombBlockTile) {
 					displayBlockImage(i - num, j, bombBlock);
+				} else if (lines[i][j] == VariableManagement.noBlockTile) {
+					
+				} else {
+					displayBlockImage(i - num, j, unknownBlock);
+					validLevel = false;
 				}
 			}
 		}

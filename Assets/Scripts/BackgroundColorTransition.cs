@@ -116,7 +116,7 @@ public class BackgroundColorTransition : MonoBehaviour {
 	}
 
 	IEnumerator levelWait () {
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(1f);
 		levelStart = true;
 	}
 

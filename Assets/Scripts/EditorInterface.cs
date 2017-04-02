@@ -401,7 +401,7 @@ public class EditorInterface : MonoBehaviour {
 	public void unlockedWorld () {
 		PlayerPrefs.SetInt("World" + worldNumber, 1);
 		PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 1);
-		popUp.GetComponentInChildren<Text>().text = "You unlocked a new world and block pieces!";
+		popUp.GetComponentInChildren<Text>().text = "New Unlocks!";
 		showButtons();
 		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[0]);
 		turnOffRegularButton(popUp.GetComponentsInChildren<Button>()[1]);
