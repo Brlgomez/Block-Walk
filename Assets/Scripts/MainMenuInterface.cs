@@ -13,7 +13,7 @@ public class MainMenuInterface : MonoBehaviour {
 	static int minAmountOfUserLevels = 1;
 
 	bool loading = false;
-	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database, floor;
+	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database, floor, backgroundParticles;
 	GameObject publicConfirmation, search, settings, store, musicObj;
 	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock, bombBlock, unknownBlock;
 	List<Sprite> levelImages;
@@ -55,6 +55,7 @@ public class MainMenuInterface : MonoBehaviour {
 		search = findAndSetUi("Search");
 		settings = findAndSetUi("Settings");
 		store = findAndSetUi("Store");
+		backgroundParticles = GameObject.Find("Particles2");
 		standardBlock = GameObject.Find(VariableManagement.standardBlock);
 		multistepBlock = GameObject.Find(VariableManagement.multistepBlock);
 		switchBlock = GameObject.Find(VariableManagement.switchBlock);
@@ -159,6 +160,9 @@ public class MainMenuInterface : MonoBehaviour {
 			gameObject.AddComponent<MenuTransitions>().setScreens(store, mainMenu, MenuColors.menuColor);
 		}
 		interfaceMenu = 0;
+		if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0 && !backgroundParticles.GetComponent<ParticleSystem>().isPlaying) {
+			backgroundParticles.GetComponent<ParticleSystem>().Play();
+		}
 	}
 
 	public void toSettings () {
@@ -171,10 +175,13 @@ public class MainMenuInterface : MonoBehaviour {
 			PlayerPrefs.SetInt(VariableManagement.savePower, 1);
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: On";
 			Application.targetFrameRate = 30;
+			backgroundParticles.GetComponent<ParticleSystem>().Clear();
+			backgroundParticles.GetComponent<ParticleSystem>().Stop();
 		} else {
 			PlayerPrefs.SetInt(VariableManagement.savePower, 0);
 			settings.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Power Saver: Off";
 			Application.targetFrameRate = 60;
+			backgroundParticles.GetComponent<ParticleSystem>().Play();
 		}
 	}
 
@@ -256,6 +263,7 @@ public class MainMenuInterface : MonoBehaviour {
 			interfaceMenu = 5;
 			GetComponent<SoundsAndMusic>().playUnlockSound();
 			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!\nNew Unlocks!";
+			popUp.GetComponentsInChildren<Text>()[1].text = "";
 			turnOffButton(popUp.GetComponentsInChildren<Button>()[0]);
 			turnOffButton(popUp.GetComponentsInChildren<Button>()[1]);
 		} else {
@@ -293,7 +301,8 @@ public class MainMenuInterface : MonoBehaviour {
 		if (!beatAllLevels) {
 			interfaceMenu = 5;
 			gameObject.AddComponent<MenuTransitions>().setScreens(worlds, popUp, MenuColors.worldColor);
-			popUp.GetComponentsInChildren<Text>()[0].text = "Locked!\nMust beat all levels from the previous world or select option:";
+			popUp.GetComponentsInChildren<Text>()[0].text = "Locked!";
+			popUp.GetComponentsInChildren<Text>()[1].text = "Must beat all levels from the previous world or select option:";
 			turnOnButton(popUp.GetComponentsInChildren<Button>()[0]);
 			turnOnButton(popUp.GetComponentsInChildren<Button>()[1]);
 		} else {
@@ -326,7 +335,10 @@ public class MainMenuInterface : MonoBehaviour {
 					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Text>()[0].text = (i + 1).ToString();
 				}
 			}
-		} 
+		}
+		if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0 && !backgroundParticles.GetComponent<ParticleSystem>().isPlaying) {
+			backgroundParticles.GetComponent<ParticleSystem>().Play();
+		}
 	}
 
 	/* -------------------------------------------play, create, share------------------------------------------------ */
@@ -344,6 +356,9 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 		updateFiles();
 		interfaceMenu = 3;
+		if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0 && !backgroundParticles.GetComponent<ParticleSystem>().isPlaying) {
+			backgroundParticles.GetComponent<ParticleSystem>().Play();
+		}
 	}
 
 	public void openConfirmation() {
@@ -368,7 +383,7 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void LoadLevel(int level) {
-		if (gameObject.GetComponent<MenuTransitions>() == null) {
+		if (gameObject.GetComponent<MenuTransitions>() == null && gameObject.GetComponent<BackgroundColorTransition>() == null) {
 			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.worldMenu);
 			PlayerPrefs.SetInt(VariableManagement.worldLevel, level + levelMultiplier);
 			gameObject.AddComponent<BackgroundColorTransition>();
@@ -377,15 +392,17 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 
 	public void openEditor() {
-		interfaceMenu = 0;
-		destroyBlockChildren();
-		PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
-		gameObject.AddComponent<BackgroundColorTransition>();
-		GetComponent<BackgroundColorTransition>().transition(VariableManagement.toEditorFromMain);
+		if (gameObject.GetComponent<MenuTransitions>() == null && gameObject.GetComponent<BackgroundColorTransition>() == null) {
+			interfaceMenu = 0;
+			destroyBlockChildren();
+			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
+			gameObject.AddComponent<BackgroundColorTransition>();
+			GetComponent<BackgroundColorTransition>().transition(VariableManagement.toEditorFromMain);
+		}
 	}
 		
 	public void loadUserLevel() {
-		if (gameObject.GetComponent<MenuTransitions>() == null) {
+		if (gameObject.GetComponent<MenuTransitions>() == null && gameObject.GetComponent<BackgroundColorTransition>() == null) {
 			interfaceMenu = 0;
 			destroyBlockChildren();
 			filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
