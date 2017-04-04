@@ -161,7 +161,7 @@ public class EditorInterface : MonoBehaviour {
 			if (Input.GetMouseButtonDown(0) && cubes.transform.position == Vector3.zero && transitionNum == 0) {
 				GetComponent<LevelEditor>().mouseDown();
 			}
-			if (Input.GetMouseButtonUp(0)) {
+			if (Input.GetMouseButtonUp(0) && transitionNum == 2) {
 				if (changingColor) {
 					colorTimer = colorTimerLimit;
 					changeBackgroundColor();
