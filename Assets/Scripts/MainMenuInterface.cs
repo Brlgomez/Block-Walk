@@ -262,8 +262,8 @@ public class MainMenuInterface : MonoBehaviour {
 			}
 			interfaceMenu = 5;
 			GetComponent<SoundsAndMusic>().playUnlockSound();
-			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!\nNew Unlocks!";
-			popUp.GetComponentsInChildren<Text>()[1].text = "";
+			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!";
+			popUp.GetComponentsInChildren<Text>()[1].text = "New Unlocks!";
 			turnOffButton(popUp.GetComponentsInChildren<Button>()[0]);
 			turnOffButton(popUp.GetComponentsInChildren<Button>()[1]);
 		} else {
