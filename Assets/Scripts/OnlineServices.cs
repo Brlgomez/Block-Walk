@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SocialPlatforms;
-using UnityEngine.SocialPlatforms.GameCenter;
-//using GooglePlayGames;
+//using UnityEngine.SocialPlatforms.GameCenter;
+using GooglePlayGames;
 
 public class OnlineServices: MonoBehaviour {
 
 	void Start () {
 		if (PlayerPrefs.GetInt (VariableManagement.isOnline, 0) == 0) {
 			if (Application.platform == RuntimePlatform.Android) {
-				//PlayGamesPlatform.DebugLogEnabled = false;
-				//PlayGamesPlatform.Activate ();
+				PlayGamesPlatform.DebugLogEnabled = false;
+				PlayGamesPlatform.Activate ();
 			} else if (Application.platform == RuntimePlatform.IPhonePlayer) {
-				GameCenterPlatform.ShowDefaultAchievementCompletionBanner(true);
+				//GameCenterPlatform.ShowDefaultAchievementCompletionBanner(true);
 			}
 			logIn ();
 		}
