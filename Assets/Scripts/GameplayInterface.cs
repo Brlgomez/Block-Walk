@@ -107,7 +107,9 @@ public class GameplayInterface : MonoBehaviour {
 			Mathf.Clamp(Input.mousePosition.y, handleHeight, height - handleHeight), 
 			handle.transform.position.z
 		);
-		float blurSize = ((handle.transform.position.y - handleHeight) * maxBlur) / (height - handleHeight);
+		float handleRotation = 180 * ((handle.transform.position.y - handleHeight) / (height - handleHeight * 2));
+		handle.GetComponentInChildren<Image>().transform.eulerAngles = new Vector3(0, 0, handleRotation);
+		float blurSize = maxBlur * ((handle.transform.position.y - handleHeight) / (height - handleHeight * 2));
 		GetComponent<BlurOptimized>().blurSize = (blurSize);
 	}
 
@@ -134,13 +136,18 @@ public class GameplayInterface : MonoBehaviour {
 		timer += Time.deltaTime * speedOfSlider;
 		Vector3 handlePos = handle.transform.position;
 		handle.transform.position = Vector3.Lerp(handlePos, towards, timer);
-		GetComponent<BlurOptimized>().blurSize = (((handlePos.y - handleHeight) * maxBlur) / (height - handleHeight));
+		float handleRotation = 180 * ((handlePos.y - handleHeight) / (height - handleHeight * 2));
+		handle.GetComponentInChildren<Image>().transform.eulerAngles = new Vector3(0, 0, handleRotation);
+		GetComponent<BlurOptimized>().blurSize = maxBlur * ((handlePos.y - handleHeight) / (height - handleHeight * 2));
 		if (handlePos.y < towards.y + handleHeight / 2 && handlePos.y > towards.y - handleHeight / 2) {
 			handle.transform.position = towards;
 			sliderMoving = false;
 			timer = 0;
 			if (towards == bottomOfScreen) {
 				GetComponent<BlurOptimized>().enabled = false;
+				handle.GetComponentInChildren<Image>().transform.eulerAngles = new Vector3(0, 0, 0);
+			} else {
+				handle.GetComponentInChildren<Image>().transform.eulerAngles = new Vector3(0, 0, 180);
 			}
 		}
 	}
