@@ -18,6 +18,7 @@ public class MusicManager : MonoBehaviour {
 				musicSource.volume = 0;
 				musicSource.time = Random.Range(0, musicSource.clip.length);
 				musicSource.Play();
+				gameObject.AddComponent<MusicVolumeUp>().direction(true);
 				DontDestroyOnLoad(gameObject);
 				AudioBegin = true;
 			}
@@ -65,6 +66,13 @@ public class MusicManager : MonoBehaviour {
 		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
 			musicSource.volume = 1;
 		}
+	}
+
+	public float getVolume () {
+		if (PlayerPrefs.GetInt(VariableManagement.playMusic) == 0) {
+			return musicSource.volume;
+		}
+		return 0;
 	}
 }
 

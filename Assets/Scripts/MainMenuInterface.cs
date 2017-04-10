@@ -253,38 +253,40 @@ public class MainMenuInterface : MonoBehaviour {
 	}
 		
 	public void toWorldSelect() {
-		if (PlayerPrefs.GetInt(VariableManagement.newWorldUnlocked, 0) > 0) {
-			PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 0);
-			if (interfaceMenu == 0) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, popUp, MenuColors.worldColor);
-			} else if (interfaceMenu == 2) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(levels, popUp, MenuColors.worldColor);
-			}
-			interfaceMenu = 5;
-			GetComponent<SoundsAndMusic>().playUnlockSound();
-			popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!";
-			popUp.GetComponentsInChildren<Text>()[1].text = "New Unlocks!";
-			turnOffButton(popUp.GetComponentsInChildren<Button>()[0]);
-			turnOffButton(popUp.GetComponentsInChildren<Button>()[1]);
-		} else {
-			if (interfaceMenu == 0) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, worlds, MenuColors.worldColor);
-			} else if (interfaceMenu == 2) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(levels, worlds, MenuColors.worldColor);
-			} else if (interfaceMenu == 5) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(popUp, worlds, MenuColors.worldColor);
-			}
-			interfaceMenu = 1;
-		}
-		for (int i = 1; i < 5; i++) {
-			if (PlayerPrefs.GetInt(("World" + (i - 1)).ToString(), 0) == 0) {
-				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Image>().color = Color.black;
-				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Text>().color = Color.clear;
+		if (GetComponent<BackgroundColorTransition>() == null) {
+			if (PlayerPrefs.GetInt(VariableManagement.newWorldUnlocked, 0) > 0) {
+				PlayerPrefs.SetInt(VariableManagement.newWorldUnlocked, 0);
+				if (interfaceMenu == 0) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, popUp, MenuColors.worldColor);
+				} else if (interfaceMenu == 2) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(levels, popUp, MenuColors.worldColor);
+				}
+				interfaceMenu = 5;
+				GetComponent<SoundsAndMusic>().playUnlockSound();
+				popUp.GetComponentsInChildren<Text>()[0].text = "Congrats!";
+				popUp.GetComponentsInChildren<Text>()[1].text = "New Unlocks!";
+				turnOffButton(popUp.GetComponentsInChildren<Button>()[0]);
+				turnOffButton(popUp.GetComponentsInChildren<Button>()[1]);
 			} else {
-				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Image>().color = Color.white;
-				worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Text>().color = Color.white;
-				if (PlayerPrefs.GetInt("Beat World" + (i - 1).ToString(), 0) == 1) {
-					worlds.GetComponentsInChildren<Button>()[i - 1].GetComponentsInChildren<Image>()[1].enabled = true;
+				if (interfaceMenu == 0) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, worlds, MenuColors.worldColor);
+				} else if (interfaceMenu == 2) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(levels, worlds, MenuColors.worldColor);
+				} else if (interfaceMenu == 5) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(popUp, worlds, MenuColors.worldColor);
+				}
+				interfaceMenu = 1;
+			}
+			for (int i = 1; i < 5; i++) {
+				if (PlayerPrefs.GetInt(("World" + (i - 1)).ToString(), 0) == 0) {
+					worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Image>().color = Color.black;
+					worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Text>().color = Color.clear;
+				} else {
+					worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Image>().color = Color.white;
+					worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Text>().color = Color.white;
+					if (PlayerPrefs.GetInt("Beat World" + (i - 1).ToString(), 0) == 1) {
+						worlds.GetComponentsInChildren<Button>()[i - 1].GetComponentsInChildren<Image>()[1].enabled = true;
+					}
 				}
 			}
 		}
@@ -344,20 +346,22 @@ public class MainMenuInterface : MonoBehaviour {
 	/* -------------------------------------------play, create, share------------------------------------------------ */
 
 	public void toUserCreatedLevels() {
-		userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Post";
-		userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
-		showLevel();
-		if (interfaceMenu == 0) {
-			gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, userCreated, MenuColors.editorColor);
-		} else if (interfaceMenu == 4) {
-			gameObject.AddComponent<MenuTransitions>().setScreens(confirmation, userCreated, MenuColors.editorColor);
-		} else {
-			gameObject.AddComponent<MenuTransitions>().setScreens(null, userCreated, MenuColors.editorColor);
-		}
-		updateFiles();
-		interfaceMenu = 3;
-		if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0 && !backgroundParticles.GetComponent<ParticleSystem>().isPlaying) {
-			backgroundParticles.GetComponent<ParticleSystem>().Play();
+		if (GetComponent<BackgroundColorTransition>() == null) {
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Text>().text = "Post";
+			userCreated.GetComponentsInChildren<Button>()[2].GetComponentInChildren<Image>().color = Color.clear;
+			showLevel();
+			if (interfaceMenu == 0) {
+				gameObject.AddComponent<MenuTransitions>().setScreens(mainMenu, userCreated, MenuColors.editorColor);
+			} else if (interfaceMenu == 4) {
+				gameObject.AddComponent<MenuTransitions>().setScreens(confirmation, userCreated, MenuColors.editorColor);
+			} else {
+				gameObject.AddComponent<MenuTransitions>().setScreens(null, userCreated, MenuColors.editorColor);
+			}
+			updateFiles();
+			interfaceMenu = 3;
+			if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0 && !backgroundParticles.GetComponent<ParticleSystem>().isPlaying) {
+				backgroundParticles.GetComponent<ParticleSystem>().Play();
+			}
 		}
 	}
 

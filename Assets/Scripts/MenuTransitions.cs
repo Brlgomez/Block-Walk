@@ -52,6 +52,7 @@ public class MenuTransitions : MonoBehaviour {
 		itemsEntering = new List<Transform>();
 
 		if (screenLeaving != null) {
+			screenLeaving.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 			Transform[] childrenLeaving = screenLeaving.GetComponentsInChildren<Transform>();
 			foreach (Transform child in childrenLeaving) {
 				if (child.parent == screenLeaving.transform) {
@@ -73,6 +74,7 @@ public class MenuTransitions : MonoBehaviour {
 		}
 			
 		if (screenEntering != null) {
+			screenEntering.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 			Transform[] childrenEntering = screenEntering.GetComponentsInChildren<Transform>();
 			foreach (Transform child in childrenEntering) {
 				if (child.parent == screenEntering.transform) {

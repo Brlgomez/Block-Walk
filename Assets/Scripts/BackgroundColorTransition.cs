@@ -37,14 +37,11 @@ public class BackgroundColorTransition : MonoBehaviour {
 
 	void Update() {
 		if (levelStart) {
-			music.GetComponent<MusicManager>().increaseVolume();
-			if (SceneManager.GetActiveScene().name == "Main Menu") {
-
-			} else {
+			if (SceneManager.GetActiveScene().name != "Main Menu") {
 				ui.position = Vector3.Lerp(ui.position, uiPosition, levelStartTimer * uiSpeed);
 			}
-			levelStartTimer += Time.deltaTime;
 			cubes.position = Vector3.Lerp(cubes.position, positionOfCubes, levelStartTimer * cubesSpeed);
+			levelStartTimer += Time.deltaTime;
 			if (Vector3.Distance(cubes.position, positionOfCubes) < minCubeDistance || PlayerPrefs.GetInt(VariableManagement.savePower) == 1) {
 				cubes.position = positionOfCubes;
 				ui.position = uiPosition;
@@ -56,9 +53,6 @@ public class BackgroundColorTransition : MonoBehaviour {
 			}
 		}
 		if (transitionToColor) {
-			if (nextScene != VariableManagement.restartOrNextLevel) {
-				music.GetComponent<MusicManager>().decreaseVolume();
-			}
 			timer += Time.deltaTime;
 			if (timer < transitionLength - 0.025f && PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
 				Camera.main.backgroundColor = Color32.Lerp(Camera.main.backgroundColor, newColor, timer * colorSpeed);
@@ -101,13 +95,18 @@ public class BackgroundColorTransition : MonoBehaviour {
 		nextScene = s;
 		transitionToColor = true;
 		newColor = getColorFromFile();
+		if (nextScene != VariableManagement.restartOrNextLevel) {
+			gameObject.AddComponent<MusicVolumeUp>().direction(false);
+		}
 	}
 
 	public void levelStarting() {
 		if (SceneManager.GetActiveScene().name != "Main Menu") {
 			ui.transform.position = new Vector3(-Screen.width / 2, ui.position.y, 0);
+			cubes.position = Vector3.left * cubeDistance;
+		} else {
+			cubes.position = Vector3.zero;
 		}
-		cubes.position = Vector3.left * cubeDistance;
 		if (SceneManager.GetActiveScene().name == "Main Menu") {
 			StartCoroutine(levelWait());
 		} else {
