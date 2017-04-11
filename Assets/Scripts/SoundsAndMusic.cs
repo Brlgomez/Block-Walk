@@ -22,6 +22,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public AudioClip rotateLeft;
 	public AudioClip explosion;
 	public AudioClip fuse;
+	public AudioClip destroyed;
 
 	private AudioSource source;
 
@@ -76,6 +77,13 @@ public class SoundsAndMusic : MonoBehaviour {
 		if (playSoundEffects == 0) {
 			source.pitch = 1;
 			source.PlayOneShot (unlock);
+		}
+	}
+
+	public void playDestroyedSound() {
+		if (playSoundEffects == 0) {
+			source.pitch = 1;
+			source.PlayOneShot (destroyed);
 		}
 	}
 
