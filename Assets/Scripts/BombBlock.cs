@@ -21,7 +21,7 @@ public class BombBlock : MonoBehaviour {
 
 	public void activateBomb () {
 		if (!active) {
-			Camera.main.GetComponent<SoundsAndMusic>().playFuseSound();
+			Camera.main.GetComponent<SoundsAndMusic>().playFuseSound(Camera.main.GetComponent<SoundsAndMusic>().getPitchOfBlock(gameObject), transform.position);
 			active = true;
 		}
 	}
@@ -60,7 +60,7 @@ public class BombBlock : MonoBehaviour {
 			gameObject.GetComponent<ParticleSystem>().Play();
 		}
 		if (sound) { 
-			Camera.main.GetComponent<SoundsAndMusic>().playExplosionSound();
+			Camera.main.GetComponent<SoundsAndMusic>().playExplosionSound(Camera.main.GetComponent<SoundsAndMusic>().getPitchOfBlock(gameObject), transform.position);
 		}
 		destroy(gameObject);
 		for (int i = 0; i < bombBlocks.Count; i++) {

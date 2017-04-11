@@ -79,9 +79,7 @@ public class LevelEditor : MonoBehaviour {
 		GetComponent<EditorInterface>().changeBlockColor(temp);
 		temp.transform.SetParent(cubes.transform);
 		blockPos[z][x] = temp;
-		float pitch = temp.GetComponent<Renderer>().material.color.r + temp.GetComponent<Renderer>().material.color.g + temp.GetComponent<Renderer>().material.color.b;
-		pitch = Mathf.Clamp(pitch, 0.25f, 3);
-		GetComponent<SoundsAndMusic>().playDropBlockSound(new Vector3(x, 0, z), pitch, temp.name);
+		GetComponent<SoundsAndMusic>().playDropBlockSound(new Vector3(x, 0, z), GetComponent<SoundsAndMusic>().getPitchOfBlock(temp), temp.name);
 	}
 
 	public void changeBlock(GameObject block) {

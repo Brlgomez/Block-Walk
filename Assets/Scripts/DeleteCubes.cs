@@ -32,30 +32,24 @@ public class DeleteCubes : MonoBehaviour {
 	public void enterBlock (GameObject other) {
 		// switch block, rotate blocks
 		if (other.transform.tag == "Switch") {
-			Camera.main.GetComponent<SwitchAttributes>().buttonPress();
+			Camera.main.GetComponent<SwitchAttributes>().buttonPress(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 			Camera.main.GetComponent<SwitchAttributes>().saveState();
 		} else if (other.transform.tag == "RotatorR") {
-			Camera.main.GetComponent<SoundsAndMusic>().playRotateRightSound();
+			Camera.main.GetComponent<SoundsAndMusic>().playRotateRightSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 			GetComponent<Rotator>().rotateAt(other.transform.position, 1);
 		} else if (other.transform.tag == "RotatorL") {
-			Camera.main.GetComponent<SoundsAndMusic>().playRotateLeftSound();
+			Camera.main.GetComponent<SoundsAndMusic>().playRotateLeftSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 			GetComponent<Rotator>().rotateAt(other.transform.position, -1);
 		} else if (other.transform.tag == VariableManagement.bomb) {
 			other.GetComponent<BombBlock>().activateBomb();
 		} else {
-			float pitch = (
-				other.GetComponent<Renderer>().material.color.r +
-				other.GetComponent<Renderer>().material.color.g +
-				other.GetComponent<Renderer>().material.color.b
-			);
-			pitch = Mathf.Clamp(pitch, 0.25f, 3);
 			if (other.GetComponent<CrumbledBlock>() == null) {
-				Camera.main.GetComponent<SoundsAndMusic>().playBlockWalkSound(pitch, other.transform.position);
+				Camera.main.GetComponent<SoundsAndMusic>().playBlockWalkSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 			} else {
 				if (other.GetComponent<CrumbledBlock>().getSteps() <= 1) {
-					Camera.main.GetComponent<SoundsAndMusic>().playBlockWalkSound(pitch, other.transform.position);
+					Camera.main.GetComponent<SoundsAndMusic>().playBlockWalkSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 				} else { 
-					Camera.main.GetComponent<SoundsAndMusic>().playMultiStepSound(pitch, other.transform.position);
+					Camera.main.GetComponent<SoundsAndMusic>().playMultiStepSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 				}
 			}
 		}

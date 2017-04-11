@@ -218,7 +218,7 @@ public class CharacterMovement : MonoBehaviour {
 				}
 				if (secondToLast != null) {
 					if (lastBlock.tag == VariableManagement.switchTag && secondToLast == returnedBlock) {
-						GetComponent<SwitchAttributes>().buttonPress();
+						GetComponent<SwitchAttributes>().buttonPress(GetComponent<SoundsAndMusic>().getPitchOfBlock(lastBlock), lastBlock.transform.position);
 					}
 				}
 			}
@@ -292,7 +292,7 @@ public class CharacterMovement : MonoBehaviour {
 			}
 		}
 		if (block.tag == VariableManagement.switchTag && playerOn != block && blockAdded) {
-			GetComponent<SwitchAttributes>().buttonPress();
+			GetComponent<SwitchAttributes>().buttonPress(GetComponent<SoundsAndMusic>().getPitchOfBlock(block), block.transform.position);
 			pointOnSwitch = true;
 		}
 	}

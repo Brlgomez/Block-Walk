@@ -7,15 +7,19 @@ public class SwitchAttributes : MonoBehaviour {
 	bool redBlocksActive = true;
 	bool redActiveSavedState = true;
 	bool playSound = false;
+	float lastPitch = 1;
+	Vector3 lastPos;
 
 	void Start () {
-		buttonPress ();
+		buttonPress (1, Vector3.zero);
 		saveState ();
 	}
 
-	public void buttonPress () {
+	public void buttonPress (float pitch, Vector3 pos) {
+		lastPitch = pitch;
+		lastPos = pos;
 		redBlocksActive = !redBlocksActive;
-		changeBlockSizes ();
+		changeBlockSizes (pitch, pos);
 		playSound = true;
 	}
 
@@ -25,21 +29,21 @@ public class SwitchAttributes : MonoBehaviour {
 
 	public void loadSaveState () {
 		redBlocksActive = redActiveSavedState;
-		changeBlockSizes ();
+		changeBlockSizes (lastPitch, lastPos);
 	}
 
 	public bool getState () {
 		return redBlocksActive;
 	}
 
-	void changeBlockSizes () {
+	void changeBlockSizes (float pitch, Vector3 pos) {
 		List<GameObject> redBlocks = GetComponent<LevelBuilder>().getRedBlocks();
 		List<GameObject> blueBlocks = GetComponent<LevelBuilder>().getBlueBlocks();
 		if (playSound) {
 			if (redBlocksActive) {
-				GetComponent<SoundsAndMusic>().playOnSwitchSound();
+				GetComponent<SoundsAndMusic>().playOnSwitchSound(pitch, pos);
 			} else {
-				GetComponent<SoundsAndMusic>().playOffSwitchSound();
+				GetComponent<SoundsAndMusic>().playOffSwitchSound(pitch, pos);
 			}
 		}
 		for (int i = 0; i < redBlocks.Count; i++) {

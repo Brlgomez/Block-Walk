@@ -91,6 +91,14 @@ public class SoundsAndMusic : MonoBehaviour {
 			AudioSource sound;
 			if (name == VariableManagement.multistepBlock + VariableManagement.clone) {
 				sound = playClipAt(multistepBlock, blockPos);
+			} else if (name == VariableManagement.switchBlock + VariableManagement.clone) {
+				sound = playClipAt(offSwitch, blockPos);
+			} else if (name == VariableManagement.rotateLBlock + VariableManagement.clone) {
+				sound = playClipAt(rotateLeft, blockPos);
+			} else if (name == VariableManagement.rotateRBlock + VariableManagement.clone) {
+				sound = playClipAt(rotateRight, blockPos);
+			} else if (name == VariableManagement.bombBlock + VariableManagement.clone) {
+				sound = playClipAt(fuse, blockPos);
 			} else {
 				sound = playClipAt(blockWalk, blockPos);
 			}
@@ -108,21 +116,21 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playLoseLevelSound() {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(loseLevel, transform.position);
-			sound.pitch = Random.Range(0.8f, 1.2f);;
+			sound.pitch = Random.Range(0.8f, 1.2f);
 		}
 	}
 
-	public void playOnSwitchSound() {
+	public void playOnSwitchSound(float pitch, Vector3 pos) {
 		if (playSoundEffects == 0) {
-			source.pitch = 1;
-			source.PlayOneShot (onSwitch);
+			AudioSource sound = playClipAt(onSwitch, pos);
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
-	public void playOffSwitchSound() {
+	public void playOffSwitchSound(float pitch, Vector3 pos) {
 		if (playSoundEffects == 0) {
-			source.pitch = 1;
-			source.PlayOneShot (offSwitch);
+			AudioSource sound = playClipAt(offSwitch, pos);
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
@@ -140,31 +148,31 @@ public class SoundsAndMusic : MonoBehaviour {
 		}
 	}
 
-	public void playRotateRightSound() {
+	public void playRotateRightSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.pitch = 1;
-			source.PlayOneShot (rotateRight);
+			AudioSource sound = playClipAt(rotateRight, blockPos);
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
-	public void playRotateLeftSound() {
+	public void playRotateLeftSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.pitch = 1;
-			source.PlayOneShot (rotateLeft);
+			AudioSource sound = playClipAt(rotateLeft, blockPos);
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
-	public void playExplosionSound() {
+	public void playExplosionSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.pitch = 1;
-			source.PlayOneShot(explosion);
+			AudioSource sound = playClipAt(explosion, blockPos);
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
-	public void playFuseSound() {
+	public void playFuseSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.pitch = 1;
-			source.PlayOneShot(fuse);
+			AudioSource sound = playClipAt(fuse, blockPos);
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
@@ -177,5 +185,15 @@ public class SoundsAndMusic : MonoBehaviour {
 		aSource.Play();
 		Destroy(tempGO, clip.length); 
 		return aSource; 
+	}
+
+	public float getPitchOfBlock (GameObject block) {
+		float pitch = (
+			block.GetComponent<Renderer>().material.color.r +
+			block.GetComponent<Renderer>().material.color.g +
+			block.GetComponent<Renderer>().material.color.b
+		);
+		pitch = Mathf.Clamp(pitch, 0.25f, 3);
+		return pitch;
 	}
 }
