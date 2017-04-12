@@ -7,6 +7,7 @@ public class MenuTransitions : MonoBehaviour {
 
 	List<Transform> itemsEntering;
 	List<Transform> itemsLeaving;
+	GameObject screenLeave, screenEnter;
 	Vector3 [] newPosForEntering;
 	Vector3 [] newPosForLeaving;
 	float direction;
@@ -42,6 +43,12 @@ public class MenuTransitions : MonoBehaviour {
 				}
 				itemsEntering[i].transform.position = newPosForEntering[i];
 			}
+			if (screenEnter != null) {
+				screenEnter.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
+			}
+			if (screenLeave != null) {
+				screenLeave.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
+			}
 			Destroy(GetComponent<MenuTransitions>());
 		}
 	}
@@ -52,6 +59,7 @@ public class MenuTransitions : MonoBehaviour {
 		itemsEntering = new List<Transform>();
 
 		if (screenLeaving != null) {
+			screenLeave = screenLeaving;
 			screenLeaving.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 			Transform[] childrenLeaving = screenLeaving.GetComponentsInChildren<Transform>();
 			foreach (Transform child in childrenLeaving) {
@@ -74,6 +82,7 @@ public class MenuTransitions : MonoBehaviour {
 		}
 			
 		if (screenEntering != null) {
+			screenEnter = screenEntering;
 			screenEntering.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 			Transform[] childrenEntering = screenEntering.GetComponentsInChildren<Transform>();
 			foreach (Transform child in childrenEntering) {
