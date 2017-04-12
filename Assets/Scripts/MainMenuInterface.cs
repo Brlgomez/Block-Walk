@@ -388,6 +388,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	public void LoadLevel(int level) {
 		if (gameObject.GetComponent<MenuTransitions>() == null && gameObject.GetComponent<BackgroundColorTransition>() == null) {
+			gameObject.AddComponent<MenuTransitions>().setScreens(levels, null, Camera.main.backgroundColor);
 			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.worldMenu);
 			PlayerPrefs.SetInt(VariableManagement.worldLevel, level + levelMultiplier);
 			gameObject.AddComponent<BackgroundColorTransition>();
@@ -399,6 +400,7 @@ public class MainMenuInterface : MonoBehaviour {
 		if (gameObject.GetComponent<MenuTransitions>() == null && gameObject.GetComponent<BackgroundColorTransition>() == null) {
 			interfaceMenu = 0;
 			destroyBlockChildren();
+			gameObject.AddComponent<MenuTransitions>().setScreens(userCreated, null, Camera.main.backgroundColor);
 			PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
 			gameObject.AddComponent<BackgroundColorTransition>();
 			GetComponent<BackgroundColorTransition>().transition(VariableManagement.toEditorFromMain);
@@ -410,7 +412,8 @@ public class MainMenuInterface : MonoBehaviour {
 			interfaceMenu = 0;
 			destroyBlockChildren();
 			filePath = Application.persistentDataPath + "/" + GetComponent<VariableManagement>().getUserLevel() + ".txt";
-			if (File.Exists(filePath)) {		
+			if (File.Exists(filePath)) {
+				gameObject.AddComponent<MenuTransitions>().setScreens(userCreated, null, Camera.main.backgroundColor);
 				PlayerPrefs.SetString(VariableManagement.lastMenu, VariableManagement.userLevelMenu);
 				gameObject.AddComponent<BackgroundColorTransition>();
 				GetComponent<BackgroundColorTransition>().transition(VariableManagement.levelFromMain);

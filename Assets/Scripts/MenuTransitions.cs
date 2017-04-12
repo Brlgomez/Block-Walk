@@ -7,18 +7,23 @@ public class MenuTransitions : MonoBehaviour {
 
 	List<Transform> itemsEntering;
 	List<Transform> itemsLeaving;
-	GameObject screenLeave, screenEnter;
 	Vector3 [] newPosForEntering;
 	Vector3 [] newPosForLeaving;
 	float direction;
 	float timer = 0;
 	float timerLimit = 0.75f;
 	Color32 backgroundColor;
+	bool changeColor;
 
 	void Update () {
 		timer += Time.deltaTime * 1.551f;
-		if (timer < timerLimit && PlayerPrefs.GetInt(VariableManagement.savePower) == 0) {
-			Camera.main.backgroundColor = Color32.Lerp(Camera.main.backgroundColor, backgroundColor, timer);
+		if (timer < timerLimit) {
+			if (PlayerPrefs.GetInt(VariableManagement.savePower) == 1) {
+				timer += Time.deltaTime * 100;
+			}
+			if (changeColor) {
+				Camera.main.backgroundColor = Color32.Lerp(Camera.main.backgroundColor, backgroundColor, timer);
+			}
 			for (int i = 0; i < itemsLeaving.Count; i++) {
 				itemsLeaving[i].transform.position = Vector3.Lerp(itemsLeaving[i].transform.position, newPosForLeaving[i], timer * ((i + 10) * 0.05f));
 			}
@@ -26,7 +31,9 @@ public class MenuTransitions : MonoBehaviour {
 				itemsEntering[i].transform.position = Vector3.Lerp(itemsEntering[i].transform.position, newPosForEntering[i], timer * ((i + 10) * 0.05f));
 			}
 		} else {
-			Camera.main.backgroundColor = backgroundColor;
+			if (changeColor) {
+				Camera.main.backgroundColor = backgroundColor;
+			}
 			for (int i = 0; i < itemsLeaving.Count; i++) {
 				if (itemsLeaving[i].GetComponent<Button>() != null) {
 					itemsLeaving[i].GetComponent<Button>().enabled = false;
@@ -43,24 +50,21 @@ public class MenuTransitions : MonoBehaviour {
 				}
 				itemsEntering[i].transform.position = newPosForEntering[i];
 			}
-			if (screenEnter != null) {
-				screenEnter.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
-			}
-			if (screenLeave != null) {
-				screenLeave.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
-			}
 			Destroy(GetComponent<MenuTransitions>());
 		}
 	}
 		
 	public void setScreens (GameObject screenLeaving, GameObject screenEntering, Color32 c) {
+		if (c != Camera.main.backgroundColor) {
+			changeColor = true;
+		} else {
+			changeColor = false;
+		}
 		backgroundColor = c;
 		itemsLeaving = new List<Transform>();
 		itemsEntering = new List<Transform>();
 
 		if (screenLeaving != null) {
-			screenLeave = screenLeaving;
-			screenLeaving.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 			Transform[] childrenLeaving = screenLeaving.GetComponentsInChildren<Transform>();
 			foreach (Transform child in childrenLeaving) {
 				if (child.parent == screenLeaving.transform) {
@@ -82,8 +86,6 @@ public class MenuTransitions : MonoBehaviour {
 		}
 			
 		if (screenEntering != null) {
-			screenEnter = screenEntering;
-			screenEntering.transform.position = new Vector3(-Screen.width / 2, Screen.height / 2, 0);
 			Transform[] childrenEntering = screenEntering.GetComponentsInChildren<Transform>();
 			foreach (Transform child in childrenEntering) {
 				if (child.parent == screenEntering.transform) {
