@@ -16,8 +16,10 @@ public class DeleteCubes : MonoBehaviour {
 				GetComponent<LevelBuilder>().getBombBlocks()[i].GetComponent<BombBlock>().decreaseBombSteps();
 			}
 		}
-		// regular, multi step, redAndBlue block
-		if (other.transform.tag == VariableManagement.block || other.transform.tag == VariableManagement.active || other.transform.tag == VariableManagement.inactive) {
+		// regular, multi step, redAndBlue block, resize
+		if (other.transform.tag == VariableManagement.block || other.transform.tag == VariableManagement.active || 
+			other.transform.tag == VariableManagement.inactive || other.transform.tag == VariableManagement.resizeSmall ||
+			other.transform.tag == VariableManagement.resizeNormal || other.transform.tag == VariableManagement.resizeBig) {
 			if (other.GetComponent<CrumbledBlock> () != null) {
 				other.GetComponent<CrumbledBlock> ().decreaseSteps ();
 				if (other.GetComponent<CrumbledBlock> ().getSteps () <= 0) {
@@ -25,19 +27,23 @@ public class DeleteCubes : MonoBehaviour {
 				}
 			} else {
 				other.gameObject.AddComponent<FallingBlock> ();
+			} 
+			if (other.transform.tag == VariableManagement.resizeSmall || other.transform.tag == VariableManagement.resizeNormal || 
+				other.transform.tag == VariableManagement.resizeBig) {
+				Destroy(other.transform.GetChild(0).gameObject);
 			}
 		}
 	}
 
 	public void enterBlock (GameObject other) {
 		// switch block, rotate blocks
-		if (other.transform.tag == "Switch") {
+		if (other.transform.tag == VariableManagement.switchTag) {
 			Camera.main.GetComponent<SwitchAttributes>().buttonPress(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 			Camera.main.GetComponent<SwitchAttributes>().saveState();
-		} else if (other.transform.tag == "RotatorR") {
+		} else if (other.transform.tag == VariableManagement.rotateR) {
 			Camera.main.GetComponent<SoundsAndMusic>().playRotateRightSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 			GetComponent<Rotator>().rotateAt(other.transform.position, 1);
-		} else if (other.transform.tag == "RotatorL") {
+		} else if (other.transform.tag == VariableManagement.rotateL) {
 			Camera.main.GetComponent<SoundsAndMusic>().playRotateLeftSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 			GetComponent<Rotator>().rotateAt(other.transform.position, -1);
 		} else if (other.transform.tag == VariableManagement.bomb) {

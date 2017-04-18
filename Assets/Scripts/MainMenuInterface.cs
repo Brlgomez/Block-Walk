@@ -15,7 +15,8 @@ public class MainMenuInterface : MonoBehaviour {
 	bool loading = false;
 	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database, floor, backgroundParticles;
 	GameObject publicConfirmation, search, settings, store, musicObj;
-	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock, bombBlock, unknownBlock;
+	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock;
+	GameObject bombBlock, resizeSmallBlock, resizeNormalBlock, resizeBigBlock, unknownBlock;
 	List<Sprite> levelImages;
 	int levelMultiplier = 1;
 	int interfaceMenu = 0;
@@ -64,6 +65,9 @@ public class MainMenuInterface : MonoBehaviour {
 		rotateRBlock = GameObject.Find(VariableManagement.rotateRBlock);
 		rotateLBlock = GameObject.Find(VariableManagement.rotateLBlock);
 		bombBlock = GameObject.Find(VariableManagement.bombBlock);
+		resizeSmallBlock = GameObject.Find(VariableManagement.resizeSmallBlock);
+		resizeNormalBlock = GameObject.Find(VariableManagement.resizeNormalBlock);
+		resizeBigBlock = GameObject.Find(VariableManagement.resizeBigBlock);
 		unknownBlock = GameObject.Find("Unknown Block");
 		if (GetComponent<VariableManagement>().getUserLevel() < minAmountOfUserLevels ||
 		    GetComponent<VariableManagement>().getUserLevel() > maxAmountOfUserLevels) {
@@ -850,6 +854,12 @@ public class MainMenuInterface : MonoBehaviour {
 					displayBlockImage(i - num, j, rotateLBlock);
 				} else if (lines[i][j] == VariableManagement.bombBlockTile) {
 					displayBlockImage(i - num, j, bombBlock);
+				} else if (lines[i][j] == VariableManagement.resizeSmallTile) {
+					displayBlockImage(i - num, j, resizeSmallBlock);
+				} else if (lines[i][j] == VariableManagement.resizeNormalTile) {
+					displayBlockImage(i - num, j, resizeNormalBlock);
+				} else if (lines[i][j] == VariableManagement.resizeBigTile) {
+					displayBlockImage(i - num, j, resizeBigBlock);
 				} else if (lines[i][j] == VariableManagement.noBlockTile) {
 					
 				} else {

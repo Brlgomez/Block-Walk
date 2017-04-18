@@ -102,6 +102,13 @@ public class EditorInterface : MonoBehaviour {
 		} else {
 			turnOffButton(content.GetComponentsInChildren<Button>()[8], 3);
 		}
+		if (PlayerPrefs.GetInt(VariableManagement.world4, 0) == 1) {
+			//turnOnButton(content.GetComponentsInChildren<Button>()[9], GameObject.Find("Resize Small Block"));
+			//turnOnButton(content.GetComponentsInChildren<Button>()[10], GameObject.Find("Resize Normal Block"));
+		} else {
+			//turnOffButton(content.GetComponentsInChildren<Button>()[9], 4);
+			//turnOffButton(content.GetComponentsInChildren<Button>()[10], 4);
+		}
 	}
 
 	public void setVariables(float sR, float sG, float sB, float sRInc, float sGInc, float sBInc, float sRInc2, float sGInc2, float sBInc2, string title) {
@@ -381,6 +388,8 @@ public class EditorInterface : MonoBehaviour {
 			GetComponent<InAppPurchases>().BuyNonConsumableWorld4();
 		} else if (worldNumber == 3) {
 			GetComponent<InAppPurchases>().BuyNonConsumableWorld5();
+		} else if (worldNumber == 4) {
+			//GetComponent<InAppPurchases>().BuyNonConsumableWorld6();
 		}
 	}
 
@@ -485,6 +494,12 @@ public class EditorInterface : MonoBehaviour {
 					levelData += VariableManagement.rotateLBlockTile.ToString();
 				} else if (blocks[i][j].name == VariableManagement.bombBlock + VariableManagement.clone) {
 					levelData += VariableManagement.bombBlockTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.resizeSmallBlock + VariableManagement.clone) {
+					levelData += VariableManagement.resizeSmallTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.resizeNormalBlock + VariableManagement.clone) {
+					levelData += VariableManagement.resizeNormalTile.ToString();
+				} else if (blocks[i][j].name == VariableManagement.resizeBigBlock + VariableManagement.clone) {
+					levelData += VariableManagement.resizeBigTile.ToString();
 				}
 			}
 			levelData += "\n";

@@ -21,6 +21,9 @@ public class VariableManagement : MonoBehaviour {
 	public static string rotateR = "RotatorR";
 	public static string rotateL = "RotatorL";
 	public static string bomb = "Bomb";
+	public static string resizeSmall = "Small";
+	public static string resizeNormal = "Normal";
+	public static string resizeBig = "Big";
 
 	// block names
 	public static string clone = "(Clone)";
@@ -32,6 +35,9 @@ public class VariableManagement : MonoBehaviour {
 	public static string rotateRBlock = "Rotate Block R";
 	public static string rotateLBlock = "Rotate Block L";
 	public static string bombBlock = "Bomb Block";
+	public static string resizeSmallBlock = "Resize Small Block";
+	public static string resizeNormalBlock = "Resize Normal Block";
+	public static string resizeBigBlock = "Resize Big Block";
 
 	// block tiles from text files
 	public static char levelDelimiter = '*';
@@ -44,6 +50,9 @@ public class VariableManagement : MonoBehaviour {
 	public static char rotateRBlockTile = 'E';
 	public static char rotateLBlockTile = 'W';
 	public static char bombBlockTile = 'O';
+	public static char resizeSmallTile = 'I';
+	public static char resizeNormalTile = 'N';
+	public static char resizeBigTile = 'A';
 
 	// text files
 	public static string world0 = "World0";
@@ -52,6 +61,7 @@ public class VariableManagement : MonoBehaviour {
 	public static string world3 = "World3";
 	public static string world4 = "World4";
 	public static string world5 = "World5";
+	public static string world6 = "World6";
 
 	// scene number
 	public static int mainMenu = 0;

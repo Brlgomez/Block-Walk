@@ -29,6 +29,7 @@ public class LevelBuilder : MonoBehaviour {
 	float topMost = -100;
 	float bottomMost = 100;
 	GameObject cubes, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotatorR, rotatorL, bombBlock;
+	GameObject resizeSmall, resizeNormal, resizeBig;
 
 	void Awake() {
 		cubes = GameObject.Find("Cubes");
@@ -40,6 +41,9 @@ public class LevelBuilder : MonoBehaviour {
 		redBlock = GameObject.Find(VariableManagement.activeBlock);
 		blueBlock = GameObject.Find(VariableManagement.inactiveBlock);
 		bombBlock = GameObject.Find(VariableManagement.bombBlock);
+		resizeSmall = GameObject.Find(VariableManagement.resizeSmallBlock);
+		resizeNormal = GameObject.Find(VariableManagement.resizeNormalBlock);
+		resizeBig = GameObject.Find(VariableManagement.resizeBigBlock);
 		builder(parseFile());
 	}
 
@@ -57,6 +61,8 @@ public class LevelBuilder : MonoBehaviour {
 				t = Resources.Load(VariableManagement.world4) as TextAsset;
 			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 4) {
 				t = Resources.Load(VariableManagement.world5) as TextAsset;
+			} else if (((GetComponent<VariableManagement>().getWorldLevel() - 1) / 16) == 5) {
+				t = Resources.Load(VariableManagement.world6) as TextAsset;
 			}
 			level = t.text.Split(VariableManagement.levelDelimiter.ToString()[0]);
 			return level[(GetComponent<VariableManagement>().getWorldLevel() - 1) % 16].Split("\n"[0]);
@@ -143,6 +149,15 @@ public class LevelBuilder : MonoBehaviour {
 				} else if (lines[i][j] == VariableManagement.bombBlockTile) {
 					numberOfBlocks++;
 					createBlock(bombBlock, j, i).tag = VariableManagement.bomb;
+				} else if (lines[i][j] == VariableManagement.resizeSmallTile) {
+					numberOfBlocks++;
+					createBlock(resizeSmall, j, i).tag = VariableManagement.resizeSmall;
+				} else if (lines[i][j] == VariableManagement.resizeNormalTile) {
+					numberOfBlocks++;
+					createBlock(resizeNormal, j, i).tag = VariableManagement.resizeNormal;
+				} else if (lines[i][j] == VariableManagement.resizeBigTile) {
+					numberOfBlocks++;
+					createBlock(resizeBig, j, i).tag = VariableManagement.resizeBig;
 				} 
 			}
 		}
@@ -285,7 +300,10 @@ public class LevelBuilder : MonoBehaviour {
 	public void removeBlock(GameObject b) {
 		if (blocks.Contains(b)) {
 			blocks.Remove(b);
-			if (b.tag == VariableManagement.block || b.tag == VariableManagement.active || b.tag == VariableManagement.inactive || b.tag == VariableManagement.bomb) {
+			if (b.tag == VariableManagement.block || b.tag == VariableManagement.active || 
+				b.tag == VariableManagement.inactive || b.tag == VariableManagement.bomb || 
+				b.tag == VariableManagement.resizeSmall || b.tag == VariableManagement.resizeNormal || 
+				b.tag == VariableManagement.resizeBig) {
 				numberOfBlocks--;
 			}
 		}
