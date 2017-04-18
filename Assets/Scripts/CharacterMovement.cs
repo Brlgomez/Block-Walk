@@ -30,6 +30,7 @@ public class CharacterMovement : MonoBehaviour {
 	bool canPlayerMove = false;
 	Vector3 playerPos;
 	GameObject instructions;
+	int playerSize = 0;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag (VariableManagement.player);
@@ -444,5 +445,23 @@ public class CharacterMovement : MonoBehaviour {
 
 	public Vector3 getPlayerPos () {
 		return playerPos;
+	}
+
+	public void setPlayerSize (int n) {
+		if (n == 0) {
+			player.transform.localScale = new Vector3(1, 1, 1);
+			//player.transform.localPosition = new Vector3(player.transform.localPosition.x, 0, player.transform.localPosition.z);
+		} else if (n == -1) {
+			player.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+			//player.transform.localPosition = new Vector3(player.transform.localPosition.x, 0, player.transform.localPosition.z);
+		} else if (n == 1) {
+			player.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+			//player.transform.localPosition = new Vector3(player.transform.localPosition.x, 0, player.transform.localPosition.z);
+		}
+		playerSize = n;
+	}
+
+	public int getPlayerSize () {
+		return playerSize;
 	}
 }
