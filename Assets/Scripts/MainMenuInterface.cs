@@ -370,16 +370,27 @@ public class MainMenuInterface : MonoBehaviour {
 		if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 0) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Block World Help";
 			instructions.GetComponentsInChildren<Text>()[1].text = "* Get rid of all blocks\n\n* Tap on block, or drag to create path\n\n* Press or drag bottom arrow to restart";
+			instructions.GetComponentsInChildren<Image>()[2].sprite = (Resources.Load<Sprite>("UI/World 1 Help"));
 		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 1) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Multistep World Help";
+			instructions.GetComponentsInChildren<Text>()[1].text = "* Get rid of all blocks\n\n* Blocks with '+' must be stepped on twice";
+			instructions.GetComponentsInChildren<Image>()[2].sprite = (Resources.Load<Sprite>("UI/World 2 Help"));
 		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 2) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Switch World Help";
+			instructions.GetComponentsInChildren<Text>()[1].text = "";
+			instructions.GetComponentsInChildren<Image>()[2].sprite = (Resources.Load<Sprite>("UI/World 1 Help"));
 		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 3) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Rotate World Help";
+			instructions.GetComponentsInChildren<Text>()[1].text = "";
+			instructions.GetComponentsInChildren<Image>()[2].sprite = (Resources.Load<Sprite>("UI/World 1 Help"));
 		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 4) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Bomb World Help";
+			instructions.GetComponentsInChildren<Text>()[1].text = "";
+			instructions.GetComponentsInChildren<Image>()[2].sprite = (Resources.Load<Sprite>("UI/World 1 Help"));
 		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 5) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Transform World Help";
+			instructions.GetComponentsInChildren<Text>()[1].text = "";
+			instructions.GetComponentsInChildren<Image>()[2].sprite = (Resources.Load<Sprite>("UI/World 1 Help"));
 		}
 		interfaceMenu = 12;
 	}
