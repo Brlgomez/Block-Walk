@@ -23,6 +23,9 @@ public class SoundsAndMusic : MonoBehaviour {
 	public AudioClip explosion;
 	public AudioClip fuse;
 	public AudioClip destroyed;
+	public AudioClip normalWeight;
+	public AudioClip lightWeight;
+	public AudioClip heavyWeight;
 
 	private AudioSource source;
 
@@ -131,6 +134,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playOnSwitchSound(float pitch, Vector3 pos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(onSwitch, pos);
+			sound.volume = setVolume();
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
@@ -138,6 +142,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playOffSwitchSound(float pitch, Vector3 pos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(offSwitch, pos);
+			sound.volume = setVolume();
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
@@ -145,6 +150,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playBlockWalkSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(blockWalk, blockPos);
+			sound.volume = setVolume();
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
@@ -152,6 +158,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playMultiStepSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(multistepBlock, blockPos);
+			sound.volume = setVolume();
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
@@ -159,6 +166,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playRotateRightSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(rotateRight, blockPos);
+			sound.volume = setVolume();
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
@@ -166,6 +174,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playRotateLeftSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(rotateLeft, blockPos);
+			sound.volume = setVolume();
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
@@ -173,6 +182,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playExplosionSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(explosion, blockPos);
+			sound.volume = setVolume();
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
@@ -180,6 +190,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playFuseSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(fuse, blockPos);
+			sound.volume = setVolume();
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
@@ -203,5 +214,42 @@ public class SoundsAndMusic : MonoBehaviour {
 		);
 		pitch = Mathf.Clamp(pitch, 0.25f, 3);
 		return pitch;
+	}
+
+	public void playNormalWeightSound() {
+		if (playSoundEffects == 0) {
+			source.volume = setVolume();
+			source.pitch = 1;
+			source.PlayOneShot (normalWeight);
+		}
+	}
+
+	public void playLightWeightSound() {
+		if (playSoundEffects == 0) {
+			source.volume = setVolume();
+			source.pitch = 1;
+			source.PlayOneShot (lightWeight);
+		}
+	}
+
+	public void playHeavyWeightSound() {
+		if (playSoundEffects == 0) {
+			source.volume = setVolume();
+			source.pitch = 1;
+			source.PlayOneShot (heavyWeight);
+		}
+	}
+
+	float setVolume () {
+		if (GetComponent<CharacterMovement>() != null) {
+			if (GetComponent<CharacterMovement>().getPlayerSize() > 0) {
+				return 1.5f;
+			} else if (GetComponent<CharacterMovement>().getPlayerSize() < 0) {
+				return 0.1f;
+			}
+			return 1;
+		} else {
+			return 1;
+		}
 	}
 }

@@ -376,20 +376,20 @@ public class CharacterMovement : MonoBehaviour {
 					1
 				);
 				GL.Color(lineColor);
-				GL.Vertex3 (point1.x - pathThickness, point1.y + 2, point1.z + pathThickness);
-				GL.Vertex3 (point1.x + pathThickness, point1.y + 2, point1.z + pathThickness);
-				GL.Vertex3 (point1.x + pathThickness, point1.y + 2, point1.z - pathThickness);
-				GL.Vertex3 (point1.x - pathThickness, point1.y + 2, point1.z - pathThickness);
+				GL.Vertex3 (point1.x - pathThickness, point1.y + 1, point1.z + pathThickness);
+				GL.Vertex3 (point1.x + pathThickness, point1.y + 1, point1.z + pathThickness);
+				GL.Vertex3 (point1.x + pathThickness, point1.y + 1, point1.z - pathThickness);
+				GL.Vertex3 (point1.x - pathThickness, point1.y + 1, point1.z - pathThickness);
 				if (point2.x == point1.x) {
-					GL.Vertex3 (point1.x - pathThickness, point1.y + 2, point1.z);
-					GL.Vertex3 (point1.x + pathThickness, point1.y + 2, point1.z);
-					GL.Vertex3 (point2.x + pathThickness, point2.y + 2, point2.z);
-					GL.Vertex3 (point2.x - pathThickness, point2.y + 2, point2.z);
+					GL.Vertex3 (point1.x - pathThickness, point1.y + 1, point1.z);
+					GL.Vertex3 (point1.x + pathThickness, point1.y + 1, point1.z);
+					GL.Vertex3 (point2.x + pathThickness, point2.y + 1, point2.z);
+					GL.Vertex3 (point2.x - pathThickness, point2.y + 1, point2.z);
 				} else {
-					GL.Vertex3 (point1.x, point1.y + 2, point1.z - pathThickness);
-					GL.Vertex3 (point1.x, point1.y + 2, point1.z + pathThickness);
-					GL.Vertex3 (point2.x, point2.y + 2, point2.z + pathThickness);
-					GL.Vertex3 (point2.x, point2.y + 2, point2.z - pathThickness);
+					GL.Vertex3 (point1.x, point1.y + 1, point1.z - pathThickness);
+					GL.Vertex3 (point1.x, point1.y + 1, point1.z + pathThickness);
+					GL.Vertex3 (point2.x, point2.y + 1, point2.z + pathThickness);
+					GL.Vertex3 (point2.x, point2.y + 1, point2.z - pathThickness);
 				}
 			}
 			GL.End ();
@@ -449,12 +449,19 @@ public class CharacterMovement : MonoBehaviour {
 	}
 
 	public void setPlayerSize (int n) {
+		Behaviour halo = (Behaviour)player.transform.GetChild (0).GetComponent ("Halo");
 		if (n == 0) {
-			player.transform.localScale = new Vector3(1, 1, 1);
+			player.transform.GetChild (1).GetComponent<Renderer>().material = (Material)Resources.Load("Materials/Player", typeof(Material));
+			halo.enabled = true;
+			GetComponent<SoundsAndMusic>().playNormalWeightSound();
 		} else if (n == -1) {
-			player.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+			player.transform.GetChild (1).GetComponent<Renderer>().material = (Material)Resources.Load("Materials/Resize", typeof(Material));
+			halo.enabled = false;
+			GetComponent<SoundsAndMusic>().playLightWeightSound();
 		} else if (n == 1) {
-			player.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+			player.transform.GetChild (1).GetComponent<Renderer>().material = (Material)Resources.Load("Materials/Resize L", typeof(Material));
+			halo.enabled = false;
+			GetComponent<SoundsAndMusic>().playHeavyWeightSound();
 		}
 		playerSize = n;
 	}
