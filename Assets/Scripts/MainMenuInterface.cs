@@ -14,7 +14,7 @@ public class MainMenuInterface : MonoBehaviour {
 
 	bool loading = false;
 	GameObject mainMenu, worlds, levels, userCreated, confirmation, popUp, intro, particles, worldLevels, database, floor, backgroundParticles;
-	GameObject publicConfirmation, search, settings, store, musicObj;
+	GameObject publicConfirmation, search, settings, store, musicObj, instructions;
 	GameObject blockHolder, standardBlock, multistepBlock, switchBlock, redBlock, blueBlock, rotateRBlock, rotateLBlock;
 	GameObject bombBlock, resizeSmallBlock, resizeNormalBlock, resizeBigBlock, unknownBlock;
 	List<Sprite> levelImages;
@@ -56,6 +56,7 @@ public class MainMenuInterface : MonoBehaviour {
 		search = findAndSetUi("Search");
 		settings = findAndSetUi("Settings");
 		store = findAndSetUi("Store");
+		instructions = findAndSetUi("Instructions");
 		backgroundParticles = GameObject.Find("Particles2");
 		standardBlock = GameObject.Find(VariableManagement.standardBlock);
 		multistepBlock = GameObject.Find(VariableManagement.multistepBlock);
@@ -304,55 +305,83 @@ public class MainMenuInterface : MonoBehaviour {
 	public void toLevelSelect(int world) {
 		bool beatAllLevels = true;
 		PlayerPrefs.SetInt(VariableManagement.worldLevel, (world * 16));
-		if (world > 0) {
-			if (PlayerPrefs.GetInt("World" + (world - 1).ToString(), 0) == 0) {
-				beatAllLevels = false;
-			}
-		} 
-		if (!beatAllLevels) {
-			interfaceMenu = 5;
-			gameObject.AddComponent<MenuTransitions>().setScreens(worlds, popUp, MenuColors.worldColor);
-			popUp.GetComponentsInChildren<Text>()[0].text = "Locked!";
-			popUp.GetComponentsInChildren<Text>()[1].text = "Must beat all levels from the previous world or select option:";
-			turnOnButton(popUp.GetComponentsInChildren<Button>()[0]);
-			turnOnButton(popUp.GetComponentsInChildren<Button>()[1]);
-		} else {
-			if (world == 0) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world1Color);
-				levels.GetComponentInChildren<Text>().text = "Block World";
-			} else if (world == 1) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world2Color);
-				levels.GetComponentInChildren<Text>().text = "Multistep World";
-			} else if (world == 2) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world3Color);
-				levels.GetComponentInChildren<Text>().text = "Switch World";
-			} else if (world == 3) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world4Color);
-				levels.GetComponentInChildren<Text>().text = "Rotate World";
-			} else if (world == 4) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world5Color);
-				levels.GetComponentInChildren<Text>().text = "Bomb World";
-			} else if (world == 5) {
-				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world6Color);
-				levels.GetComponentInChildren<Text>().text = "Transform World";
-			}
+		if (interfaceMenu == 12) {
+			gameObject.AddComponent<MenuTransitions>().setScreens(instructions, levels, Camera.main.backgroundColor);
 			interfaceMenu = 2;
-			levelMultiplier = world * 16;
-			for (int i = 0; i < 16; i++) {
-				int levelNumber = (world * 16) + i;
-				if (PlayerPrefs.GetInt(levelNumber.ToString(), 0) == 1) {
-					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Text>()[0].text = "";
-					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].color = Color.white;
-					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = levelImages[levelNumber];
-				} else {
-					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].color = Color.clear;
-					levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Text>()[0].text = (i + 1).ToString();
+		} else {
+			if (world > 0) {
+				if (PlayerPrefs.GetInt("World" + (world - 1).ToString(), 0) == 0) {
+					beatAllLevels = false;
+				}
+			} 
+			if (!beatAllLevels) {
+				interfaceMenu = 5;
+				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, popUp, MenuColors.worldColor);
+				popUp.GetComponentsInChildren<Text>()[0].text = "Locked!";
+				popUp.GetComponentsInChildren<Text>()[1].text = "Must beat all levels from the previous world or select option:";
+				turnOnButton(popUp.GetComponentsInChildren<Button>()[0]);
+				turnOnButton(popUp.GetComponentsInChildren<Button>()[1]);
+			} else {
+				if (world == 0) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world1Color);
+					levels.GetComponentInChildren<Text>().text = "Block World";
+				} else if (world == 1) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world2Color);
+					levels.GetComponentInChildren<Text>().text = "Multistep World";
+				} else if (world == 2) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world3Color);
+					levels.GetComponentInChildren<Text>().text = "Switch World";
+				} else if (world == 3) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world4Color);
+					levels.GetComponentInChildren<Text>().text = "Rotate World";
+				} else if (world == 4) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world5Color);
+					levels.GetComponentInChildren<Text>().text = "Bomb World";
+				} else if (world == 5) {
+					gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world6Color);
+					levels.GetComponentInChildren<Text>().text = "Transform World";
+				}
+				interfaceMenu = 2;
+				levelMultiplier = world * 16;
+				for (int i = 0; i < 16; i++) {
+					int levelNumber = (world * 16) + i;
+					if (PlayerPrefs.GetInt(levelNumber.ToString(), 0) == 1) {
+						levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Text>()[0].text = "";
+						levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].color = Color.white;
+						levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].sprite = levelImages[levelNumber];
+					} else {
+						levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Image>()[1].color = Color.clear;
+						levels.GetComponentsInChildren<Button>()[i].GetComponentsInChildren<Text>()[0].text = (i + 1).ToString();
+					}
 				}
 			}
+			if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0 && !backgroundParticles.GetComponent<ParticleSystem>().isPlaying) {
+				backgroundParticles.GetComponent<ParticleSystem>().Play();
+			}
 		}
-		if (PlayerPrefs.GetInt(VariableManagement.savePower) == 0 && !backgroundParticles.GetComponent<ParticleSystem>().isPlaying) {
-			backgroundParticles.GetComponent<ParticleSystem>().Play();
+	}
+
+	public void toLevelSelectBack() {
+		toLevelSelect((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16));
+	}
+
+	public void toInstructions () {
+		gameObject.AddComponent<MenuTransitions>().setScreens(levels, instructions, Camera.main.backgroundColor);
+		if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 0) {
+			instructions.GetComponentsInChildren<Text>()[0].text = "Block World Help";
+			instructions.GetComponentsInChildren<Text>()[1].text = "* Get rid of all blocks\n\n* Tap on block, or drag to create path\n\n* Press or drag bottom arrow to restart";
+		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 1) {
+			instructions.GetComponentsInChildren<Text>()[0].text = "Multistep World Help";
+		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 2) {
+			instructions.GetComponentsInChildren<Text>()[0].text = "Switch World Help";
+		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 3) {
+			instructions.GetComponentsInChildren<Text>()[0].text = "Rotate World Help";
+		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 4) {
+			instructions.GetComponentsInChildren<Text>()[0].text = "Bomb World Help";
+		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 5) {
+			instructions.GetComponentsInChildren<Text>()[0].text = "Transform World Help";
 		}
+		interfaceMenu = 12;
 	}
 
 	/* -------------------------------------------play, create, share------------------------------------------------ */

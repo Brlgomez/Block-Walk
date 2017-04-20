@@ -55,14 +55,17 @@ public class DeleteCubes : MonoBehaviour {
 				if (other.transform.tag == VariableManagement.resizeSmall && other.transform.childCount >= 1) {
 					other.transform.tag = VariableManagement.block;
 					GetComponent<CharacterMovement>().setPlayerSize(-1);
+					Camera.main.GetComponent<SoundsAndMusic>().playLightWeightSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 					Destroy(other.transform.GetChild(0).gameObject);
 				} else if (other.transform.tag == VariableManagement.resizeNormal && other.transform.childCount >= 1) {
 					other.transform.tag = VariableManagement.block;
 					GetComponent<CharacterMovement>().setPlayerSize(0);
+					Camera.main.GetComponent<SoundsAndMusic>().playNormalWeightSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 					Destroy(other.transform.GetChild(0).gameObject);
 				} else if (other.transform.tag == VariableManagement.resizeBig && other.transform.childCount >= 1) {
 					other.transform.tag = VariableManagement.block;
 					GetComponent<CharacterMovement>().setPlayerSize(1);
+					Camera.main.GetComponent<SoundsAndMusic>().playHeavyWeightSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);
 					Destroy(other.transform.GetChild(0).gameObject);
 				}
 				Camera.main.GetComponent<SoundsAndMusic>().playBlockWalkSound(GetComponent<SoundsAndMusic>().getPitchOfBlock(other), other.transform.position);

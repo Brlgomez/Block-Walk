@@ -112,6 +112,12 @@ public class SoundsAndMusic : MonoBehaviour {
 				sound = playClipAt(rotateRight, blockPos);
 			} else if (name == VariableManagement.bombBlock + VariableManagement.clone) {
 				sound = playClipAt(fuse, blockPos);
+			} else if (name == VariableManagement.resizeBigBlock + VariableManagement.clone) {
+				sound = playClipAt(heavyWeight, blockPos);
+			} else if (name == VariableManagement.resizeNormalBlock + VariableManagement.clone) {
+				sound = playClipAt(normalWeight, blockPos);
+			} else if (name == VariableManagement.resizeSmallBlock + VariableManagement.clone) {
+				sound = playClipAt(lightWeight, blockPos);
 			} else {
 				sound = playClipAt(blockWalk, blockPos);
 			}
@@ -218,27 +224,27 @@ public class SoundsAndMusic : MonoBehaviour {
 		return pitch;
 	}
 
-	public void playNormalWeightSound() {
+	public void playNormalWeightSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.volume = 1;
-			source.pitch = 1;
-			source.PlayOneShot (normalWeight);
+			AudioSource sound = playClipAt(normalWeight, blockPos);
+			sound.volume = setVolume();
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
-	public void playLightWeightSound() {
+	public void playLightWeightSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.volume = 1;
-			source.pitch = 1;
-			source.PlayOneShot (lightWeight);
+			AudioSource sound = playClipAt(lightWeight, blockPos);
+			sound.volume = setVolume();
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 
-	public void playHeavyWeightSound() {
+	public void playHeavyWeightSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
-			source.volume = 1;
-			source.pitch = 1;
-			source.PlayOneShot (heavyWeight);
+			AudioSource sound = playClipAt(heavyWeight, blockPos);
+			sound.volume = setVolume();
+			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
 

@@ -473,15 +473,12 @@ public class CharacterMovement : MonoBehaviour {
 		if (n == 0) {
 			player.transform.GetChild (1).GetComponent<Renderer>().material = (Material)Resources.Load("Materials/Player", typeof(Material));
 			halo.enabled = true;
-			GetComponent<SoundsAndMusic>().playNormalWeightSound();
 		} else if (n == -1) {
 			player.transform.GetChild (1).GetComponent<Renderer>().material = (Material)Resources.Load("Materials/Resize", typeof(Material));
 			halo.enabled = false;
-			GetComponent<SoundsAndMusic>().playLightWeightSound();
 		} else if (n == 1) {
 			player.transform.GetChild (1).GetComponent<Renderer>().material = (Material)Resources.Load("Materials/Resize L", typeof(Material));
 			halo.enabled = false;
-			GetComponent<SoundsAndMusic>().playHeavyWeightSound();
 		}
 		playerSize = n;
 	}
