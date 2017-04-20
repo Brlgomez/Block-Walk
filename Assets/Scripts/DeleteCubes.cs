@@ -53,12 +53,15 @@ public class DeleteCubes : MonoBehaviour {
 		} else {
 			if (other.GetComponent<CrumbledBlock>() == null) {
 				if (other.transform.tag == VariableManagement.resizeSmall && other.transform.childCount >= 1) {
+					other.transform.tag = VariableManagement.block;
 					GetComponent<CharacterMovement>().setPlayerSize(-1);
 					Destroy(other.transform.GetChild(0).gameObject);
 				} else if (other.transform.tag == VariableManagement.resizeNormal && other.transform.childCount >= 1) {
+					other.transform.tag = VariableManagement.block;
 					GetComponent<CharacterMovement>().setPlayerSize(0);
 					Destroy(other.transform.GetChild(0).gameObject);
 				} else if (other.transform.tag == VariableManagement.resizeBig && other.transform.childCount >= 1) {
+					other.transform.tag = VariableManagement.block;
 					GetComponent<CharacterMovement>().setPlayerSize(1);
 					Destroy(other.transform.GetChild(0).gameObject);
 				}

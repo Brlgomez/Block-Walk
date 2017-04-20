@@ -31,7 +31,8 @@ public class CharacterMovement : MonoBehaviour {
 	Vector3 playerPos;
 	GameObject instructions;
 	int playerSize = 0;
-	int tempSize;
+	int tempSize = 0;
+	int previousSize = 0;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag (VariableManagement.player);
@@ -219,7 +220,7 @@ public class CharacterMovement : MonoBehaviour {
 					returnedBlock = null;
 				}
 				if (secondToLast != null) {
-					if (lastBlock.tag == VariableManagement.switchTag && secondToLast == returnedBlock) {
+					if (lastBlock.tag == VariableManagement.switchTag && secondToLast == returnedBlock && tempSize >= 0) {
 						GetComponent<SwitchAttributes>().buttonPress(GetComponent<SoundsAndMusic>().getPitchOfBlock(lastBlock), lastBlock.transform.position);
 					}
 				}
@@ -250,6 +251,11 @@ public class CharacterMovement : MonoBehaviour {
 		bool valid = true;
 		if (path.Count > 1) {
 			if (nextPoint == path [path.Count - 2]) {
+				if (path[path.Count - 1].tag == VariableManagement.resizeSmall || 
+					path[path.Count - 1].tag == VariableManagement.resizeNormal || 
+					path[path.Count - 1].tag == VariableManagement.resizeBig) {
+					tempSize = previousSize;
+				}
 				removeFromPath (path.Count - 1);
 				checkOthers = false;
 			}
@@ -284,18 +290,32 @@ public class CharacterMovement : MonoBehaviour {
 	void addToPath (GameObject block) {
 		bool blockAdded = false;
 		if (path.Count == 0) {
+			previousSize = tempSize;
+			tempSize = getPlayerSize();
 			path.Add(block);
 			blockAdded = true;
 		} else {
 			if ((path[path.Count - 1].tag != VariableManagement.rotateR && 
-				path[path.Count - 1].tag != VariableManagement.rotateL) || path.Count == 1) {
+				path[path.Count - 1].tag != VariableManagement.rotateL) || path.Count == 1 || tempSize < 0) {
 				path.Add(block);
 				blockAdded = true;
 			}
 		}
 		if (block.tag == VariableManagement.switchTag && playerOn != block && blockAdded) {
-			GetComponent<SwitchAttributes>().buttonPress(GetComponent<SoundsAndMusic>().getPitchOfBlock(block), block.transform.position);
+			if (tempSize >= 0) {
+				GetComponent<SwitchAttributes>().buttonPress(GetComponent<SoundsAndMusic>().getPitchOfBlock(block), block.transform.position);
+			}
 			pointOnSwitch = true;
+		}
+		if (block.tag == VariableManagement.resizeSmall && playerOn != block && blockAdded) {
+			previousSize = tempSize;
+			tempSize = -1;
+		} else if (block.tag == VariableManagement.resizeNormal && playerOn != block && blockAdded) {
+			previousSize = tempSize;
+			tempSize = 0;
+		} else if (block.tag == VariableManagement.resizeBig && playerOn != block && blockAdded) {
+			previousSize = tempSize;
+			tempSize = 1;
 		}
 	}
 

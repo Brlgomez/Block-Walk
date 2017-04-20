@@ -43,6 +43,7 @@ public class SoundsAndMusic : MonoBehaviour {
 
 	public void playButtonSound() {
 		if (playSoundEffects == 0) {
+			source.volume = 1;
 			source.pitch = 1;
 			source.PlayOneShot (button);
 		}
@@ -85,6 +86,7 @@ public class SoundsAndMusic : MonoBehaviour {
 
 	public void playDestroyedSound() {
 		if (playSoundEffects == 0) {
+			source.volume = 1;
 			source.pitch = 1;
 			source.PlayOneShot (destroyed);
 		}
@@ -218,7 +220,7 @@ public class SoundsAndMusic : MonoBehaviour {
 
 	public void playNormalWeightSound() {
 		if (playSoundEffects == 0) {
-			source.volume = setVolume();
+			source.volume = 1;
 			source.pitch = 1;
 			source.PlayOneShot (normalWeight);
 		}
@@ -226,7 +228,7 @@ public class SoundsAndMusic : MonoBehaviour {
 
 	public void playLightWeightSound() {
 		if (playSoundEffects == 0) {
-			source.volume = setVolume();
+			source.volume = 1;
 			source.pitch = 1;
 			source.PlayOneShot (lightWeight);
 		}
@@ -234,7 +236,7 @@ public class SoundsAndMusic : MonoBehaviour {
 
 	public void playHeavyWeightSound() {
 		if (playSoundEffects == 0) {
-			source.volume = setVolume();
+			source.volume = 1;
 			source.pitch = 1;
 			source.PlayOneShot (heavyWeight);
 		}

@@ -118,6 +118,8 @@ public class MainMenuInterface : MonoBehaviour {
 				Camera.main.backgroundColor = MenuColors.world4Color;
 			} else if (((GetComponent<VariableManagement>().getWorldLevel()) / 16) == 4) {
 				Camera.main.backgroundColor = MenuColors.world5Color;
+			} else if (((GetComponent<VariableManagement>().getWorldLevel()) / 16) == 5) {
+				Camera.main.backgroundColor = MenuColors.world6Color;
 			}
 		} else if (PlayerPrefs.GetString(VariableManagement.lastMenu) == VariableManagement.userLevelMenu) {
 			interfaceMenu = 3;
@@ -243,6 +245,9 @@ public class MainMenuInterface : MonoBehaviour {
 		}
 		if (PlayerPrefs.GetInt(VariableManagement.world3) == 1) {
 			turnOffStoreButton(store.GetComponentsInChildren<Button>()[3]);
+		} 
+		if (PlayerPrefs.GetInt(VariableManagement.world4) == 1) {
+			//turnOffStoreButton(store.GetComponentsInChildren<Button>()[4]);
 		}
 		bool unlockedAll = true;
 		for (int i = 0; i < 50; i++) {
@@ -281,7 +286,7 @@ public class MainMenuInterface : MonoBehaviour {
 				}
 				interfaceMenu = 1;
 			}
-			for (int i = 1; i < 5; i++) {
+			for (int i = 1; i < 6; i++) {
 				if (PlayerPrefs.GetInt(("World" + (i - 1)).ToString(), 0) == 0) {
 					worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Image>().color = Color.black;
 					worlds.GetComponentsInChildren<Button>()[i].GetComponentInChildren<Text>().color = Color.clear;
@@ -327,6 +332,9 @@ public class MainMenuInterface : MonoBehaviour {
 			} else if (world == 4) {
 				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world5Color);
 				levels.GetComponentInChildren<Text>().text = "Bomb World";
+			} else if (world == 5) {
+				gameObject.AddComponent<MenuTransitions>().setScreens(worlds, levels, MenuColors.world6Color);
+				levels.GetComponentInChildren<Text>().text = "Transform World";
 			}
 			interfaceMenu = 2;
 			levelMultiplier = world * 16;
