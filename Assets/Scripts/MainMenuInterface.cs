@@ -369,7 +369,7 @@ public class MainMenuInterface : MonoBehaviour {
 		gameObject.AddComponent<MenuTransitions>().setScreens(levels, instructions, Camera.main.backgroundColor);
 		if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 0) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Block World Help";
-			instructions.GetComponentsInChildren<Text>()[1].text = "* Get rid of all blocks\n\n* Tap on block, or drag to create path\n\n* Press or drag bottom arrow to restart or exit";
+			instructions.GetComponentsInChildren<Text>()[1].text = "* Get rid of all blocks\n\n* Tap on block, or drag to create path\n\n* Tap or drag bottom arrow to restart or exit";
 			instructions.GetComponentsInChildren<Image>()[2].sprite = (Resources.Load<Sprite>("UI/World 1 Help"));
 		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 1) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Multistep World Help";
@@ -381,11 +381,11 @@ public class MainMenuInterface : MonoBehaviour {
 			instructions.GetComponentsInChildren<Image>()[2].sprite = (Resources.Load<Sprite>("UI/World 3 Help"));
 		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 3) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Rotate World Help";
-			instructions.GetComponentsInChildren<Text>()[1].text = "* Left and right rotate blocks will move any neighnoring blocks\n\n* Cannot destroy rotate blocks";
+			instructions.GetComponentsInChildren<Text>()[1].text = "* Rotate blocks will move any neighboring blocks\n\n* Cannot destroy rotate blocks";
 			instructions.GetComponentsInChildren<Image>()[2].sprite = (Resources.Load<Sprite>("UI/World 4 Help"));
 		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 4) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Bomb World Help";
-			instructions.GetComponentsInChildren<Text>()[1].text = "* Bomb blocks will activate if stepped on, then blow up after 4 steps\n\n* Bombs will destroy any neighnoring blocks\n\n* Any bombs in range will also blow up";
+			instructions.GetComponentsInChildren<Text>()[1].text = "* Bomb blocks will activate if stepped on, then blow up after 4 steps\n\n* Bombs will destroy any neighboring blocks\n\n* Any bombs in range will also blow up";
 			instructions.GetComponentsInChildren<Image>()[2].sprite = (Resources.Load<Sprite>("UI/World 5 Help"));
 		} else if ((PlayerPrefs.GetInt(VariableManagement.worldLevel, 0) / 16) == 5) {
 			instructions.GetComponentsInChildren<Text>()[0].text = "Transform World Help";
