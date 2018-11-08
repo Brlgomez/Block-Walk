@@ -97,31 +97,31 @@ public class OnlineServices: MonoBehaviour {
 					if (Application.platform == RuntimePlatform.Android) {
 						Social.ReportProgress(GPGSIds.achievement_block_walk, 100.0f, (bool success) => {});
 					} else if (Application.platform == RuntimePlatform.IPhonePlayer) {
-						Social.ReportProgress(GCIds.achievement_beat_block_world, 100.0f, (bool success) => {});
+                        Social.ReportProgress(GCIds.achievement_block_walk, 100.0f, (bool success) => {});
 					}
 				} else if (world == 1) {
 					if (Application.platform == RuntimePlatform.Android) {
 						Social.ReportProgress(GPGSIds.achievement_extra_steps_involved, 100.0f, (bool success) => {});
 					} else if (Application.platform == RuntimePlatform.IPhonePlayer) {
-						Social.ReportProgress(GCIds.achievement_beat_multistep_world, 100.0f, (bool success) => {});
+                        Social.ReportProgress(GCIds.achievement_extra_steps_involved, 100.0f, (bool success) => {});
 					}
 				} else if (world == 2) {
 					if (Application.platform == RuntimePlatform.Android) {
 						Social.ReportProgress(GPGSIds.achievement_switches_and_platforms, 100.0f, (bool success) => {});
 					} else if (Application.platform == RuntimePlatform.IPhonePlayer) {
-						Social.ReportProgress(GCIds.achievement_beat_switch_world, 100.0f, (bool success) => {});
+                        Social.ReportProgress(GCIds.achievement_switches_and_platforms, 100.0f, (bool success) => {});
 					}
 				} else if (world == 3) {
 					if (Application.platform == RuntimePlatform.Android) {
 						Social.ReportProgress(GPGSIds.achievement_mind_twisting, 100.0f, (bool success) => {});
 					} else if (Application.platform == RuntimePlatform.IPhonePlayer) {
-						Social.ReportProgress(GCIds.achievement_beat_rotate_world, 100.0f, (bool success) => {});
+                        Social.ReportProgress(GCIds.achievement_mind_twisting, 100.0f, (bool success) => {});
 					}
 				} else if (world == 4) {
 					if (Application.platform == RuntimePlatform.Android) {
 						Social.ReportProgress(GPGSIds.achievement_ignited, 100.0f, (bool success) => {});
 					} else if (Application.platform == RuntimePlatform.IPhonePlayer) {
-						Social.ReportProgress(GCIds.achievement_beat_bomb_world, 100.0f, (bool success) => {});
+                        Social.ReportProgress(GCIds.achievement_ignited, 100.0f, (bool success) => {});
 					}
 				}
 			}
