@@ -39,7 +39,7 @@ public class MainMenuInterface : MonoBehaviour {
 	void Start() {
 		//PlayerPrefs.DeleteAll();
 		floor = GameObject.Find("Floor");
-		floor.transform.position = new Vector3 (Screen.width, 0, 0);
+		floor.transform.position = new Vector3 (0, 0, 0);
 		blockHolder = GameObject.Find("Block Holder");
 		particles = GameObject.Find("Sprite Holder");
 		musicObj = GameObject.Find("Music");

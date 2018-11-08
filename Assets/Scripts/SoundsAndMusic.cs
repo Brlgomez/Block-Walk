@@ -227,7 +227,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playNormalWeightSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(normalWeight, blockPos);
-			sound.volume = setVolume();
+			sound.volume = 1;
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
@@ -235,7 +235,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playLightWeightSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(lightWeight, blockPos);
-			sound.volume = setVolume();
+			sound.volume = 1;
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
@@ -243,7 +243,7 @@ public class SoundsAndMusic : MonoBehaviour {
 	public void playHeavyWeightSound(float pitch, Vector3 blockPos) {
 		if (playSoundEffects == 0) {
 			AudioSource sound = playClipAt(heavyWeight, blockPos);
-			sound.volume = setVolume();
+			sound.volume = 1;
 			sound.pitch = pitch + Random.Range(-0.025f, 0.025f);
 		}
 	}
